@@ -76,7 +76,6 @@ def harvest_set(pbar: tqdm, set_no: int, download_folder: str) -> None:
     photo_page_links: List[str] = []
 
     for page_num in range(1, num_pages + 1):
-        pbar.set_description(f'Harvesting set {set_no}, image page {page_num} of {num_pages}')
         links = get_subpage_links(set_url, page_num)
         photo_page_links.extend(links)
 
