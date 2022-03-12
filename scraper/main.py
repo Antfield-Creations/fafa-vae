@@ -126,52 +126,20 @@ def harvest_image(photo_page_href, set_folder) -> None:
 
     retry_download(download_path, img_link)
 
-def harvest_page(set_url: str, page_num: int, max_page: int, set_folder: str, pbar) -> None:
+
+def get_subpage_links(set_url: str, page_num: int) -> List[str]:
     page_url = f'{set_url}/page/{page_num}'
     page = retry_get(page_url)
 
     if not page.ok:
-        logging.error(f'Skipped page {page_url}')
-        return
+        logging.error(f'Skipped page {page_url}: bad response {page.status_code}')
+        return []
 
     soup = BeautifulSoup(page.text, features='html.parser')
-
     screenshots = soup.find_all(class_='screenshot')
     photo_page_links = [base_href + ss.attrs['href'] for ss in screenshots]
 
-    for idx, href in enumerate(photo_page_links):
-        num_photo = ((page_num - 1) * photos_per_page) + idx + 1
-        page = retry_get(href)
-
-        if not page.ok:
-            logging.error(f'Skipped photo {href}: {page.status}')
-            continue
-
-        soup = BeautifulSoup(page.text, features='html.parser')
-        img_tag = soup.find(id='mainImage')
-
-        if img_tag is None:
-            logging.error('No image tag')
-            continue
-
-        img_link = img_tag.attrs['src']
-        photo_id = href.split('/')[-1]
-
-        file_name = photo_id + '-' + img_link.split('/')[-1]
-        download_path = set_folder + '/' + file_name
-
-        if isfile(download_path):
-            logging.info(f'Already have {file_name}')
-            return
-
-        # Pause every now and then
-        if int(photo_id) % pause_every == 0:
-            logging.info('Pausing to prevent ip bans')
-            session.close()
-            sleep(180)
-
-        pbar.set_description(f'Photo {num_photo} of max {max_page * photos_per_page}')
-        retry_download(download_path, img_link)
+    return photo_page_links
 
 
 @retry(tries=5, delay=1, backoff=2)
