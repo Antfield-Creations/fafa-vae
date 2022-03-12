@@ -3,6 +3,7 @@ import logging
 import math
 from os.path import isfile
 from time import sleep
+from typing import List
 
 import requests
 from tqdm import tqdm
@@ -31,37 +32,72 @@ def main(args: argparse.Namespace) -> None:
         pbar.update(n=first_set - 1)
 
         for set_no in range(first_set, last_set + 1):
-            pbar.update()
+            harvest_set(pbar, set_no, args.directory)
 
-            set_url = f'{base_href}/photos/showSet/id/{set_no}/thumb/small'
-            set_folder = download_folder + f'/set-{set_no}'
-            makedirs(set_folder, exist_ok=True)
+    session.close()
 
-            page = retry_get(set_url)
 
-            if not page.ok:
-                logging.error(f'Skipped set {set_no}')
-                continue
-            
-            if not hasattr(page, 'text'):
-                logging.error(f'Set {set_no} had no text')
-                continue
+def harvest_set(pbar: tqdm, set_no: int, download_folder: str) -> None:
+    """
+    Harvests large-size thumbs for an entire FAFA photo set
 
-            soup = BeautifulSoup(page.text, features='html.parser')
-            search_hint = soup.find(class_='searchHint')
+    :param pbar:            A tqdm progress bar instance
+    :param set_no:          The set number
+    :param download_folder: Folder to store the thumbnail images
 
-            if not hasattr(search_hint, 'text'):
-                logging.error(f'Set {set_no} had no list of images, skipping')
-                continue
+    :return: None
+    """
 
-            # The number of photos in the set is in the text before the first space, after the comma
-            first_space_pos = search_hint.text.find(' ')
-            num_photos = search_hint.text[1:first_space_pos]
-            num_pages = math.ceil(int(num_photos) / photos_per_page)
+    set_url = f'{base_href}/photos/showSet/id/{set_no}/thumb/small'
+    set_folder = download_folder + f'/set-{set_no}'
+    makedirs(set_folder, exist_ok=True)
 
-            for page_num in range(1, num_pages + 1):
-                pbar.set_description(f'Harvesting set {set_no}, image page {page_num} of {num_pages}')
-                harvest_page(set_url, page_num, num_pages, set_folder, pbar)
+    # First get the contents of the photo set page
+    page = retry_get(set_url)
+
+    # Validate OK response
+    if not page.ok:
+        logging.error(f'Skipped set {set_no}')
+        return
+
+    soup = BeautifulSoup(page.text, features='html.parser')
+    search_hint_tag = soup.find(class_='searchHint')
+
+    # Validate that the number of images for the set was advertised on the page
+    if not hasattr(search_hint_tag, 'text') or search_hint_tag is None:
+        logging.error(f'Set {set_no} had no list of images, skipping')
+        return
+
+    # The number of photos in the set is in the text before the first space, after the comma
+    first_space_pos = search_hint_tag.text.find(' ')
+    num_photos = search_hint_tag.text[1:first_space_pos]
+    num_pages = math.ceil(int(num_photos) / photos_per_page)
+
+    photo_page_links: List[str] = []
+
+    for page_num in range(1, num_pages + 1):
+        pbar.set_description(f'Harvesting set {set_no}, image page {page_num} of {num_pages}')
+        links = get_subpage_links(set_url, page_num)
+        photo_page_links.extend(links)
+
+    for idx, photo_page_href in enumerate(photo_page_links):
+        harvest_image(photo_page_href, set_folder)
+        pbar.set_description(f'Set {set_no}: photo {idx} of max {len(photo_page_links)}')
+
+    # Advance progress bar
+    pbar.update()
+
+
+def harvest_image(photo_page_href, set_folder) -> None:
+    """
+    Harvests an image from a FAFA image page
+
+    :param photo_page_href: Link to the photo page
+    :param set_folder:      Folder for the set to store the image
+
+    :return: None
+    """
+    page = retry_get(photo_page_href)
 
             session.close()
 
