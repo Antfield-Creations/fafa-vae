@@ -6,9 +6,10 @@ from time import sleep
 from typing import List
 
 import requests
-from tqdm import tqdm
+# Since there's no type defs for tqdm we'll have to ignore the type cecker for this
+from tqdm import tqdm  # type: ignore
 from retry import retry
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, Tag
 from os import makedirs
 
 from urllib.request import urlretrieve
@@ -104,7 +105,8 @@ def harvest_image(photo_page_href, set_folder) -> None:
 
     soup = BeautifulSoup(page.text, features='html.parser')
     img_tag = soup.find(id='mainImage')
-    if img_tag is None:
+
+    if type(img_tag) != Tag:
         logging.error('No image tag')
         return
 
