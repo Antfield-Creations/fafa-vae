@@ -132,4 +132,3 @@ def retry_download(download_path, img_link):
 
 if __name__ == '__main__':
     main()
-
