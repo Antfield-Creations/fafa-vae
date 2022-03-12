@@ -99,8 +99,32 @@ def harvest_image(photo_page_href, set_folder) -> None:
     """
     page = retry_get(photo_page_href)
 
-            session.close()
+    if not page.ok:
+        logging.error(f'Skipped photo {photo_page_href}: {page.status}')
+        return
 
+    soup = BeautifulSoup(page.text, features='html.parser')
+    img_tag = soup.find(id='mainImage')
+    if img_tag is None:
+        logging.error('No image tag')
+        return
+
+    img_link = img_tag.attrs['src']
+    photo_id = photo_page_href.split('/')[-1]
+    file_name = photo_id + '-' + img_link.split('/')[-1]
+    download_path = set_folder + '/' + file_name
+
+    if isfile(download_path):
+        logging.info(f'Already have {file_name}')
+        return
+
+    # Pause every now and then
+    if int(photo_id) % pause_every == 0:
+        logging.info('Pausing to prevent ip bans')
+        session.close()
+        sleep(180)
+
+    retry_download(download_path, img_link)
 
 def harvest_page(set_url: str, page_num: int, max_page: int, set_folder: str, pbar) -> None:
     page_url = f'{set_url}/page/{page_num}'
