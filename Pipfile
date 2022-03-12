@@ -8,6 +8,7 @@ tqdm = "*"
 retry = "*"
 beautifulsoup4 = "*"
 requests = "*"
+keras = "*"
 
 [dev-packages]
 mypy = "*"
