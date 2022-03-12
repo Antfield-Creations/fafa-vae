@@ -81,7 +81,7 @@ def harvest_set(pbar: tqdm, set_no: int, download_folder: str) -> None:
 
     for idx, photo_page_href in enumerate(photo_page_links):
         harvest_image(photo_page_href, set_folder)
-        pbar.set_description(f'Set {set_no}: photo {idx} of max {len(photo_page_links)}')
+        pbar.set_description(f'Set {set_no}: photo {idx} of {len(photo_page_links)}')
 
     # Advance progress bar
     pbar.update()
