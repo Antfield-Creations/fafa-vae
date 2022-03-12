@@ -1,3 +1,4 @@
+import argparse
 import logging
 import math
 from os.path import isfile
@@ -12,11 +13,7 @@ from os import makedirs
 from urllib.request import urlretrieve
 
 base_href = 'https://www.female-anatomy-for-artist.com'
-download_folder = '/home/rein/mnt/rein/Projects/FAFA'
 logging.basicConfig(level=logging.INFO)
-
-first_set = 895
-last_set = 5141
 
 # Without any browser info, the site hands out pages with 30 items per page
 photos_per_page = 30
@@ -25,7 +22,10 @@ pause_every = 500
 session = requests.session()
 
 
-def main() -> None:
+def main(args: argparse.Namespace) -> None:
+    first_set = int(args.first_set)
+    last_set = int(args.last_set)
+
     with tqdm(total=last_set) as pbar:
         # Skip over the part that is already done
         pbar.update(n=first_set - 1)
@@ -131,4 +131,10 @@ def retry_download(download_path, img_link):
 
 
 if __name__ == '__main__':
-    main()
+    argparser = argparse.ArgumentParser(description='FAFA image thumbnail harvester')
+    argparser.add_argument('-d', '--directory', help='The destination dir to store the thumbs', required=True)
+    argparser.add_argument('-f', '--first-set', help='The first set number to start harvesting at', default='0')
+    argparser.add_argument('-l', '--last-set', help='The last set number to stop harvesting at', default='6000')
+    args = argparser.parse_args()
+
+    main(args)
