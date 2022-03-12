@@ -24,6 +24,7 @@ pause_every = 500
 
 session = requests.session()
 
+
 def main() -> None:
     with tqdm(total=last_set) as pbar:
         # Skip over the part that is already done
