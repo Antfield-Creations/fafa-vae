@@ -29,7 +29,7 @@ def main(args: argparse.Namespace) -> None:
 
     with tqdm(total=last_set) as pbar:
         # Skip over the part that is already done
-        pbar.update(n=first_set - 1)
+        pbar.update(n=first_set)
 
         for set_no in range(first_set, last_set + 1):
             harvest_set(pbar, set_no, args.directory)
