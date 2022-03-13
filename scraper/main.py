@@ -7,6 +7,7 @@ from typing import List
 
 import requests
 # Since there's no type defs for tqdm we'll have to ignore the type cecker for this
+from requests import Response
 from tqdm import tqdm  # type: ignore
 from retry import retry
 from bs4 import BeautifulSoup, Tag
@@ -88,7 +89,7 @@ def harvest_set(pbar: tqdm, set_no: int, download_folder: str) -> None:
     pbar.update()
 
 
-def harvest_image(photo_page_href, set_folder) -> None:
+def harvest_image(photo_page_href: str, set_folder: str) -> None:
     """
     Harvests an image from a FAFA image page
 
@@ -100,7 +101,7 @@ def harvest_image(photo_page_href, set_folder) -> None:
     page = retry_get(photo_page_href)
 
     if not page.ok:
-        logging.error(f'Skipped photo {photo_page_href}: {page.status}')
+        logging.error(f'Skipped photo {photo_page_href}: {page.status_code}')
         return
 
     soup = BeautifulSoup(page.text, features='html.parser')
@@ -144,7 +145,7 @@ def get_subpage_links(set_url: str, page_num: int) -> List[str]:
 
 
 @retry(tries=5, delay=1, backoff=2)
-def retry_get(page_url):
+def retry_get(page_url: str) -> Response:
     page = session.get(page_url)
 
     if not page.ok:
@@ -154,7 +155,7 @@ def retry_get(page_url):
 
 
 @retry(tries=3, delay=1, backoff=2)
-def retry_download(download_path, img_link):
+def retry_download(download_path: str, img_link: str) -> None:
     urlretrieve(img_link, download_path)
     logging.debug(f'Wrote {download_path} from {img_link}')
 

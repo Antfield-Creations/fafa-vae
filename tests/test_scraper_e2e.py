@@ -8,7 +8,7 @@ from scraper import main
 
 
 class ScraperTestCase(unittest.TestCase):
-    def test_scrape_set(self):
+    def test_scrape_set(self) -> None:
         with TemporaryDirectory() as temp_dir:
             set_no = 1337
 
