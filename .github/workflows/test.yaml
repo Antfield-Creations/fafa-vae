@@ -1,0 +1,29 @@
+name: Test
+
+on: push
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: git checkout
+        uses: actions/checkout@v2
+
+      - name: set up python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.8'
+
+      - name: install dependency manager
+        run: pip install --user pipenv
+
+      - name: install dependencies
+        run: pipenv install --dev
+
+      - name: Run type checks
+        run:  pipenv run mypy .
+
+      - name: Run style checks
+        run:  pipenv run flake8 .
+
+      - name: Run tests
+        run:  pipenv run python -m unittest discover .
