@@ -2,6 +2,8 @@ import yaml
 
 from keras_preprocessing.image import ImageDataGenerator
 
+from pandas import DataFrame
+
 # Type alias for config type
 Config = dict
 
@@ -23,3 +25,6 @@ class FAFADataGenerator(ImageDataGenerator):
             **kwargs
         )
 
+
+def image_metadata(config: Config) -> DataFrame:
+    pass
