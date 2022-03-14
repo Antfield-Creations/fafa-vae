@@ -21,6 +21,7 @@ checkpoints:
 models:
   vae:
     latent_dim: 2
+    batch_size: 24
     epochs: 60
 
     conv2d:
