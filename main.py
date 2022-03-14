@@ -7,11 +7,21 @@ from argparse import ArgumentParser
 
 from models.loaders import load_config
 from models.train import train
+from scraper.scraper import scrape
 
 if __name__ == '__main__':
+    known_modes = ['scrape', 'train', 'encode', 'decode']
+
     argparser = ArgumentParser(description='Training script for FAFA variational autoencoder')
     argparser.add_argument('-c' '--config', help='Path to the config.yaml file', default='config.yaml')
+    argparser.add_argument('-m' '--mode', help=f'Mode, one of "{known_modes}"', required=True)
     args = argparser.parse_args()
 
     config = load_config()
-    train(config)
+
+    if args.mode == 'scrape':
+        scrape(config)
+    elif args.mode == 'train':
+        train(config)
+    else:
+        raise NotImplementedError("This mode isn't implemented (yet)")
