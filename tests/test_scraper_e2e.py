@@ -4,7 +4,7 @@ from argparse import Namespace
 from os.path import isdir
 from tempfile import TemporaryDirectory
 
-from scraper import main
+from scraper import scraper
 
 
 class ScraperTestCase(unittest.TestCase):
@@ -20,7 +20,7 @@ class ScraperTestCase(unittest.TestCase):
                 )
 
                 # Execute the "main" function
-                main.main(args=args)
+                scraper.scrape(args=args)
 
                 test_set_dir = os.path.join(temp_dir, f'set-{set_no}')
                 self.assertTrue(isdir(test_set_dir))

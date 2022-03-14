@@ -1,19 +1,19 @@
-import argparse
 import logging
 import math
+from os import makedirs
 from os.path import isfile
 from time import sleep
 from typing import List
+from urllib.request import urlretrieve
 
 import requests
+from bs4 import BeautifulSoup, Tag
 # Since there's no type defs for tqdm we'll have to ignore the type cecker for this
 from requests import Response
-from tqdm import tqdm  # type: ignore
 from retry import retry
-from bs4 import BeautifulSoup, Tag
-from os import makedirs
+from tqdm import tqdm  # type: ignore
 
-from urllib.request import urlretrieve
+from models.loaders import Config
 
 base_href = 'https://www.female-anatomy-for-artist.com'
 logging.basicConfig(level=logging.INFO)
@@ -25,16 +25,16 @@ pause_every = 500
 session = requests.session()
 
 
-def main(args: argparse.Namespace) -> None:
-    first_set = int(args.first_set)
-    last_set = int(args.last_set)
+def scrape(config: Config) -> None:
+    first_set = config['images']['scraper']['first_set']
+    last_set = config['images']['scraper']['last_set']
 
     with tqdm(total=last_set) as pbar:
         # Skip over the part that is already done
         pbar.update(n=first_set)
 
         for set_no in range(first_set, last_set + 1):
-            harvest_set(pbar, set_no, args.directory)
+            harvest_set(pbar, set_no, config['images']['folder'])
 
     session.close()
 
@@ -158,13 +158,3 @@ def retry_get(page_url: str) -> Response:
 def retry_download(download_path: str, img_link: str) -> None:
     urlretrieve(img_link, download_path)
     logging.debug(f'Wrote {download_path} from {img_link}')
-
-
-if __name__ == '__main__':
-    argparser = argparse.ArgumentParser(description='FAFA image thumbnail harvester')
-    argparser.add_argument('-d', '--directory', help='The destination dir to store the thumbs', required=True)
-    argparser.add_argument('-f', '--first-set', help='The first set number to start harvesting at', default='0')
-    argparser.add_argument('-l', '--last-set', help='The last set number to stop harvesting at', default='6000')
-    args = argparser.parse_args()
-
-    main(args)
