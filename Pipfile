@@ -9,6 +9,7 @@ retry = "*"
 beautifulsoup4 = "*"
 requests = "*"
 keras = "*"
+pyyaml = "*"
 
 [dev-packages]
 mypy = "*"

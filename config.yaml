@@ -1,0 +1,11 @@
+---
+imgages:
+  folder: /mnt/data/Projects/FAFA/img
+  filter:
+    exclude:
+      - duo
+      - swimsuit
+      - stereoscopic
+
+checkpoint:
+  folder: /mnt/data/Projects/FAFA/checkpoints
