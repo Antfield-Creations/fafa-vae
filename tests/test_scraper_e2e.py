@@ -27,4 +27,3 @@ class ScraperTestCase(unittest.TestCase):
 
                 dir_contents = os.listdir(test_set_dir)
                 self.assertEqual(len(dir_contents), 24)
-
