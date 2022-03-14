@@ -6,6 +6,14 @@ from models.sampling import Sampling
 
 
 def get_encoder(config: Config) -> Model:
+    """
+    Constructs the encoder part of the variational auto-encoder
+
+    :param config: a config_loader constructed Config dict
+
+    :return: A Keras model instance as the encoder
+    """
+
     width = config['images']['width']
     height = config['images']['height']
     channels = config['images']['channels']
