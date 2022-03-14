@@ -4,19 +4,33 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
+# progress bar
 tqdm = "*"
+# resilient http calls in scraper
 retry = "*"
+# scraper html parser
 beautifulsoup4 = "*"
+# http scraper
 requests = "*"
+# ML model abstraction layer
 keras = "*"
+# Config loader
 pyyaml = "*"
+# ML model backend
 tensorflow = "*"
+# Image metadata
+pandas = "*"
 
 [dev-packages]
-mypy = "*"
+# Style checker
 flake8 = "*"
+# Type checker
+mypy = "*"
+# Typedefs for requests package
 types-requests = "*"
+# Typedefs for retry package
 types-retry = "*"
+# Typedefs for bs4 package
 types-beautifulsoup4 = "*"
 
 [requires]
