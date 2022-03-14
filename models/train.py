@@ -10,4 +10,3 @@ def train(config: Config) -> None:
     :return: None
     """
     pass
-
