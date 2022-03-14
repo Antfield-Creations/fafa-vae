@@ -26,7 +26,7 @@ def get_encoder(config: Config) -> Model:
     x = layers.Flatten()(x)
     x = layers.Dense(16, activation="relu")(x)
 
-    latent_dim = 2
+    latent_dim = config['models']['vae']['latent_dim']
     z_mean = layers.Dense(latent_dim, name="z_mean")(x)
     z_log_var = layers.Dense(latent_dim, name="z_log_var")(x)
     z = Sampling()((z_mean, z_log_var))
