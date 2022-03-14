@@ -1,6 +1,11 @@
 ---
 imgages:
   folder: /mnt/data/Projects/FAFA/img
+  # Scraper resume settings
+  scraper:
+    first_set: 1
+    last_set: 5159
+
   filter:
     exclude:
       - duo
