@@ -12,5 +12,9 @@ imgages:
       - swimsuit
       - stereoscopic
 
-checkpoint:
+checkpoints:
   folder: /mnt/data/Projects/FAFA/checkpoints
+
+models:
+  vae:
+    epochs: 60
