@@ -1,3 +1,4 @@
+from models.encoder import get_encoder
 from models.loaders import Config
 
 
@@ -9,4 +10,6 @@ def train(config: Config) -> None:
 
     :return: None
     """
-    pass
+
+    encoder = get_encoder(config)
+    encoder.summary()
