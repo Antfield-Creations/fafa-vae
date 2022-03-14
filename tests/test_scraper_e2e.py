@@ -10,7 +10,7 @@ from scraper import scraper
 class ScraperTestCase(unittest.TestCase):
     def test_scrape_set(self) -> None:
         with TemporaryDirectory() as temp_dir:
-            set_no = 1337
+            set_no = 5159
 
             config = load_config()
             config['images']['folder'] = temp_dir
@@ -26,4 +26,4 @@ class ScraperTestCase(unittest.TestCase):
                 self.assertTrue(isdir(test_set_dir))
 
                 dir_contents = os.listdir(test_set_dir)
-                self.assertEqual(len(dir_contents), 24)
+                self.assertEqual(len(dir_contents), 8)
