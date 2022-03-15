@@ -1,6 +1,7 @@
+import os.path
+
 from keras.optimizer_v2.adam import Adam
 
-from models.checkpoints import get_checkpoint_callback
 from models.decoder import get_decoder
 from models.encoder import get_encoder
 from models.loaders import Config, FAFADataGenerator, load_metadata
@@ -38,7 +39,9 @@ def train(config: Config) -> None:
     )
 
     # Checkpoints
-    checkpoint_callback = get_checkpoint_callback(config['models']['vae']['checkpoints']['folder'])
+    checkpoint_folder = config['models']['vae']['checkpoints']['folder']
 
-    history = vae.fit(data_generator, epochs=config['models']['vae']['epochs'], callbacks=[checkpoint_callback])
-    print(history)
+    for epoch in range(config['models']['vae']['epochs']):
+        history = vae.fit(data_generator, initial_epoch=epoch + 1)
+        vae.encoder.save(filepath=os.path.join(checkpoint_folder, f'encoder-epoch-{epoch + 1}'))
+        vae.decoder.save(filepath=os.path.join(checkpoint_folder, f'decoder-epoch-{epoch + 1}'))
