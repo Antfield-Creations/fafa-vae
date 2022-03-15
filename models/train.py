@@ -1,5 +1,6 @@
 from keras.optimizer_v2.adam import Adam
 
+from models.checkpoints import get_checkpoint_callback
 from models.decoder import get_decoder
 from models.encoder import get_encoder
 from models.loaders import Config, FAFADataGenerator, load_metadata
@@ -24,6 +25,7 @@ def train(config: Config) -> None:
     vae = VAE(encoder, decoder)
     vae.compile(optimizer=Adam())
 
+    # Input data specifics
     fafa_loader = FAFADataGenerator()
     img_folder = config['images']['folder']
     metadataframe = load_metadata(img_folder)
@@ -34,4 +36,9 @@ def train(config: Config) -> None:
         directory=img_folder,
         target_size=(config['images']['width'], config['images']['height'])
     )
-    vae.fit(data_generator, epochs=config['models']['vae']['epochs'])
+
+    # Checkpoints
+    checkpoint_callback = get_checkpoint_callback(config['models']['vae']['checkpoints']['folder'])
+
+    history = vae.fit(data_generator, epochs=config['models']['vae']['epochs'], callbacks=[checkpoint_callback])
+    print(history)
