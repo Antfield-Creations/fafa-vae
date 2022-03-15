@@ -11,7 +11,7 @@ from models.loaders import export_metadata, load_metadata
 
 
 class MetadataTestCase(unittest.TestCase):
-    def test_metadata_exporter(self):
+    def test_metadata_exporter(self) -> None:
         with TemporaryDirectory() as tempdir:
             shutil.copytree('tests/data', tempdir + '/data')
             export_metadata(tempdir)
@@ -28,7 +28,7 @@ class MetadataTestCase(unittest.TestCase):
                 self.assertIn('filename', metadata[0].keys())
                 self.assertIn('tags', metadata[0].keys())
 
-    def test_metadata_loader(self):
+    def test_metadata_loader(self) -> None:
         with TemporaryDirectory() as tempdir:
             shutil.copytree('tests/data', tempdir + '/data')
 
