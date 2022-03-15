@@ -29,4 +29,10 @@ def train(config: Config) -> None:
     metadataframe = load_metadata(img_folder)
 
     for epoch in range(config['models']['vae']['epochs']):
-        vae.fit(fafa_loader.flow_from_dataframe(dataframe=metadataframe, classes=None))
+        data_generator = fafa_loader.flow_from_dataframe(
+            dataframe=metadataframe,
+            class_mode=None,
+            directory=img_folder,
+            target_size=(config['images']['width'], config['images']['height'])
+        )
+        vae.fit(data_generator)
