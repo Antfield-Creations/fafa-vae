@@ -61,6 +61,7 @@ def harvest_set(pbar: tqdm, set_no: int, download_folder: str) -> None:
     # Validate OK response
     if not page.ok:
         logging.error(f'Skipped set {set_no}')
+        pbar.update()
         return
 
     soup = BeautifulSoup(page.text, features='html.parser')
@@ -69,6 +70,7 @@ def harvest_set(pbar: tqdm, set_no: int, download_folder: str) -> None:
     # Validate that the number of images for the set was advertised on the page
     if not hasattr(search_hint_tag, 'text') or search_hint_tag is None:
         logging.error(f'Set {set_no} had no list of images, skipping')
+        pbar.update()
         return
 
     # The number of photos in the set is in the text before the first space, after the comma
