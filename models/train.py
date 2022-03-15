@@ -25,7 +25,7 @@ def train(config: Config) -> None:
     vae.compile(optimizer=Adam())
 
     fafa_loader = FAFADataGenerator()
-    metadataframe = load_metadata(config)
+    metadataframe = load_metadata(config['images']['folder'])
 
     for epoch in range(config['models']['vae']['epochs']):
         vae.fit(fafa_loader.flow_from_dataframe(dataframe=metadataframe))
