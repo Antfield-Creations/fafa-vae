@@ -16,6 +16,7 @@ class VAEModelTestCase(unittest.TestCase):
             config = load_config()
             config['images']['folder'] = os.path.join(tempdir, 'img')
             config['checkpoints']['folder'] = os.path.join(tempdir, 'checkpoints')
+            config['models']['vae']['epochs'] = 2
 
             with self.subTest('It generates a checkpoint for a single epoch'):
                 train(config)
