@@ -20,8 +20,10 @@ pyyaml = "*"
 tensorflow = "*"
 # Image metadata
 pandas = "*"
-# Run-time image augmentation and loading
+# Run-time image loading
 pillow = "*"
+# Run-time image augmentation
+scipy = "*"
 
 [dev-packages]
 # Style checker
