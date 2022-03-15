@@ -42,6 +42,6 @@ def train(config: Config) -> None:
     checkpoint_folder = config['models']['vae']['checkpoints']['folder']
 
     for epoch in range(config['models']['vae']['epochs']):
-        history = vae.fit(data_generator, initial_epoch=epoch + 1)
+        vae.fit(data_generator, initial_epoch=epoch + 1)
         vae.encoder.save(filepath=os.path.join(checkpoint_folder, f'encoder-epoch-{epoch + 1}'))
         vae.decoder.save(filepath=os.path.join(checkpoint_folder, f'decoder-epoch-{epoch + 1}'))
