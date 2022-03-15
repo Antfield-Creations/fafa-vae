@@ -17,7 +17,8 @@ keras = "*"
 # Config loader
 pyyaml = "*"
 # ML model backend
-tensorflow = "*"
+# Due to bug https://github.com/tensorflow/tensorflow/issues/39906 other versions may not work
+tensorflow = "==2.6.3"
 # Image metadata
 pandas = "*"
 # Run-time image loading
