@@ -20,6 +20,8 @@ pyyaml = "*"
 tensorflow = "*"
 # Image metadata
 pandas = "*"
+# Run-time image augmentation and loading
+pillow = "*"
 
 [dev-packages]
 # Style checker
@@ -34,4 +36,4 @@ types-retry = "*"
 types-beautifulsoup4 = "*"
 
 [requires]
-python_version = "3.8"
+python_version = "3.9"
