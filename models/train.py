@@ -28,4 +28,4 @@ def train(config: Config) -> None:
     metadataframe = load_metadata(config['images']['folder'])
 
     for epoch in range(config['models']['vae']['epochs']):
-        vae.fit(fafa_loader.flow_from_dataframe(dataframe=metadataframe))
+        vae.fit(fafa_loader.flow_from_dataframe(dataframe=metadataframe, classes=None))
