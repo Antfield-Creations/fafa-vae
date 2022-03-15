@@ -15,11 +15,12 @@ class VAEModelTestCase(unittest.TestCase):
 
             config = load_config()
             config['images']['folder'] = os.path.join(tempdir, 'img')
-            config['models']['vae']['checkpoints']['folder'] = tempdir
+            config['models']['vae']['checkpoints']['folder'] = os.path.join(tempdir, 'checkpoints')
             num_epochs = 2
             config['models']['vae']['epochs'] = num_epochs
 
-            with self.subTest('It generates a checkpoint for a single epoch'):
+            with self.subTest('It generates a checkpoint for the decoder and an encoder for each epoch'):
                 train(config)
                 checkpoints = listdir(str(config['models']['vae']['checkpoints']['folder']))
-                self.assertEqual(len(checkpoints), num_epochs)
+                num_checkpoints = num_epochs * 2
+                self.assertEqual(len(checkpoints), num_checkpoints)
