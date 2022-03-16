@@ -36,6 +36,11 @@ def load_metadata(
         exclude_tags: Optional[List[str]] = None,
         include_tags: Optional[List[str]] = None) -> DataFrame:
 
+    if exclude_tags is None:
+        exclude_tags_set = set()
+    else:
+        exclude_tags_set = set(exclude_tags)
+
     metadata_path = os.path.join(img_folder, 'metadata.json')
 
     if not isfile(metadata_path):
@@ -43,11 +48,16 @@ def load_metadata(
 
     df = pandas.read_json(metadata_path)
 
+    # Validate that the exclusion an inclusion tags do not overlap
+    # If no include tags are given, anything is included and any exclusion tag may be applied
+    if include_tags is not None:
+        both = set(include_tags).intersection(exclude_tags_set)
+        if len(both) > 0:
+            raise ValueError(f'Tags "{both}" found in both included and excluded tags.')
+
     if include_tags is not None:
         mask = df.tags.apply(lambda tags: set(tags).intersection(set(include_tags)) != set())
         df = df[mask]
-    if exclude_tags is None:
-        exclude_tags = []
 
     return df
 

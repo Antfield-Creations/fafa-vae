@@ -41,3 +41,7 @@ class MetadataTestCase(unittest.TestCase):
                 df = load_metadata(tempdir, include_tags=['portrait'])
                 self.assertEqual(len(df), 1)
                 self.assertEqual(df.iloc[0].filename, 'data/blank-portrait.jpg')
+
+            with self.subTest('It raises a ValueError when the same tag is both included and excluded'):
+                with self.assertRaises(ValueError):
+                    df = load_metadata(tempdir, include_tags=['portrait'], exclude_tags=['portrait'])
