@@ -16,6 +16,10 @@ images:
       - stereoscopic
       - sportswear
       - underwear
+      - overweight
+      - chubby
+    # if "include" isn't specified, it includes all tags
+    include:
 
 models:
   vae:
