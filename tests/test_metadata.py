@@ -36,3 +36,8 @@ class MetadataTestCase(unittest.TestCase):
                 df = load_metadata(tempdir)
                 self.assertEqual(type(df), DataFrame)
                 self.assertEqual(len(df), 2)
+
+            with self.subTest('It filters the metadata on inclusive tags'):
+                df = load_metadata(tempdir, include_tags=['portrait'])
+                self.assertEqual(len(df), 1)
+                self.assertEqual(df.iloc[0].filename, 'data/blank-portrait.jpg')

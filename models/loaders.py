@@ -1,6 +1,7 @@
 import json
 import os.path
 from os.path import isfile
+from typing import List, Optional
 
 import pandas
 import yaml
@@ -30,13 +31,24 @@ class FAFADataGenerator(ImageDataGenerator):
         )
 
 
-def load_metadata(img_folder: str) -> DataFrame:
+def load_metadata(
+        img_folder: str,
+        exclude_tags: Optional[List[str]] = None,
+        include_tags: Optional[List[str]] = None) -> DataFrame:
+
     metadata_path = os.path.join(img_folder, 'metadata.json')
 
     if not isfile(metadata_path):
         export_metadata(img_folder)
 
     df = pandas.read_json(metadata_path)
+
+    if include_tags is not None:
+        mask = df.tags.apply(lambda tags: set(tags).intersection(set(include_tags)) != set())
+        df = df[mask]
+    if exclude_tags is None:
+        exclude_tags = []
+
     return df
 
 
