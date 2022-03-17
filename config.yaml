@@ -27,6 +27,7 @@ images:
       - overweight
       - chubby
       - grey
+      - darja  # untagged underwear
       - set_98
       - set_110
       - set_113
@@ -37,6 +38,12 @@ images:
       - set_218  # untagged drape
       - set_224  # untagged shawls
       - set_238  # untagged drape
+      - set_259  # untagged drape
+      - set_261  # untagged pillow
+      - set_265  # untagged drape
+      - set_275  # untagged drape
+      - set_289  # untagged drape
+      - set_299  # untagged drape
     # if no values under "include" are specified, it includes all tags
     include:
 
