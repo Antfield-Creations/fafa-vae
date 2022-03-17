@@ -82,6 +82,11 @@ def export_metadata(img_folder: str) -> None:
 
             file_base = os.path.splitext(file)[0]
             tags = file_base.split('-')
+            # Drop the size designator from the last tag
+            tags[-1].strip('_640v640')
+            # Add the set id as tag
+            tags.append(f'set_{img_folder}')
+
             metadata.append({
                 'filename': os.path.join(relative_path, file),
                 'tags': tags
