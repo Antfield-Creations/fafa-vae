@@ -12,13 +12,32 @@ images:
   filter:
     exclude:
       - duo
+      - detailed
+      - holding
+      - gun
+      - sword
+      - spear
       - swimsuit
+      - drape
+      - casual
+      - business
       - stereoscopic
       - sportswear
       - underwear
       - overweight
       - chubby
-    # if "include" isn't specified, it includes all tags
+      - grey
+      - set_98
+      - set_110
+      - set_113
+      - set_117
+      - set_126  # orientation incorrect
+      - set_136
+      - set_168  # untagged blue chair
+      - set_218  # untagged drape
+      - set_224  # untagged shawls
+      - set_238  # untagged drape
+    # if no values under "include" are specified, it includes all tags
     include:
 
 models:
