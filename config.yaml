@@ -45,6 +45,8 @@ images:
       - set_275  # untagged drape
       - set_289  # untagged drape
       - set_299  # untagged drape
+      - set_325  # untagged ball
+      - set_458  # untagged drape
     # if no values under "include" are specified, it includes all tags
     include:
 
