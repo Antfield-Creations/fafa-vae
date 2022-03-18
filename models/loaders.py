@@ -57,9 +57,9 @@ def load_metadata(
         if len(both) > 0:
             raise ValueError(f'Tags "{both}" found in both included and excluded tags.')
 
-    if include_tags is not None:
         # The mask returns true for each record where the picture tags have any overlap with the inclusion tags
-        mask = df.tags.apply(lambda tags: set(tags).intersection(set(include_tags)) != set())
+        include_tags_set = set(include_tags)
+        mask = df.tags.apply(lambda tags: set(tags).intersection(include_tags_set) != set())
         df = df[mask]
 
     if exclude_tags_set != set():
