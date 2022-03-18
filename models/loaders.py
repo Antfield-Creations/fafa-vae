@@ -1,10 +1,12 @@
 import json
+import logging
 import os.path
 from os.path import isfile
 from typing import List, Optional
 
 import pandas
 import yaml
+from PIL import Image
 
 from keras_preprocessing.image import ImageDataGenerator
 
@@ -87,9 +89,19 @@ def export_metadata(img_folder: str) -> None:
             # Add the set id as tag
             tags.append(relative_path.replace('-', '_'))
 
+            # Image dimensions
+            img_path = os.path.join(root, file)
+            try:
+                img = Image.open(img_path)
+            except Exception as e:
+                logging.error(f"Couldn't load image at {img_path}: {e}, skipping")
+                continue
+
             metadata.append({
                 'filename': os.path.join(relative_path, file),
-                'tags': tags
+                'tags': tags,
+                'width': img.width,
+                'height': img.height,
             })
 
     with open(export_path, 'wt') as f:
