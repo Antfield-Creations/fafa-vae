@@ -30,23 +30,28 @@ class MetadataTestCase(unittest.TestCase):
 
     def test_metadata_loader(self) -> None:
         with TemporaryDirectory() as tempdir:
-            shutil.copytree('tests/data', tempdir + '/data')
+            img_root_dir = tempdir + '/img'
+            shutil.copytree('tests/data', img_root_dir + '/set-1/')
 
             with self.subTest('It loads the metadata from a fresh folder without metadata.json'):
-                df = load_metadata(tempdir)
+                df = load_metadata(img_root_dir)
                 self.assertEqual(type(df), DataFrame)
                 self.assertEqual(len(df), 2)
 
             with self.subTest('It filters the metadata on inclusive tags'):
-                df = load_metadata(tempdir, include_tags=['portrait'])
+                df = load_metadata(img_root_dir, include_tags=['portrait'])
                 self.assertEqual(len(df), 1)
-                self.assertEqual(df.iloc[0].filename, 'data/blank-portrait.jpg')
+                self.assertEqual(df.iloc[0].filename, 'set-1/blank-portrait.jpg')
 
             with self.subTest('It raises a ValueError when the same tag is both included and excluded'):
                 with self.assertRaises(ValueError):
-                    load_metadata(tempdir, include_tags=['portrait'], exclude_tags=['portrait'])
+                    load_metadata(img_root_dir, include_tags=['portrait'], exclude_tags=['portrait'])
 
             with self.subTest('It excludes the portrait picture'):
-                df = load_metadata(tempdir, exclude_tags=['portrait'])
+                df = load_metadata(img_root_dir, exclude_tags=['portrait'])
                 self.assertEqual(len(df), 1)
-                self.assertEqual(df.iloc[0].filename, 'data/blank-landscape.jpg')
+                self.assertEqual(df.iloc[0].filename, 'set-1/blank-landscape.jpg')
+
+            with self.subTest('It includes the folder as set tag'):
+                df = load_metadata(img_root_dir)
+                self.assertIn('set_1', df.iloc[0].tags)

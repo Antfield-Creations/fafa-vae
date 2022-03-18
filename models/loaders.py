@@ -70,14 +70,14 @@ def load_metadata(
 
 def export_metadata(img_folder: str) -> None:
     metadata = []
-    file_filter = '.jpg'
+    file_type = '.jpg'
     export_path = os.path.join(img_folder, 'metadata.json')
 
     for root, dirs, files in os.walk(img_folder):
         relative_path = os.path.relpath(root, img_folder)
 
         for file in files:
-            if file_filter not in file:
+            if file_type not in file:
                 continue
 
             file_base = os.path.splitext(file)[0]
@@ -85,7 +85,7 @@ def export_metadata(img_folder: str) -> None:
             # Drop the size designator from the last tag
             tags[-1].strip('_640v640')
             # Add the set id as tag
-            tags.append(f'set_{img_folder}')
+            tags.append(relative_path.replace('-', '_'))
 
             metadata.append({
                 'filename': os.path.join(relative_path, file),
