@@ -13,8 +13,8 @@ if __name__ == '__main__':
     known_modes = ['scrape', 'train', 'encode', 'decode']
 
     argparser = ArgumentParser(description='Training script for FAFA variational autoencoder')
-    argparser.add_argument('-c' '--config', help='Path to the config.yaml file', default='config.yaml')
-    argparser.add_argument('-m' '--mode', help=f'Mode, one of "{known_modes}"', required=True)
+    argparser.add_argument('-c', '--config', help='Path to the config.yaml file', default='config.yaml')
+    argparser.add_argument('-m', '--mode', help=f'Mode, one of "{known_modes}"', required=True)
     args = argparser.parse_args()
 
     config = load_config()
