@@ -50,6 +50,14 @@ images:
       - set_538  # untagged picture frame attribute
       - set_559  # untagged picture frame attribute
       - set_639  # untagged box attribute
+      - set_707  # untagged picture frame attribute
+      - set_777  # untagged hat attribute
+      - set_878  # untagged swimsuit attribute
+      - set_898  # untagged gun attribute
+      - set_910  # untagged towel attribute
+      - set_923  # untagged hat attribute
+      - set_951  # untagged umbrella attribute
+      - set_962  # untagged drape attribute
     # if no values under "include" are specified, it includes all tags
     include:
 
