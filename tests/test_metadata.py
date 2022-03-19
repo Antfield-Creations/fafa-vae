@@ -54,7 +54,8 @@ class MetadataTestCase(unittest.TestCase):
             with self.subTest('It excludes the portrait picture'):
                 df = load_metadata(img_root_dir, exclude_tags=['portrait'])
                 self.assertEqual(len(df), 1)
-                self.assertEqual(df.iloc[0].filename, 'set-1/blank-landscape.jpg')
+                self.assertEqual(df.iloc[0].filename, 'set-1/blank-landscape_640v640.jpg')
+                self.assertSetEqual(df.iloc[0].tags, {'blank', 'landscape', 'set_1'})
 
             with self.subTest('It includes the folder as set tag'):
                 df = load_metadata(img_root_dir)
