@@ -1,6 +1,7 @@
 import json
 import logging
 import os.path
+from functools import lru_cache
 from os.path import isfile
 from typing import List, Optional
 
@@ -10,7 +11,7 @@ from PIL import Image
 
 from keras_preprocessing.image import ImageDataGenerator
 
-from pandas import DataFrame
+from pandas import DataFrame, Series
 
 # Type alias for config type
 from tqdm import tqdm
@@ -40,33 +41,46 @@ def load_metadata(
         exclude_tags: Optional[List[str]] = None,
         include_tags: Optional[List[str]] = None) -> DataFrame:
 
+    img_folder = os.path.expanduser(img_folder)
+    metadata_path = os.path.join(img_folder, 'metadata.json')
+
     if exclude_tags is None:
         exclude_tags_set = set()
     else:
         exclude_tags_set = set(exclude_tags)
 
-    metadata_path = os.path.join(img_folder, 'metadata.json')
-
     if not isfile(metadata_path):
         export_metadata(img_folder)
 
     df = pandas.read_json(metadata_path)
+    # Convert tags to immutabel in order to be able to hash it. The filter application requires this
+    df['tags'] = df['tags'].apply(lambda tags: frozenset(tags))
 
     # Validate that the exclusion an inclusion tags do not overlap
     # If no include tags are given, anything is included and any exclusion tag may be applied
     if include_tags is not None:
-        both = set(include_tags).intersection(exclude_tags_set)
+        # The mask returns true for each record where the picture tags have any overlap with the inclusion tags
+        include_tags_set = set(include_tags)
+        both = include_tags_set.intersection(exclude_tags_set)
         if len(both) > 0:
             raise ValueError(f'Tags "{both}" found in both included and excluded tags.')
 
-        # The mask returns true for each record where the picture tags have any overlap with the inclusion tags
-        include_tags_set = set(include_tags)
-        mask = df.tags.apply(lambda tags: set(tags).intersection(include_tags_set) != set())
+        @lru_cache
+        def tag_includer(tags) -> bool:
+            has_tags = tags.intersection(include_tags_set) != set()
+            return has_tags
+
+        mask = df['tags'].apply(tag_includer)
         df = df[mask]
 
     if exclude_tags_set != set():
+        @lru_cache
+        def tag_excluder(tags) -> bool:
+            no_matches = tags.intersection(exclude_tags_set) == set()
+            return no_matches
+
         # The mask returns true for each record where the picture tags have no overlap with the exclusion tags
-        mask = df.tags.apply(lambda tags: set(tags).intersection(exclude_tags_set) == set())
+        mask = df['tags'].apply(tag_excluder)
         df = df[mask]
 
     return df
