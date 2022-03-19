@@ -12,9 +12,11 @@ images:
   filter:
     exclude:
       - duo
+      - women
       - detailed
       - distortion
       - holding
+      - fighting
       - gun
       - sword
       - spear
@@ -23,6 +25,7 @@ images:
       - drape
       - casual
       - business
+      - xmas
       - stereoscopic
       - sportswear
       - underwear
@@ -58,6 +61,8 @@ images:
       - set_923  # untagged hat attribute
       - set_951  # untagged umbrella attribute
       - set_962  # untagged drape attribute
+      - set_1069  # untagged hat attribute
+      - set_1096  # untagged hat attribute
     # if no values under "include" are specified, it includes all tags
     include:
 
