@@ -13,6 +13,7 @@ images:
     exclude:
       - duo
       - detailed
+      - distortion
       - holding
       - gun
       - sword
@@ -28,25 +29,27 @@ images:
       - overweight
       - chubby
       - grey
-      - darja  # untagged underwear
       - set_98
       - set_110
       - set_113
       - set_117
       - set_126  # orientation incorrect
       - set_136
-      - set_168  # untagged blue chair
-      - set_218  # untagged drape
-      - set_224  # untagged shawls
-      - set_238  # untagged drape
-      - set_259  # untagged drape
-      - set_261  # untagged pillow
-      - set_265  # untagged drape
-      - set_275  # untagged drape
-      - set_289  # untagged drape
-      - set_299  # untagged drape
-      - set_325  # untagged ball
-      - set_458  # untagged drape
+      - set_168  # untagged blue chair attribute
+      - set_218  # untagged drape attribute
+      - set_224  # untagged shawl attributes
+      - set_238  # untagged drape attribute
+      - set_259  # untagged drape attribute
+      - set_261  # untagged pillow attribute
+      - set_265  # untagged drape attribute
+      - set_275  # untagged drape attribute
+      - set_289  # untagged drape attribute
+      - set_299  # untagged drape attribute
+      - set_325  # untagged ball attribute
+      - set_458  # untagged drape attribute
+      - set_538  # untagged picture frame attribute
+      - set_559  # untagged picture frame attribute
+      - set_639  # untagged box attribute
     # if no values under "include" are specified, it includes all tags
     include:
 
