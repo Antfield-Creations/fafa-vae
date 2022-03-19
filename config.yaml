@@ -3,7 +3,7 @@ images:
   width: 640
   height: 640
   channels: 3
-  folder: /mnt/data/Projects/FAFA/img
+  folder: ~/Downloads/FAFA/img
   # Scraper resume settings
   scraper:
     first_set: 1

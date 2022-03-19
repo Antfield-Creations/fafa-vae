@@ -75,6 +75,7 @@ def load_metadata(
 def export_metadata(img_folder: str) -> None:
     metadata = []
     file_type = '.jpg'
+    img_folder = os.path.expanduser(img_folder)
     export_path = os.path.join(img_folder, 'metadata.json')
 
     # Force dir recursion into a list so that we can show a progressbar
