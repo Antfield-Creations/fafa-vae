@@ -113,3 +113,5 @@ def export_metadata(img_folder: str) -> None:
 
     with open(export_path, 'wt') as f:
         f.write(json.dumps(metadata, indent=2))
+
+    logging.info(f'Finished writing metadata to {export_path}')
