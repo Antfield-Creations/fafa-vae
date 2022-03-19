@@ -63,7 +63,7 @@ def load_metadata(
             raise ValueError(f'Tags "{both}" found in both included and excluded tags.')
 
         @lru_cache
-        def tag_includer(tags) -> bool:
+        def tag_includer(tags: frozenset) -> bool:
             has_tags = tags.intersection(include_tags_set) != set()
             return has_tags
 
@@ -72,7 +72,7 @@ def load_metadata(
 
     if exclude_tags_set != set():
         @lru_cache
-        def tag_excluder(tags) -> bool:
+        def tag_excluder(tags: frozenset) -> bool:
             no_matches = tags.intersection(exclude_tags_set) == set()
             return no_matches
 
@@ -84,7 +84,6 @@ def load_metadata(
 
 
 def export_metadata(img_folder: str) -> None:
-    metadata = []
     file_type = '.jpg'
     img_folder = os.path.expanduser(img_folder)
     export_path = os.path.join(img_folder, 'metadata.json')
@@ -93,6 +92,7 @@ def export_metadata(img_folder: str) -> None:
     logging.info(f'Creating image index for {img_folder}...')
     dirlist = list(os.walk(img_folder))
 
+    metadata = []
     for root, dirs, files in tqdm(dirlist):
         relative_path = os.path.relpath(root, img_folder)
 
