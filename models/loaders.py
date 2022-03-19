@@ -13,6 +13,8 @@ from keras_preprocessing.image import ImageDataGenerator
 from pandas import DataFrame
 
 # Type alias for config type
+from tqdm import tqdm
+
 Config = dict
 
 
@@ -75,7 +77,11 @@ def export_metadata(img_folder: str) -> None:
     file_type = '.jpg'
     export_path = os.path.join(img_folder, 'metadata.json')
 
-    for root, dirs, files in os.walk(img_folder):
+    # Force dir recursion into a list so that we can show a progressbar
+    logging.info(f'Creating image index for {img_folder}...')
+    dirlist = list(os.walk(img_folder))
+
+    for root, dirs, files in tqdm(dirlist):
         relative_path = os.path.relpath(root, img_folder)
 
         for file in files:
