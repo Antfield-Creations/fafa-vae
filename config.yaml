@@ -1,4 +1,17 @@
 ---
+models:
+  vae:
+    checkpoints:
+      folder: /mnt/data/Projects/FAFA/checkpoints
+
+    latent_dim: 2
+    batch_size: 24
+    epochs: 60
+
+    conv2d:
+      - filters: 32
+      - filters: 64
+
 images:
   width: 640
   height: 640
@@ -10,12 +23,16 @@ images:
     last_set: 5159
 
   filter:
+    # if no values under "include" are specified, it includes all tags
+    include:
+
     exclude:
       - duo
       - women  # generic tag for multiple person poses
       - detailed
       - distortion
       - holding
+      - activities
       - fighting
       - gun
       - sword
@@ -32,6 +49,8 @@ images:
       - overweight
       - chubby
       - grey
+      - henrieta # untagged tattoos
+      - alexej   # male
       - set_98
       - set_110
       - set_113
@@ -102,18 +121,50 @@ images:
 #      - set_1672  # untagged chair
 #      - set_1673  # untagged chair
 #      - set_1698  # untagged shoes
-    # if no values under "include" are specified, it includes all tags
-    include:
-
-models:
-  vae:
-    checkpoints:
-      folder: /mnt/data/Projects/FAFA/checkpoints
-
-    latent_dim: 2
-    batch_size: 24
-    epochs: 60
-
-    conv2d:
-      - filters: 32
-      - filters: 64
+#      - set_1761  # untagged chair
+      - set_1762  # untagged hat attribute
+#      - set_1764  # untagged shoes
+#      - set_1765  # untagged drape
+      - set_1786  # untagged umbrella
+      - set_1797  # man
+#      - set_1807  # untagged chair
+#      - set_1815  # untagged chair, shoes
+#      - set_1823  # untagged chair
+#      - set_1850  # untagged chair
+#      - set_1854  # untagged hat
+#      - set_1864  # untagged chair, shoes
+#      - set_1865  # untagged hat
+      - set_1877  # male
+      - set_1895  # untagged drape
+      - set_1931  # male
+#      - set_1934  # untagged chair
+#      - set_1949  # untagged shoes
+#      - set_1950  # untagged shoes, chair
+#      - set_1965  # untagged chair
+      - set_1966  # untagged slab attribute
+#      - set_1970  # untagged necklace attribute
+#      - set_1980  # untagged chair
+#      - set_1981  # untagged chair
+#      - set_1989  # untagged chair
+      - set_1992  # untagged hat attribute
+#      - set_2005  # untagged chair
+#      - set_2046  # untagged shoes
+      - set_2048  # untagged slab attribute
+      - set_2052  # untagged umbrella attribute
+      - set_2054  # untagged underwear
+      - set_2057  # male
+#      - set_2077  # untagged chair
+      - set_2102  # untagged hat
+#      - set_2109  # untagged shoes, chair
+#      - set_2115  # untagged chair
+      - set_2130  # untagged hat
+#      - set_2132  # untagged shoes
+      - set_2141  # untagged umbrella attribute
+#      - set_2149  # untagged chair
+#      - set_2190  # untagged chair
+#      - set_2202  # untagged chair
+#      - set_2252  # untagged chair
+#      - set_2262  # untagged chair
+#      - set_2266  # untagged shoes
+#      - set_2426  # untagged chair
+      - set_2438  # untagged drape
