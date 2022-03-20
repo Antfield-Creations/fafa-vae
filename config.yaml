@@ -12,7 +12,7 @@ images:
   filter:
     exclude:
       - duo
-      - women
+      - women  # generic tag for multiple person poses
       - detailed
       - distortion
       - holding
@@ -36,33 +36,72 @@ images:
       - set_110
       - set_113
       - set_117
-      - set_126  # orientation incorrect
+      - set_126   # orientation incorrect
       - set_136
-      - set_168  # untagged blue chair attribute
-      - set_218  # untagged drape attribute
-      - set_224  # untagged shawl attributes
-      - set_238  # untagged drape attribute
-      - set_259  # untagged drape attribute
-      - set_261  # untagged pillow attribute
-      - set_265  # untagged drape attribute
-      - set_275  # untagged drape attribute
-      - set_289  # untagged drape attribute
-      - set_299  # untagged drape attribute
-      - set_325  # untagged ball attribute
-      - set_458  # untagged drape attribute
-      - set_538  # untagged picture frame attribute
-      - set_559  # untagged picture frame attribute
-      - set_639  # untagged box attribute
-      - set_707  # untagged picture frame attribute
-      - set_777  # untagged hat attribute
-      - set_878  # untagged swimsuit attribute
-      - set_898  # untagged gun attribute
-      - set_910  # untagged towel attribute
-      - set_923  # untagged hat attribute
-      - set_951  # untagged umbrella attribute
-      - set_962  # untagged drape attribute
+      - set_168   # untagged blue chair attribute
+      - set_218   # untagged drape attribute
+      - set_224   # untagged shawl attributes
+      - set_238   # untagged drape attribute
+      - set_259   # untagged drape attribute
+      - set_261   # untagged pillow attribute
+      - set_265   # untagged drape attribute
+      - set_275   # untagged drape attribute
+      - set_289   # untagged drape attribute
+      - set_299   # untagged drape attribute
+      - set_325   # untagged ball attribute
+      - set_458   # untagged drape attribute
+      - set_538   # untagged picture frame attribute
+      - set_559   # untagged picture frame attribute
+      - set_639   # untagged box attribute
+      - set_707   # untagged picture frame attribute
+      - set_777   # untagged hat attribute
+      - set_878   # untagged swimsuit attribute
+      - set_898   # untagged gun attribute
+      - set_910   # untagged towel attribute
+      - set_923   # untagged hat attribute
+      - set_951   # untagged umbrella attribute
+      - set_962   # untagged drape attribute
       - set_1069  # untagged hat attribute
       - set_1096  # untagged hat attribute
+      - set_1145  # untagged book attribute
+      - set_1149  # untagged hat attribute
+      - set_1154  # untagged hat attribute
+      - set_1159  # untagged bottle attribute
+      - set_1172  # untagged binoculars attribute
+      - set_1192  # untagged bottle attribute
+      - set_1213  # untagged hat attribute
+      - set_1244  # untagged hat attribute
+      - set_1248  # untagged book attribute
+      - set_1268  # untagged hat attribute
+      - set_1274  # untagged ball attribute
+      - set_1311  # untagged ball attribute
+      - set_1329  # untagged hat attribute
+      - set_1336  # untagged umbrella attribute
+      - set_1347  # untagged hat attribute
+      - set_1410  # untagged flowers attribute
+      - set_1416  # untagged melon attribute
+      - set_1433  # untagged sunglasses attribute
+      - set_1441  # untagged underwear attribute
+      - set_1453  # untagged hat attribute
+#      - set_1465  # untagged chair
+#      - set_1485  # untagged chair
+#      - set_1503  # untagged shoes
+#      - set_1507  # untagged chair
+#      - set_1509  # untagged chair
+      - set_1511  # untagged drape
+#      - set_1540  # untagged chair
+#      - set_1542  # untagged shoes, chair
+      - set_1547  # untagged underwear
+#      - set_1549  # untagged chair
+#      - set_1577  # untagged shoes
+#      - set_1584  # untagged shoes
+#      - set_1613  # untagged chair
+#      - set_1615  # untagged chair
+#      - set_1627  # untagged chair
+      - set_1630  # untagged hat attribute
+#      - set_1672  # untagged chair
+#      - set_1673  # untagged chair
+#      - set_1698  # untagged shoes
     # if no values under "include" are specified, it includes all tags
     include:
 
