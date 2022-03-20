@@ -29,14 +29,14 @@ def train(config: Config) -> None:
     # Input data specifics
     fafa_loader = FAFADataGenerator()
     img_folder = config['images']['folder']
-    metadataframe = load_metadata(
+    img_metadata = load_metadata(
         img_folder=img_folder,
         include_tags=config['images']['filter']['include'],
         exclude_tags=config['images']['filter']['exclude'],
     )
 
     data_generator = fafa_loader.flow_from_dataframe(
-        dataframe=metadataframe,
+        dataframe=img_metadata,
         class_mode=None,
         directory=img_folder,
         target_size=(config['images']['width'], config['images']['height'])
