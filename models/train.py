@@ -42,6 +42,9 @@ def train(config: Config) -> None:
         target_size=(config['images']['width'], config['images']['height'])
     )
 
+    for _ in range(100):
+        fafa_loader.fit(data_generator.next())
+
     # Checkpoints
     checkpoint_folder = config['models']['vae']['checkpoints']['folder']
 
