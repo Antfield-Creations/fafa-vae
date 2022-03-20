@@ -37,6 +37,7 @@ types-requests = "*"
 types-retry = "*"
 # Typedefs for bs4 package
 types-beautifulsoup4 = "*"
+yamllint = "*"
 
 [requires]
 python_version = "3.9"

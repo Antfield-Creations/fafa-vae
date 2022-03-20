@@ -1,3 +1,4 @@
+---
 name: Test
 
 on: push
@@ -20,10 +21,12 @@ jobs:
         run: pipenv install --dev
 
       - name: Run type checks
-        run:  pipenv run mypy .
+        run: pipenv run mypy .
 
       - name: Run style checks
-        run:  pipenv run flake8 .
+        run: |
+          pipenv run flake8 .
+          yamllint .
 
       - name: Run tests
-        run:  pipenv run python -m unittest discover .
+        run: pipenv run python -m unittest discover .
