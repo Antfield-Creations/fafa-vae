@@ -124,6 +124,7 @@ def export_metadata(img_folder: str) -> None:
                 'width': img.width,
                 'height': img.height,
             })
+            img.close()
 
     with open(export_path, 'wt') as f:
         f.write(json.dumps(metadata, indent=2))
