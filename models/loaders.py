@@ -56,7 +56,7 @@ def load_metadata(
     # Validate that the exclusion an inclusion tags do not overlap
     # If no include tags are given, anything is included and any exclusion tag may be applied
     if include_tags is not None:
-        # The mask returns true for each record where the picture tags have any overlap with the inclusion tags
+        logging.info("Filtering include tags...")
         include_tags_set = set(include_tags)
         both = include_tags_set.intersection(exclude_tags_set)
         if len(both) > 0:
@@ -64,6 +64,7 @@ def load_metadata(
 
         @lru_cache
         def tag_includer(tags: frozenset) -> bool:
+            # The mask returns true for each record where the picture tags have any overlap with the inclusion tags
             has_tags = tags.intersection(include_tags_set) != set()
             return has_tags
 
@@ -71,6 +72,8 @@ def load_metadata(
         df = df[mask]
 
     if exclude_tags_set != set():
+        logging.info("Filtering exclude tags...")
+
         @lru_cache
         def tag_excluder(tags: frozenset) -> bool:
             no_matches = tags.intersection(exclude_tags_set) == set()
