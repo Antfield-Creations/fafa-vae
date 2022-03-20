@@ -1,3 +1,4 @@
+import logging
 import os.path
 
 from keras.optimizer_v2.adam import Adam
@@ -44,6 +45,9 @@ def train(config: Config) -> None:
 
     for _ in range(100):
         fafa_loader.fit(data_generator.next())
+
+    logging.info(f'Image preprocessor featurewise: std {fafa_loader.std}')
+    logging.info(f'Image preprocessor featurewise: mean {fafa_loader.mean}')
 
     # Checkpoints
     checkpoint_folder = config['models']['vae']['checkpoints']['folder']

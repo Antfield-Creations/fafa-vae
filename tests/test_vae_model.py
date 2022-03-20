@@ -1,3 +1,4 @@
+import logging
 import os.path
 import shutil
 import unittest
@@ -6,6 +7,8 @@ from tempfile import TemporaryDirectory
 
 from models.loaders import load_config
 from models.train import train
+
+logging.basicConfig(format='%(asctime)s - %(message)s', level=logging.INFO)
 
 
 class VAEModelTestCase(unittest.TestCase):

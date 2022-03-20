@@ -9,6 +9,8 @@ from models.loaders import load_config, load_metadata, export_metadata
 from models.train import train
 from scraper.scraper import scrape
 
+logging.basicConfig(format='%(asctime)s - %(message)s', level=logging.DEBUG)
+
 if __name__ == '__main__':
     known_modes = ['scrape', 'index', 'train', 'encode', 'decode']
 
