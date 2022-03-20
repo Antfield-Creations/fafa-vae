@@ -50,6 +50,7 @@ images:
       - chubby
       - grey
       - henrieta  # untagged tattoos
+      - june      # untagged tattoos
       - alexej    # male
       - set_98
       - set_110
@@ -102,69 +103,74 @@ images:
       - set_1433  # untagged sunglasses attribute
       - set_1441  # untagged underwear attribute
       - set_1453  # untagged hat attribute
-#      - set_1465  # untagged chair
-#      - set_1485  # untagged chair
-#      - set_1503  # untagged shoes
-#      - set_1507  # untagged chair
-#      - set_1509  # untagged chair
+      # - set_1465  # untagged chair
+      # - set_1485  # untagged chair
+      # - set_1503  # untagged shoes
+      # - set_1507  # untagged chair
+      # - set_1509  # untagged chair
       - set_1511  # untagged drape
-#      - set_1540  # untagged chair
-#      - set_1542  # untagged shoes, chair
+      # - set_1540  # untagged chair
+      # - set_1542  # untagged shoes, chair
       - set_1547  # untagged underwear
-#      - set_1549  # untagged chair
-#      - set_1577  # untagged shoes
-#      - set_1584  # untagged shoes
-#      - set_1613  # untagged chair
-#      - set_1615  # untagged chair
-#      - set_1627  # untagged chair
+      # - set_1549  # untagged chair
+      # - set_1577  # untagged shoes
+      # - set_1584  # untagged shoes
+      # - set_1613  # untagged chair
+      # - set_1615  # untagged chair
+      # - set_1627  # untagged chair
       - set_1630  # untagged hat attribute
-#      - set_1672  # untagged chair
-#      - set_1673  # untagged chair
-#      - set_1698  # untagged shoes
-#      - set_1761  # untagged chair
+      # - set_1672  # untagged chair
+      # - set_1673  # untagged chair
+      # - set_1698  # untagged shoes
+      # - set_1761  # untagged chair
       - set_1762  # untagged hat attribute
-#      - set_1764  # untagged shoes
-#      - set_1765  # untagged drape
+      # - set_1764  # untagged shoes
+      # - set_1765  # untagged drape
       - set_1786  # untagged umbrella
       - set_1797  # man
-#      - set_1807  # untagged chair
-#      - set_1815  # untagged chair, shoes
-#      - set_1823  # untagged chair
-#      - set_1850  # untagged chair
-#      - set_1854  # untagged hat
-#      - set_1864  # untagged chair, shoes
-#      - set_1865  # untagged hat
+      # - set_1807  # untagged chair
+      # - set_1815  # untagged chair, shoes
+      # - set_1823  # untagged chair
+      # - set_1850  # untagged chair
+      # - set_1854  # untagged hat
+      # - set_1864  # untagged chair, shoes
+      # - set_1865  # untagged hat
       - set_1877  # male
       - set_1895  # untagged drape
       - set_1931  # male
-#      - set_1934  # untagged chair
-#      - set_1949  # untagged shoes
-#      - set_1950  # untagged shoes, chair
-#      - set_1965  # untagged chair
+      # - set_1934  # untagged chair
+      # - set_1949  # untagged shoes
+      # - set_1950  # untagged shoes, chair
+      # - set_1965  # untagged chair
       - set_1966  # untagged slab attribute
-#      - set_1970  # untagged necklace attribute
-#      - set_1980  # untagged chair
-#      - set_1981  # untagged chair
-#      - set_1989  # untagged chair
+      # - set_1970  # untagged necklace attribute
+      # - set_1980  # untagged chair
+      # - set_1981  # untagged chair
+      # - set_1989  # untagged chair
       - set_1992  # untagged hat attribute
-#      - set_2005  # untagged chair
-#      - set_2046  # untagged shoes
+      # - set_2005  # untagged chair
+      # - set_2046  # untagged shoes
       - set_2048  # untagged slab attribute
       - set_2052  # untagged umbrella attribute
       - set_2054  # untagged underwear
       - set_2057  # male
-#      - set_2077  # untagged chair
+      # - set_2077  # untagged chair
       - set_2102  # untagged hat
-#      - set_2109  # untagged shoes, chair
-#      - set_2115  # untagged chair
+      # - set_2109  # untagged shoes, chair
+      # - set_2115  # untagged chair
       - set_2130  # untagged hat
-#      - set_2132  # untagged shoes
+      # - set_2132  # untagged shoes
       - set_2141  # untagged umbrella attribute
-#      - set_2149  # untagged chair
-#      - set_2190  # untagged chair
-#      - set_2202  # untagged chair
-#      - set_2252  # untagged chair
-#      - set_2262  # untagged chair
-#      - set_2266  # untagged shoes
-#      - set_2426  # untagged chair
+      # - set_2149  # untagged chair
+      # - set_2190  # untagged chair
+      # - set_2202  # untagged chair
+      # - set_2252  # untagged chair
+      # - set_2262  # untagged chair
+      # - set_2266  # untagged shoes
+      # - set_2426  # untagged chair
       - set_2438  # untagged drape
+      # - set_2474  # untagged chair
+      - set_2478  # untagged greyscale
+      - set_2570  # untagged drape
+      # - set_2582  # untagged shoes
+      # - set_2618  # untagged shoes
