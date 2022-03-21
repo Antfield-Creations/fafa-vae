@@ -19,9 +19,13 @@ def train(config: Config) -> None:
     """
 
     encoder = get_encoder(config)
+    # Compile the encoder separately to get rid of uncompiled metrics warnings
+    # See also: https://stackoverflow.com/questions/67970389
+    encoder.compile(optimizer=Adam())
     encoder.summary()
 
     decoder = get_decoder(config)
+    decoder.compile(optimizer=Adam())
     decoder.summary()
 
     vae = VAE(encoder, decoder)
