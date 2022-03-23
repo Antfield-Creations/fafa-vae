@@ -53,6 +53,7 @@ images:
       - june      # untagged tattoos
       - billie    # untagged tattoos
       - rosemary  # untagged clothing
+      - fannie    # untagged underwear
       - alexej    # male
       - set_98
       - set_110
@@ -214,3 +215,166 @@ images:
       # - set_3869  # untagged chair
       # - set_3961  # untagged chair
       - set_4015  # untagged duo
+      # - set_4029  # untagged shoes
+      - set_4063  # untagged duo
+      # - set_4095  # untagged chair
+      # - set_4103  # untagged shoes
+      # - set_4107  # untagged chair
+      # - set_4119  # untagged chair
+      - set_4129  # untagged underwear
+      # - set_4131  # untagged chair
+      - set_4161  # untagged duo
+      - set_4183  # untagged duo
+      # - set_4185  # untagged black background
+      # - set_4193  # untagged chair
+      - set_4209  # untagged duo
+      # - set_4217  # untagged black background
+      # - set_4219  # untagged black background
+      # - set_4221  # untagged shoes
+      # - set_4227  # untagged black background
+      # - set_4233  # untagged shoes
+      # - set_4235  # untagged black background
+      # - set_4246  # untagged black background
+      # - set_4247  # untagged chair
+      # - set_4253  # untagged chair
+      # - set_4255  # untagged chair
+      - set_4266  # untagged duo
+      - set_4271  # untagged duo
+      - set_4278  # untagged underwear
+      # - set_4280  # untagged shoes
+      - set_4283  # untagged duo
+      - set_4285  # untagged duo
+      # - set_4286  # untagged chair
+      # - set_4291  # untagged chair
+      # - set_4292  # untagged shoes
+      - set_4297  # untagged underwear
+      - set_4298  # untagged underwear
+      - set_4299  # untagged underwear
+      # - set_4308  # untagged shoes, chair
+      - set_4312  # untagged grayscale
+      # - set_4314  # untagged chair
+      # - set_4315  # untagged black background
+      - set_4316  # untagged hoop attribute
+      - set_4323  # untagged grayscale
+      - set_4325  # untagged duo
+      # - set_4329  # untagged chair
+      # - set_4331  # untagged black background
+      # - set_4332  # untagged black background
+      - set_4340  # untagged grayscale
+      - set_4343  # untagged underwear
+      # - set_4344  # untagged black background
+      - set_4345  # untagged hoop attribute
+      # - set_4346  # untagged black background
+      - set_4351  # untagged duo
+      - set_4357  # untagged underwear
+      # - set_4358  # untagged black background
+      # - set_4359  # untagged black background
+      # - set_4361  # untagged black background
+      # - set_4362  # untagged black background
+      # - set_4366  # untagged shoes, chair
+      - set_4368  # untagged duo
+      # - set_4372  # untagged black background
+      # - set_4374  # untagged black background
+      # - set_4375  # untagged black background
+      # - set_4376  # untagged black background
+      # - set_4377  # untagged black background
+      # - set_4378  # untagged black background
+      - set_4384  # untagged underwear
+      - set_4387  # untagged duo
+      # - set_4388  # untagged black background
+      # - set_4389  # untagged black background
+      # - set_4390  # untagged black background
+      # - set_4391  # untagged black background
+      # - set_4392  # untagged black background
+      - set_4398  # untagged duo
+      # - set_4402  # untagged black background
+      - set_4403  # untagged hoop attribute
+      # - set_4404  # untagged black background
+      # - set_4405  # untagged black background
+      - set_4406  # untagged hoop attribute
+      - set_4410  # untagged underwear
+      - set_4412  # untagged underwear
+      # - set_4417  # untagged black background
+      # - set_4418  # untagged black background
+      # - set_4419  # untagged black background
+      - set_4426  # untagged duo
+      # - set_4432  # untagged black background
+      # - set_4433  # untagged black background, chair
+      # - set_4434  # untagged black background
+      # - set_4435  # untagged black background
+      # - set_4436  # untagged black background
+      # - set_4440  # untagged chair
+      - set_4442  # untagged duo
+      - set_4444  # untagged underwear
+      # - set_4446  # untagged black background
+      # - set_4447  # untagged black background
+      # - set_4448  # untagged black background
+      # - set_4449  # untagged black background
+      # - set_4450  # untagged black background
+      # - set_4458  # untagged black background
+      # - set_4459  # untagged black background
+      # - set_4460  # untagged black background
+      # - set_4461  # untagged black background, shoes
+      - set_4466  # untagged duo
+      - set_4468  # untagged underwear
+      - set_4471  # wrong image orientation
+      # - set_4473  # untagged black background
+      # - set_4474  # untagged black background
+      # - set_4475  # untagged black background
+      # - set_4476  # untagged black background
+      # - set_4477  # untagged black background
+      # - set_4483  # untagged chair
+      # - set_4487  # untagged black background
+      # - set_4488  # untagged black background
+      # - set_4489  # untagged black background
+      # - set_4490  # untagged black background, chair
+      # - set_4491  # untagged black background
+      - set_4495  # untagged duo
+      - set_4500  # untagged underwear
+      # - set_4517  # untagged black background
+      # - set_4518  # untagged black background
+      # - set_4519  # untagged black background
+      # - set_4520  # untagged black background
+      # - set_4521  # untagged black background, chair
+      # - set_4522  # untagged black background
+      # - set_4523  # untagged black background
+      - set_4530  # untagged underwear
+      # - set_4533  # untagged black background
+      # - set_4534  # untagged black background
+      - set_4535  # untagged ball attribute
+      # - set_4536  # untagged black background, chair
+      # - set_4538  # untagged black background
+      # - set_4540  # untagged shoes
+      # - set_4542  # untagged shoes
+      # - set_4549  # untagged black background
+      # - set_4550  # untagged black background
+      # - set_4551  # untagged black background
+      # - set_4552  # untagged black background, chair
+      # - set_4553  # untagged black background
+      # - set_4554  # untagged black background
+      # - set_4555  # untagged black background
+      # - set_4556  # untagged chair
+      # - set_4558  # untagged chair, shoes
+      - set_4560  # untagged underwear
+      # - set_4565  # untagged black background
+      # - set_4566  # untagged black background
+      # - set_4567  # untagged black background
+      # - set_4568  # untagged black background
+      # - set_4569  # untagged black background
+      # - set_4570  # untagged black background
+      - set_4571  # untagged underwear
+      # - set_4575  # untagged chair
+      # - set_4576  # untagged chair
+      - set_4577  # untagged duo
+      # - set_4581  # untagged black background
+      # - set_4582  # untagged black background
+      # - set_4583  # untagged black background
+      # - set_4584  # untagged black background
+      # - set_4586  # untagged black background
+      # - set_4587  # untagged black background
+      - set_4588  # untagged underwear
+      - set_4594  # untagged underwear
+      - set_4595  # untagged underwear
+      - set_4596  # untagged underwear
+      # - set_4599  # untagged black background
+      # - set_4600  # untagged black background
