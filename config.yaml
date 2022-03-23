@@ -31,6 +31,7 @@ images:
       - women  # generic tag for multiple person poses
       - detailed
       - distortion
+      - hyper  # hyper angle
       - holding
       - activities
       - fighting
@@ -49,11 +50,19 @@ images:
       - overweight
       - chubby
       - grey
+      - ruby
+      - sarah
       - henrieta  # untagged tattoos
       - june      # untagged tattoos
       - billie    # untagged tattoos
+      - jarushka  # untagged tattoos
       - rosemary  # untagged clothing
       - fannie    # untagged underwear
+      - kristyna  # untagged underwear
+      - holly     # untagged underwear
+      - vivian    # untagged underwear
+      - rea       # untagged underwear
+      - daisy     # untagged xmas
       - alexej    # male
       - set_98
       - set_110
@@ -378,3 +387,38 @@ images:
       - set_4596  # untagged underwear
       # - set_4599  # untagged black background
       # - set_4600  # untagged black background
+      # - set_4602  # untagged black background
+      # - set_4603  # untagged black background
+      # - set_4605  # untagged black background, chair
+      - set_4609  # untagged duo
+      # - set_4616  # untagged black background
+      # - set_4617  # untagged black background
+      # - set_4618  # untagged black background, chair
+      # - set_4620  # untagged black background
+      - set_4621  # untagged ball attribute
+      - set_4634  # untagged costume outfit
+      - set_4635  # untagged costume outfit
+      # - set_4636  # untagged black background
+      # - set_4637  # untagged black background
+      # - set_4639  # untagged black background
+      # - set_4640  # untagged black background
+      - set_4645  # untagged underwear
+      - set_4646  # untagged underwear
+      # - set_4650  # untagged shoes
+      # - set_4651  # untagged black background
+      # - set_4652  # untagged black background
+      # - set_4653  # untagged black background
+      # - set_4654  # untagged black background
+      # - set_4655  # untagged black background, chair
+      # - set_4658  # untagged chair
+      # - set_4668  # untagged black background
+      # - set_4669  # untagged black background
+      # - set_4673  # untagged chair
+      - set_4677  # untagged underwear
+      - set_4684  # untagged underwear
+      - set_4687  # untagged duo
+      # - set_4691  # untagged black background
+      # - set_4692  # untagged black background
+      # - set_4694  # untagged black background, chair
+      # - set_4695  # untagged black background
+      # - set_4700  # untagged black background
