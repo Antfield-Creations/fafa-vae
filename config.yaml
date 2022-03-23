@@ -51,6 +51,8 @@ images:
       - grey
       - henrieta  # untagged tattoos
       - june      # untagged tattoos
+      - billie    # untagged tattoos
+      - rosemary  # untagged clothing
       - alexej    # male
       - set_98
       - set_110
@@ -174,3 +176,41 @@ images:
       - set_2570  # untagged drape
       # - set_2582  # untagged shoes
       # - set_2618  # untagged shoes
+      # - set_2714  # untagged shoes
+      # - set_2730  # untagged chair
+      # - set_2802  # untagged shoes
+      - set_2818  # untagged greyscale
+      - set_2921  # untagged drape
+      # - set_2925  # untagged shoes
+      # - set_2949  # untagged shoes
+      # - set_2953  # untagged shoes
+      # - set_2977  # untagged shoes
+      # - set_3033  # untagged chair
+      # - set_3045  # untagged shoes
+      - set_3081  # untagged greyscale
+      # - set_3121  # untagged shoes
+      # - set_3129  # untagged shoes
+      # - set_3133  # untagged chair
+      # - set_3141  # untagged chair
+      # - set_3185  # untagged chair
+      # - set_3209  # untagged chair
+      # - set_3257  # untagged shoes
+      # - set_3273  # untagged shoes
+      # - set_3301  # untagged shoes
+      - set_3305  # untagged greyscale
+      - set_3309  # untagged greyscale
+      # - set_3341  # untagged chair
+      # - set_3353  # untagged chair
+      # - set_3361  # untagged shoes
+      # - set_3445  # untagged shoes
+      - set_3453  # untagged greyscale
+      - set_3457  # untagged greyscale
+      - set_3573  # untagged greyscale
+      # - set_3621  # untagged shoes
+      # - set_3621  # untagged shoes
+      # - set_3729  # untagged chair
+      # - set_3819  # untagged chair
+      # - set_3829  # untagged shoes
+      # - set_3869  # untagged chair
+      # - set_3961  # untagged chair
+      - set_4015  # untagged duo
