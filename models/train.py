@@ -1,7 +1,8 @@
 import logging
 import os.path
 
-from keras.optimizer_v2.adam import Adam
+from tensorflow import keras
+from tqdm import tqdm
 
 from models.decoder import get_decoder
 from models.encoder import get_encoder
@@ -21,15 +22,15 @@ def train(config: Config) -> None:
     encoder = get_encoder(config)
     # Compile the encoder separately to get rid of uncompiled metrics warnings
     # See also: https://stackoverflow.com/questions/67970389
-    encoder.compile(optimizer=Adam())
+    encoder.compile(optimizer=keras.optimizers.Adam())
     encoder.summary()
 
     decoder = get_decoder(config)
-    decoder.compile(optimizer=Adam())
+    decoder.compile(optimizer=keras.optimizers.Adam())
     decoder.summary()
 
     vae = VAE(encoder, decoder)
-    vae.compile(optimizer=Adam())
+    vae.compile(optimizer=keras.optimizers.Adam())
 
     # Input data specifics
     fafa_loader = FAFADataGenerator()
@@ -56,7 +57,7 @@ def train(config: Config) -> None:
     # Checkpoints
     checkpoint_folder = config['models']['vae']['checkpoints']['folder']
 
-    for epoch in range(config['models']['vae']['epochs']):
+    for epoch in tqdm(range(config['models']['vae']['epochs'])):
         vae.fit(data_generator, initial_epoch=epoch + 1)
         vae.encoder.save(filepath=os.path.join(checkpoint_folder, f'encoder-epoch-{epoch + 1}'))
         vae.decoder.save(filepath=os.path.join(checkpoint_folder, f'decoder-epoch-{epoch + 1}'))

@@ -1,9 +1,9 @@
 from typing import Tuple, Dict
 
-import keras
+from tensorflow import keras
 import tensorflow as tf
-from keras.metrics import Mean, Reduce
 from tensorflow import Tensor
+from tensorflow.python.keras.metrics import Mean, Reduce
 
 
 class VAE(keras.Model):
