@@ -3,9 +3,10 @@ A Sampling layer module, adapted from https://keras.io/examples/generative/vae/
 """
 from typing import Tuple
 
-from keras import layers
-from keras import backend as K
+import tensorflow as tf
 from tensorflow import Tensor
+from tensorflow.python.keras import layers
+from tensorflow.python.keras.backend import random_normal
 
 
 class Sampling(layers.Layer):
@@ -13,8 +14,8 @@ class Sampling(layers.Layer):
 
     def call(self, inputs: Tuple[Tensor, Tensor]) -> Tensor:
         z_mean, z_log_var = inputs
-        batch = K.shape(z_mean)[0]
-        dim = K.shape(z_mean)[1]
-        epsilon = K.random_normal(shape=(batch, dim))
+        batch = tf.shape(z_mean)[0]
+        dim = tf.shape(z_mean)[1]
+        epsilon = random_normal(shape=(batch, dim))
 
-        return z_mean + K.exp(0.5 * z_log_var) * epsilon
+        return z_mean + tf.exp(0.5 * z_log_var) * epsilon

@@ -1,11 +1,11 @@
-import keras
-from keras import layers, Model
+import tensorflow as tf
+from tensorflow import keras
 
 from models.loaders import Config
 from models.sampling import Sampling
 
 
-def get_encoder(config: Config) -> Model:
+def get_encoder(config: Config) -> keras.Model:
     """
     Constructs the encoder part of the variational auto-encoder
 
@@ -21,15 +21,17 @@ def get_encoder(config: Config) -> Model:
     inputs = keras.Input(shape=(width, height, channels))
 
     convs = config['models']['vae']['conv2d']
-    x = layers.Conv2D(filters=convs[0]['filters'], kernel_size=3, activation="relu", strides=2, padding="same")(inputs)
-    x = layers.Conv2D(filters=convs[1]['filters'], kernel_size=3, activation="relu", strides=2, padding="same")(x)
-    x = layers.Flatten()(x)
-    x = layers.Dense(16, activation="relu")(x)
+    x = keras.layers.Conv2D(
+        filters=convs[0]['filters'], kernel_size=3, activation="relu", strides=2, padding="same")(inputs)
+    x = keras.layers.Conv2D(
+        filters=convs[1]['filters'], kernel_size=3, activation="relu", strides=2, padding="same")(x)
+    x = keras.layers.Flatten()(x)
+    x = keras.layers.Dense(16, activation="relu")(x)
 
     latent_dim = config['models']['vae']['latent_dim']
-    z_mean = layers.Dense(latent_dim, name="z_mean")(x)
-    z_log_var = layers.Dense(latent_dim, name="z_log_var")(x)
+    z_mean = keras.layers.Dense(latent_dim, name="z_mean")(x)
+    z_log_var = keras.layers.Dense(latent_dim, name="z_log_var")(x)
     z = Sampling()((z_mean, z_log_var))
 
-    encoder = keras.Model(inputs, [z_mean, z_log_var, z], name="encoder")
+    encoder = tf.keras.Model(inputs, [z_mean, z_log_var, z], name="encoder")
     return encoder

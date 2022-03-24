@@ -1,9 +1,8 @@
-from typing import Tuple, Dict
+from typing import Tuple
 
-from tensorflow import keras
 import tensorflow as tf
 from tensorflow import Tensor
-from tensorflow.python.keras.metrics import Mean, Reduce
+from tensorflow import keras
 
 
 class VAE(keras.Model):
@@ -18,14 +17,14 @@ class VAE(keras.Model):
         self.kl_loss_tracker = keras.metrics.Mean(name="kl_loss")
 
     @property
-    def metrics(self) -> Tuple[Mean, Mean, Mean]:
+    def metrics(self) -> Tuple[keras.metrics.Mean, keras.metrics.Mean, keras.metrics.Mean]:
         return (
             self.total_loss_tracker,
             self.reconstruction_loss_tracker,
             self.kl_loss_tracker,
         )
 
-    def train_step(self, data: Tensor) -> Dict[str, Reduce]:
+    def train_step(self, data: Tensor) -> dict:
         """
         Trains a single mini-batch of tensors
 
