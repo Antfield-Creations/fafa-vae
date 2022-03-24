@@ -50,7 +50,9 @@ def train(config: Config) -> None:
         target_size=(config['images']['width'], config['images']['height'])
     )
 
-    for _ in range(100):
+    fit_samples = config['models']['vae']['data_generator']['fit_samples']
+    logging.info(f'Fitting {fit_samples} samples for image loader normalization...')
+    for _ in tqdm(range(fit_samples)):
         fafa_loader.fit(data_generator.next())
 
     logging.info(f'Image preprocessor featurewise: std {fafa_loader.std}')

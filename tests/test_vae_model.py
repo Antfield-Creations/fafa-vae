@@ -23,6 +23,7 @@ class VAEModelTestCase(unittest.TestCase):
             config['models']['vae']['epochs'] = num_epochs
             num_reconstructions_per_epoch = 4
             config['models']['vae']['predict_samples'] = num_reconstructions_per_epoch
+            config['models']['vae']['data_generator']['fit_samples'] = 10
 
             train(config)
 
