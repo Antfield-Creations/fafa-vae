@@ -21,9 +21,17 @@ class VAEModelTestCase(unittest.TestCase):
             config['models']['vae']['checkpoints']['folder'] = os.path.join(tempdir, 'checkpoints')
             num_epochs = 2
             config['models']['vae']['epochs'] = num_epochs
+            num_reconstructions_per_epoch = 4
+            config['models']['vae']['predict_samples'] = num_reconstructions_per_epoch
 
+            train(config)
+
+            checkpoints_folder = str(config['models']['vae']['checkpoints']['folder'])
             with self.subTest('It generates a checkpoint for the decoder and an encoder for each epoch'):
-                train(config)
-                checkpoints = listdir(str(config['models']['vae']['checkpoints']['folder']))
-                num_checkpoints = num_epochs * 2
+                checkpoints = listdir(checkpoints_folder)
+                num_checkpoints = num_epochs
                 self.assertEqual(len(checkpoints), num_checkpoints)
+
+            with self.subTest(f'It generates {num_reconstructions_per_epoch} image samples per epoch'):
+                epoch_1_samples = listdir(os.path.join(checkpoints_folder, 'epoch-1', 'reconstructions'))
+                self.assertSetEqual(set(epoch_1_samples), {'1.png', '2.png', '3.png', '4.png'})

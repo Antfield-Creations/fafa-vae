@@ -25,6 +25,7 @@ pandas = "*"
 pillow = "*"
 # Run-time image augmentation
 scipy = "*"
+numpy = "*"
 
 [dev-packages]
 # Style checker
