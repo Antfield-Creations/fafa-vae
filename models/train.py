@@ -3,7 +3,6 @@ import os.path
 
 from keras_preprocessing.image import save_img
 from tensorflow import keras
-from tqdm import tqdm
 
 from models.decoder import get_decoder
 from models.encoder import get_encoder
@@ -65,10 +64,11 @@ def train(config: Config) -> None:
 
     epochs = config['models']['vae']['epochs']
     steps = config['models']['vae']['batches_per_epoch']
+
     for epoch in range(epochs):
         logging.info(f"Epoch {epoch + 1} of {epochs} in {steps} steps of batch size {data_generator.batch_size}:")
-        for _ in tqdm(range(steps)):
-            vae.fit(data_generator, verbose=1, initial_epoch=epoch + 1, epochs=1)
+        vae.fit(data_generator, verbose=1, initial_epoch=epoch, epochs=epoch + 1, use_multiprocessing=True,
+                steps_per_epoch=steps)
 
         # Save encoder and decoder models
         epoch_folder = os.path.join(checkpoint_folder, f'epoch-{epoch + 1}')
