@@ -76,13 +76,13 @@ def train(config: Config) -> None:
         vae.encoder.save(filepath=os.path.join(epoch_folder, 'encoder'))
         vae.decoder.save(filepath=os.path.join(epoch_folder, f'epoch-{epoch + 1}', 'decoder'))
 
-        # Save samples
+        # Each epoch, the script generates a batch-sized set of sample images
         reconstructions_folder = os.path.join(epoch_folder, 'reconstructions')
         os.makedirs(reconstructions_folder, exist_ok=True)
 
-        for img_idx in tqdm(range(config['models']['vae']['predict_samples'])):
-            batch = data_generator.next()
-            encoded = vae.encoder.predict(batch, batch_size=batch.shape[0])
-            latent_z = encoded[2]
-            reconstructions = vae.decoder.predict(latent_z, batch_size=batch.shape[0])
-            save_img(os.path.join(reconstructions_folder, f'{img_idx + 1}.png'), reconstructions[0])
+        sample_inputs = data_generator.next()
+        encoded = vae.encoder(sample_inputs)
+        reconstructions = vae.decoder(encoded[0])
+
+        for img_idx in range(data_generator.batch_size):
+            save_img(os.path.join(reconstructions_folder, f'{img_idx + 1}.png'), reconstructions[img_idx])
