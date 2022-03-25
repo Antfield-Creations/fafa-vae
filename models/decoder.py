@@ -28,9 +28,19 @@ def get_decoder(config: Config) -> keras.Model:
 
     # The conv2d layers in reverse:
     x = keras.layers.Conv2DTranspose(
-        filters=convs[1]['filters'], kernel_size=3, activation="relu", strides=2, padding="same")(x)
+        filters=convs[1]['filters'],
+        kernel_size=convs[1]['kernel_size'],
+        activation="relu",
+        strides=2,
+        padding="same"
+    )(x)
     x = keras.layers.Conv2DTranspose(
-        filters=convs[0]['filters'], kernel_size=3, activation="relu", strides=2, padding="same")(x)
+        filters=convs[0]['filters'],
+        kernel_size=convs[0]['kernel_size'],
+        activation="relu",
+        strides=2,
+        padding="same"
+    )(x)
     decoder_outputs = keras.layers.Conv2DTranspose(img_channels, 3, activation="sigmoid", padding="same")(x)
 
     decoder = keras.Model(latent_inputs, decoder_outputs, name="decoder")

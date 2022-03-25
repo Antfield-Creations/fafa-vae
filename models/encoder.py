@@ -22,9 +22,19 @@ def get_encoder(config: Config) -> keras.Model:
 
     convs = config['models']['vae']['conv2d']
     x = keras.layers.Conv2D(
-        filters=convs[0]['filters'], kernel_size=3, activation="relu", strides=2, padding="same")(inputs)
+        filters=convs[0]['filters'],
+        kernel_size=convs[0]['kernel_size'],
+        activation="relu",
+        strides=2,
+        padding="same"
+    )(inputs)
     x = keras.layers.Conv2D(
-        filters=convs[1]['filters'], kernel_size=3, activation="relu", strides=2, padding="same")(x)
+        filters=convs[1]['filters'],
+        kernel_size=convs[1]['kernel_size'],
+        activation="relu",
+        strides=2,
+        padding="same"
+    )(x)
     x = keras.layers.Flatten()(x)
     x = keras.layers.Dense(16, activation="relu")(x)
 
