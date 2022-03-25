@@ -8,11 +8,11 @@ models:
       # normalization batch_size
       fit_samples: 512
 
-    latent_dim: 2
-    batch_size: 24
-    batches_per_epoch: 4096
-    epochs: 60
-    predict_samples: 50
+    latent_dim: 32
+    batch_size: 16
+    batches_per_epoch: 1024
+    epochs: 64
+    predict_samples: 10
 
     conv2d:
       - filters: 32
