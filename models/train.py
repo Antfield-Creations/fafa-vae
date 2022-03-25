@@ -42,17 +42,20 @@ def train(config: Config) -> None:
         exclude_tags=config['images']['filter']['exclude'],
     )
 
+    batch_size = config['models']['vae']['data_generator']['fit_samples']
     data_generator = fafa_loader.flow_from_dataframe(
         dataframe=img_metadata,
         class_mode=None,
         directory=img_folder,
-        target_size=(config['images']['width'], config['images']['height'])
+        target_size=(config['images']['width'], config['images']['height']),
+        batch_size=batch_size,
     )
 
-    fit_samples = config['models']['vae']['data_generator']['fit_samples']
-    logging.info(f'Fitting {fit_samples} samples for image loader normalization...')
-    for _ in tqdm(range(fit_samples)):
-        fafa_loader.fit(data_generator.next())
+    logging.info(f'Fitting {batch_size} samples for image loader normalization...')
+    fafa_loader.fit(data_generator.next())
+
+    # Reset data generator to training mode batch sizes
+    data_generator.batch_size = config['models']['vae']['batch_size']
 
     logging.info(f'Image preprocessor featurewise: std {fafa_loader.std}')
     logging.info(f'Image preprocessor featurewise: mean {fafa_loader.mean}')
