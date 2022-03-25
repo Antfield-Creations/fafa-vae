@@ -62,10 +62,13 @@ def train(config: Config) -> None:
 
     # Checkpoints
     checkpoint_folder = config['models']['vae']['checkpoints']['folder']
-    steps_per_epoch = config['models']['vae']['batches_per_epoch']
 
-    for epoch in tqdm(range(config['models']['vae']['epochs'])):
-        vae.fit(data_generator, verbose=1, initial_epoch=epoch + 1, steps_per_epoch=steps_per_epoch)
+    epochs = config['models']['vae']['epochs']
+    steps = config['models']['vae']['batches_per_epoch']
+    for epoch in range(epochs):
+        logging.info(f"Epoch {epoch + 1} of {epochs} in {steps} steps of batch size {data_generator.batch_size}:")
+        for _ in tqdm(range(steps)):
+            vae.fit(data_generator, verbose=1, initial_epoch=epoch + 1, epochs=1)
 
         # Save encoder and decoder models
         epoch_folder = os.path.join(checkpoint_folder, f'epoch-{epoch + 1}')
