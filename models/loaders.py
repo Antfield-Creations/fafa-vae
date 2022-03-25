@@ -20,6 +20,13 @@ def load_config(path: str = 'config.yaml') -> Config:
     with open(path) as f:
         config = yaml.safe_load(f)
 
+    # You can use common home-folder tildes '~' in folder specs
+    config['models']['vae']['checkpoints']['folder'] = \
+        os.path.expanduser(config['models']['vae']['checkpoints']['folder'])
+
+    config['images']['folder'] = \
+        os.path.expanduser(config['images']['folder'])
+
     return config
 
 
@@ -38,7 +45,6 @@ def load_metadata(
         exclude_tags: Optional[List[str]] = None,
         include_tags: Optional[List[str]] = None) -> DataFrame:
 
-    img_folder = os.path.expanduser(img_folder)
     metadata_path = os.path.join(img_folder, 'metadata.json')
 
     if exclude_tags is None:
@@ -88,7 +94,6 @@ def load_metadata(
 
 def export_metadata(img_folder: str) -> None:
     file_type = '.jpg'
-    img_folder = os.path.expanduser(img_folder)
     export_path = os.path.join(img_folder, 'metadata.json')
 
     # Force dir recursion into a list so that we can show a progressbar
