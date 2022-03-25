@@ -29,14 +29,14 @@ class VAEModelTestCase(unittest.TestCase):
             batches_per_epoch = 16
             config['models']['vae']['batches_per_epoch'] = batches_per_epoch
 
+            batch_size = 2
+            config['models']['vae']['batch_size'] = batch_size
+
             # Dummy-train
             train(config)
 
             checkpoints_folder = str(config['models']['vae']['checkpoints']['folder'])
             epoch_1_folder = os.path.join(checkpoints_folder, 'epoch-1')
-
-            batch_size = config['models']['vae']['batch_size']
-            batch_size = 2
 
             with self.subTest('It generates a checkpoint each epoch'):
                 checkpoints = listdir(checkpoints_folder)
