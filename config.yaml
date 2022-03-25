@@ -9,6 +9,7 @@ models:
 
     latent_dim: 2
     batch_size: 24
+    batches_per_epoch: 4096
     epochs: 60
     predict_samples: 50
 

@@ -1,7 +1,6 @@
 import logging
 import os.path
 
-import numpy as np
 from keras_preprocessing.image import save_img
 from tensorflow import keras
 from tqdm import tqdm
@@ -60,9 +59,10 @@ def train(config: Config) -> None:
 
     # Checkpoints
     checkpoint_folder = config['models']['vae']['checkpoints']['folder']
+    steps_per_epoch = config['models']['vae']['batches_per_epoch']
 
     for epoch in tqdm(range(config['models']['vae']['epochs'])):
-        vae.fit(data_generator, initial_epoch=epoch + 1)
+        vae.fit(data_generator, verbose=1, initial_epoch=epoch + 1, steps_per_epoch=steps_per_epoch)
 
         # Save encoder and decoder models
         epoch_folder = os.path.join(checkpoint_folder, f'epoch-{epoch + 1}')
