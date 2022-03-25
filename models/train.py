@@ -75,11 +75,8 @@ def train(config: Config) -> None:
         os.makedirs(reconstructions_folder, exist_ok=True)
 
         for img_idx in tqdm(range(config['models']['vae']['predict_samples'])):
-            generator_next = data_generator.next()[0]
-            generator_next = np.expand_dims(generator_next, axis=0)
-            samples = vae.decoder.predict(vae.encoder.predict(generator_next)[0])
-            sample = samples[0]
-
-            denormalized = np.multiply(sample, fafa_loader.std)
-            denormalized = np.sum((denormalized, fafa_loader.mean))
-            save_img(os.path.join(reconstructions_folder, f'{img_idx + 1}.png'), denormalized)
+            batch = data_generator.next()
+            encoded = vae.encoder.predict(batch, batch_size=batch.shape[0])
+            latent_z = encoded[2]
+            reconstructions = vae.decoder.predict(latent_z, batch_size=batch.shape[0])
+            save_img(os.path.join(reconstructions_folder, f'{img_idx + 1}.png'), reconstructions[0])
