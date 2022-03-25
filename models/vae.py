@@ -6,7 +6,7 @@ from tensorflow import keras
 
 
 class VAE(keras.Model):
-    def __init__(self, encoder: keras.Model, decoder: keras.Model):
+    def __init__(self, encoder: keras.Model, decoder: keras.Model) -> None:
         super(VAE, self).__init__()
         self.encoder = encoder
         self.decoder = decoder
@@ -23,6 +23,22 @@ class VAE(keras.Model):
             self.reconstruction_loss_tracker,
             self.kl_loss_tracker,
         )
+
+    def __call__(self, inputs: tf.Tensor, **kwargs: dict) -> tf.Tensor:
+        """
+        Custom call method, allows you to directly sample reconstructions from the complete VAE model
+
+        :param inputs: a tensor containing a batch of inputs
+
+        :return: a batch of the reconstructions as a tensor
+        """
+
+        # Note that z_mean and z_log_var are unused here. We only use the encoder outputs to feed back
+        # into the decoder in order to get the reconstruction
+        z_mean, z_log_var, z = self.encoder(inputs)
+        reconstruction = self.decoder(z)
+
+        return reconstruction
 
     def train_step(self, data: Tensor) -> dict:
         """

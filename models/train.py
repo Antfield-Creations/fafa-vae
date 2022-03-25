@@ -74,15 +74,14 @@ def train(config: Config) -> None:
         epoch_folder = os.path.join(checkpoint_folder, f'epoch-{epoch + 1}')
 
         vae.encoder.save(filepath=os.path.join(epoch_folder, 'encoder'))
-        vae.decoder.save(filepath=os.path.join(epoch_folder, f'epoch-{epoch + 1}', 'decoder'))
+        vae.decoder.save(filepath=os.path.join(epoch_folder, 'decoder'))
 
         # Each epoch, the script generates a batch-sized set of sample images
         reconstructions_folder = os.path.join(epoch_folder, 'reconstructions')
         os.makedirs(reconstructions_folder, exist_ok=True)
 
         sample_inputs = data_generator.next()
-        encoded = vae.encoder(sample_inputs)
-        reconstructions = vae.decoder(encoded[0])
+        reconstructions = vae(sample_inputs)
 
-        for img_idx in range(data_generator.batch_size):
+        for img_idx in range(reconstructions.shape[0]):
             save_img(os.path.join(reconstructions_folder, f'{img_idx + 1}.png'), reconstructions[img_idx])
