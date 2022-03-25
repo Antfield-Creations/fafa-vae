@@ -15,7 +15,9 @@ models:
 
     conv2d:
       - filters: 32
+        kernel_size: 4
       - filters: 64
+        kernel_size: 4
 
 images:
   width: 640
