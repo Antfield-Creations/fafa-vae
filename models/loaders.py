@@ -33,8 +33,8 @@ def load_config(path: str = 'config.yaml') -> Config:
 class FAFADataGenerator(ImageDataGenerator):
     def __init__(self) -> None:
         super(FAFADataGenerator, self).__init__(
-            featurewise_center=True,
-            featurewise_std_normalization=True,
+            samplewise_center=True,
+            samplewise_std_normalization=True,
             rotation_range=0,
             validation_split=0.2,
         )
