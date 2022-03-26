@@ -1,12 +1,14 @@
 import logging
 import os.path
-import shutil
 import unittest
 from os import listdir
 from tempfile import TemporaryDirectory
 
+import numpy as np
+
 from models.loaders import load_config
 from models.train import train
+from scraper import scraper
 
 logging.basicConfig(format='%(asctime)s - %(message)s', level=logging.INFO)
 
@@ -14,10 +16,16 @@ logging.basicConfig(format='%(asctime)s - %(message)s', level=logging.INFO)
 class VAEModelTestCase(unittest.TestCase):
     def test_training(self) -> None:
         with TemporaryDirectory() as tempdir:
-            shutil.copytree('tests/data', tempdir + '/img')
-
             config = load_config()
+
             config['images']['folder'] = os.path.join(tempdir, 'img')
+            set_no = 5159
+            config['images']['scraper']['first_set'] = set_no
+            config['images']['scraper']['last_set'] = set_no
+
+            with self.subTest(f'It harvests set number {set_no}'):
+                scraper.scrape(config)
+
             config['models']['vae']['checkpoints']['folder'] = os.path.join(tempdir, 'checkpoints')
 
             # Simplify training
