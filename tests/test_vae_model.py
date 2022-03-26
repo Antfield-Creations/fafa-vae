@@ -47,6 +47,7 @@ class VAEModelTestCase(unittest.TestCase):
             epoch_1_folder = os.path.join(checkpoints_folder, 'epoch-1')
 
             with self.subTest('The loss is a valid float'):
+                assert history is not None
                 self.assertFalse(np.isnan(history.history.get('loss')))
 
             with self.subTest('It generates a checkpoint each epoch'):
