@@ -18,8 +18,6 @@ class ScraperTestCase(unittest.TestCase):
             config['images']['scraper']['last_set'] = set_no
 
             with self.subTest(f'It harvests set number {set_no}'):
-
-                # Execute the "main" function
                 scraper.scrape(config)
 
                 test_set_dir = os.path.join(temp_dir, f'set-{set_no}')
