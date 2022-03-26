@@ -41,10 +41,13 @@ class VAEModelTestCase(unittest.TestCase):
             config['models']['vae']['batch_size'] = batch_size
 
             # Dummy-train
-            train(config)
+            history = train(config)
 
             checkpoints_folder = str(config['models']['vae']['checkpoints']['folder'])
             epoch_1_folder = os.path.join(checkpoints_folder, 'epoch-1')
+
+            with self.subTest('The loss is a valid float'):
+                self.assertFalse(np.isnan(history.history.get('loss')))
 
             with self.subTest('It generates a checkpoint each epoch'):
                 checkpoints = listdir(checkpoints_folder)

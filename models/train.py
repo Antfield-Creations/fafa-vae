@@ -1,8 +1,10 @@
 import logging
 import os.path
+from typing import Optional
 
 from keras_preprocessing.image import save_img
 from tensorflow import keras
+from tensorflow.python.keras.callbacks import History
 
 from models.decoder import get_decoder
 from models.encoder import get_encoder
@@ -10,7 +12,7 @@ from models.loaders import Config, FAFADataGenerator, load_metadata
 from models.vae import VAE
 
 
-def train(config: Config) -> None:
+def train(config: Config) -> Optional[History]:
     """
     Trains the VAE model on the images
 
@@ -65,10 +67,12 @@ def train(config: Config) -> None:
     epochs = config['models']['vae']['epochs']
     steps = config['models']['vae']['batches_per_epoch']
 
+    history = None
+
     for epoch in range(epochs):
         logging.info(f"Epoch {epoch + 1} of {epochs} in {steps} steps of batch size {data_generator.batch_size}:")
-        vae.fit(data_generator, verbose=1, initial_epoch=epoch, epochs=epoch + 1, use_multiprocessing=True,
-                steps_per_epoch=steps)
+        history = vae.fit(data_generator, verbose=1, initial_epoch=epoch, epochs=epoch + 1, use_multiprocessing=True,
+                          steps_per_epoch=steps)
 
         # Save encoder and decoder models
         epoch_folder = os.path.join(checkpoint_folder, f'epoch-{epoch + 1}')
@@ -85,3 +89,5 @@ def train(config: Config) -> None:
 
         for img_idx in range(reconstructions.shape[0]):
             save_img(os.path.join(reconstructions_folder, f'{img_idx + 1}.png'), reconstructions[img_idx])
+
+    return history
