@@ -17,6 +17,13 @@ Config = dict
 
 
 def load_config(path: str = 'config.yaml') -> Config:
+    """
+    Loads 'config.yaml' from the current working directory, or somewhere else if specified
+
+    :param path: Path to the config yaml file
+
+    :return: A Config object: a nested dictionary
+    """
     yaml = YAML(typ='safe')
     with open(path) as f:
         config = yaml.load(f)
