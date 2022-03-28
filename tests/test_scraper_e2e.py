@@ -3,7 +3,7 @@ import unittest
 from os.path import isdir
 from tempfile import TemporaryDirectory
 
-from models.loaders import load_config
+from models.loaders.config import load_config
 from scraper import scraper
 
 

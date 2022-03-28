@@ -1,52 +1,16 @@
 import json
-from logging import getLogger
-import os.path
+import os
 from functools import lru_cache
+from logging import getLogger
 from os.path import isfile
-from typing import List, Optional
+from typing import Optional, List
 
 import pandas
-from ruamel.yaml import YAML
 from PIL import Image
-from keras_preprocessing.image import ImageDataGenerator
 from pandas import DataFrame
 from tqdm import tqdm
 
-# Type alias for config type
-Config = dict
-logger = getLogger('Loaders')
-
-
-def load_config(path: str = 'config.yaml') -> Config:
-    """
-    Loads 'config.yaml' from the current working directory, or somewhere else if specified
-
-    :param path: Path to the config yaml file
-
-    :return: A Config object: a nested dictionary
-    """
-    yaml = YAML(typ='safe')
-    with open(path) as f:
-        config = yaml.load(f)
-
-    # You can use common home-folder tildes '~' in folder specs
-    config['models']['vae']['artifacts']['folder'] = \
-        os.path.expanduser(config['models']['vae']['artifacts']['folder'])
-
-    config['images']['folder'] = \
-        os.path.expanduser(config['images']['folder'])
-
-    return config
-
-
-class FAFADataGenerator(ImageDataGenerator):
-    def __init__(self) -> None:
-        super(FAFADataGenerator, self).__init__(
-            samplewise_center=True,
-            samplewise_std_normalization=True,
-            rotation_range=0,
-            validation_split=0.2,
-        )
+logger = getLogger('Metadata')
 
 
 def load_metadata(

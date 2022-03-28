@@ -1,6 +1,6 @@
 from tensorflow import keras
 
-from models.loaders import Config
+from models.loaders.config import Config
 
 
 def get_decoder(config: Config) -> keras.Model:

@@ -7,7 +7,7 @@ from tempfile import TemporaryDirectory
 
 from pandas import DataFrame
 
-from models.loaders import export_metadata, load_metadata
+from models.loaders.metadata import export_metadata, load_metadata
 
 
 class MetadataTestCase(unittest.TestCase):

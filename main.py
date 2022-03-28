@@ -6,7 +6,8 @@ import logging
 from logging import getLogger
 from argparse import ArgumentParser
 
-from models.loaders import load_config, load_metadata, export_metadata
+from models.loaders.config import load_config
+from models.loaders.metadata import export_metadata, load_metadata
 from models.train import train
 from scraper.scraper import scrape
 

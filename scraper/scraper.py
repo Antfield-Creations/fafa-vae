@@ -13,7 +13,7 @@ from requests import Response
 from retry import retry
 from tqdm import tqdm  # type: ignore
 
-from models.loaders import Config
+from models.loaders.config import Config
 
 base_href = 'https://www.female-anatomy-for-artist.com'
 logging.basicConfig(level=logging.INFO)

@@ -1,7 +1,7 @@
 import tensorflow as tf
 from tensorflow import keras
 
-from models.loaders import Config
+from models.loaders.config import Config
 from models.sampling import Sampling
 
 

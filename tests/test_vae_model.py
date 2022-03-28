@@ -7,7 +7,7 @@ from tempfile import TemporaryDirectory
 
 import numpy as np
 
-from models.loaders import load_config
+from models.loaders.config import load_config
 from models.train import train
 from scraper import scraper
 
