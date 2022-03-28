@@ -6,6 +6,7 @@ from keras_preprocessing.image import save_img
 from tensorflow import keras
 from tensorflow.python.keras.callbacks import History
 
+from models.callbacks import tensorboard_callback
 from models.decoder import get_decoder
 from models.encoder import get_encoder
 from models.loaders import Config, FAFADataGenerator, load_metadata
@@ -71,8 +72,14 @@ def train(config: Config) -> Optional[History]:
 
     for epoch in range(epochs):
         logging.info(f"Epoch {epoch + 1} of {epochs} in {steps} steps of batch size {data_generator.batch_size}:")
-        history = vae.fit(data_generator, verbose=1, initial_epoch=epoch, epochs=epoch + 1, use_multiprocessing=True,
-                          steps_per_epoch=steps)
+        history = vae.fit(data_generator,
+                          verbose=1,
+                          initial_epoch=epoch,
+                          epochs=epoch + 1,
+                          use_multiprocessing=True,
+                          steps_per_epoch=steps,
+                          callbacks=[tensorboard_callback],
+                          )
 
         # Save encoder and decoder models
         epoch_folder = os.path.join(checkpoint_folder, f'epoch-{epoch + 1}')
