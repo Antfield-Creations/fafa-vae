@@ -22,17 +22,17 @@ def train(config: Config) -> Optional[History]:
     """
 
     encoder = get_encoder(config)
-    # Compile the encoder separately to get rid of uncompiled metrics warnings
+    # Compile the encoder separately to get rid of "uncompiled metrics" warnings
     # See also: https://stackoverflow.com/questions/67970389
-    encoder.compile(optimizer=keras.optimizers.Adam())
+    encoder.compile(optimizer=keras.optimizers.Adam(learning_rate=config['models']['vae']['learning_rate']))
     encoder.summary()
 
     decoder = get_decoder(config)
-    decoder.compile(optimizer=keras.optimizers.Adam())
+    decoder.compile(optimizer=keras.optimizers.Adam(learning_rate=config['models']['vae']['learning_rate']))
     decoder.summary()
 
     vae = VAE(encoder, decoder)
-    vae.compile(optimizer=keras.optimizers.Adam())
+    vae.compile(optimizer=keras.optimizers.Adam(learning_rate=config['models']['vae']['learning_rate']))
 
     # Input data specifics
     fafa_loader = FAFADataGenerator()

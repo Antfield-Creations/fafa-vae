@@ -9,7 +9,8 @@ models:
       fit_samples: 512
 
     latent_dim: 32
-    batch_size: 16
+    batch_size: 12
+    learning_rate: !!float 1e-05
     batches_per_epoch: 1024
     epochs: 64
 
