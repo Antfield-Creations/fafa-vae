@@ -3,8 +3,8 @@
 ---
 models:
   vae:
-    checkpoints:
-      folder: ~/Downloads/FAFA/checkpoints
+    artifacts:
+      folder: ~/Downloads/FAFA/artifacts
 
     data_generator:
       # normalization batch_size

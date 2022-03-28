@@ -63,7 +63,8 @@ def train(config: Config) -> Optional[History]:
     logging.info(f'Image preprocessor featurewise: mean {fafa_loader.mean}')
 
     # Checkpoints
-    checkpoint_folder = config['models']['vae']['checkpoints']['folder']
+    artifact_folder = config['models']['vae']['artifacts']['folder']
+    checkpoint_folder = os.path.join(artifact_folder, 'checkpoints')
 
     epochs = config['models']['vae']['epochs']
     steps = config['models']['vae']['batches_per_epoch']
@@ -89,13 +90,13 @@ def train(config: Config) -> Optional[History]:
         vae.decoder.save(filepath=os.path.join(epoch_folder, 'decoder'))
 
         # Each epoch, the script generates a batch-sized set of sample images
-        reconstructions_folder = os.path.join(epoch_folder, 'reconstructions')
+        reconstructions_folder = os.path.join(artifact_folder, 'reconstructions')
         os.makedirs(reconstructions_folder, exist_ok=True)
 
         sample_inputs = data_generator.next()
         reconstructions = vae(sample_inputs)
 
         for img_idx in range(reconstructions.shape[0]):
-            save_img(os.path.join(reconstructions_folder, f'{img_idx + 1}.png'), reconstructions[img_idx])
+            save_img(os.path.join(reconstructions_folder, f'epoch-{epoch}-{img_idx + 1}.png'), reconstructions[img_idx])
 
     return history

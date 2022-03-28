@@ -1,3 +1,4 @@
+import itertools
 import logging
 import os.path
 import unittest
@@ -26,7 +27,7 @@ class VAEModelTestCase(unittest.TestCase):
             with self.subTest(f'It harvests set number {set_no}'):
                 scraper.scrape(config)
 
-            config['models']['vae']['checkpoints']['folder'] = os.path.join(tempdir, 'checkpoints')
+            config['models']['vae']['artifacts']['folder'] = os.path.join(tempdir, 'checkpoints')
 
             # Simplify training
             config['models']['vae']['data_generator']['fit_samples'] = 10
@@ -43,24 +44,24 @@ class VAEModelTestCase(unittest.TestCase):
             # Dummy-train
             history = train(config)
 
-            checkpoints_folder = str(config['models']['vae']['checkpoints']['folder'])
-            epoch_1_folder = os.path.join(checkpoints_folder, 'epoch-1')
+            artifacts_folder = str(config['models']['vae']['artifacts']['folder'])
+            epoch_1_folder = os.path.join(artifacts_folder, 'epoch-1')
 
             with self.subTest('The loss is a valid float'):
                 assert history is not None
                 self.assertFalse(np.isnan(history.history.get('loss')))
 
             with self.subTest('It generates a checkpoint each epoch'):
-                checkpoints = listdir(checkpoints_folder)
-                num_checkpoints = num_epochs
-                self.assertEqual(len(checkpoints), num_checkpoints)
+                artifacts = listdir(artifacts_folder)
+                num_artifacts = num_epochs
+                self.assertEqual(len(artifacts), num_artifacts)
 
             with self.subTest('It generates a folder for the decoder and encoder'):
                 contents = listdir(epoch_1_folder)
                 self.assertIn('encoder', contents)
                 self.assertIn('decoder', contents)
 
-            epoch_1_samples = listdir(os.path.join(epoch_1_folder, 'reconstructions'))
-            for img_idx in range(batch_size):
+            samples = listdir(os.path.join(artifacts_folder, 'reconstructions'))
+            for epoch, img_idx in itertools.product(range(num_epochs), range(batch_size)):
                 with self.subTest(f"It generates the image {img_idx + 1} sample"):
-                    self.assertIn(f'{img_idx + 1}.png', epoch_1_samples)
+                    self.assertIn(f'epoch-{epoch}-{img_idx + 1}.png', samples)
