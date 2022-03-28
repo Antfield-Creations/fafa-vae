@@ -127,6 +127,9 @@ def export_metadata(img_folder: str) -> None:
             img_path = os.path.join(root, file)
             try:
                 img = Image.open(img_path)
+                # Try loading the image to validate it is not truncated.
+                # Truncated images lead to hard errors in machine learning
+                img.load()
             except Exception as e:
                 logging.error(f"Couldn't load image at {img_path}: {e}, skipping")
                 continue
