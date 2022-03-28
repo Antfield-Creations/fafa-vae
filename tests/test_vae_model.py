@@ -45,16 +45,22 @@ class VAEModelTestCase(unittest.TestCase):
             history = train(config)
 
             artifacts_folder = str(config['models']['vae']['artifacts']['folder'])
-            epoch_1_folder = os.path.join(artifacts_folder, 'epoch-1')
+            runs = listdir(artifacts_folder)
+            artifacts_folder = os.path.join(artifacts_folder, runs[0])
+            epoch_1_folder = os.path.join(artifacts_folder, 'checkpoints', 'epoch-1')
 
             with self.subTest('The loss is a valid float'):
                 assert history is not None
                 self.assertFalse(np.isnan(history.history.get('loss')))
 
-            with self.subTest('It generates a checkpoint each epoch'):
+            with self.subTest('It generates a set of artifact directories'):
                 artifacts = listdir(artifacts_folder)
-                num_artifacts = num_epochs
-                self.assertEqual(len(artifacts), num_artifacts)
+                self.assertSetEqual(set(artifacts), {'checkpoints', 'reconstructions', 'tensorboard'},
+                                    f"Got: {artifacts} from {artifacts_folder}")
+
+            with self.subTest('It generates a checkpoint dir for each epoch'):
+                epochs = listdir(os.path.join(artifacts_folder, 'checkpoints'))
+                self.assertSetEqual(set(epochs), {'epoch-1', 'epoch-2'})
 
             with self.subTest('It generates a folder for the decoder and encoder'):
                 contents = listdir(epoch_1_folder)
@@ -64,4 +70,4 @@ class VAEModelTestCase(unittest.TestCase):
             samples = listdir(os.path.join(artifacts_folder, 'reconstructions'))
             for epoch, img_idx in itertools.product(range(num_epochs), range(batch_size)):
                 with self.subTest(f"It generates the image {img_idx + 1} sample"):
-                    self.assertIn(f'epoch-{epoch}-{img_idx + 1}.png', samples)
+                    self.assertIn(f'epoch-{epoch + 1}-{img_idx + 1}.png', samples)
