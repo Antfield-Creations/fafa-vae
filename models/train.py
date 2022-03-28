@@ -72,13 +72,14 @@ def train(config: Config) -> Optional[History]:
 
     for epoch in range(epochs):
         logging.info(f"Epoch {epoch + 1} of {epochs} in {steps} steps of batch size {data_generator.batch_size}:")
+        tensorboard_cb = tensorboard_callback(artifacts_folder=checkpoint_folder)
         history = vae.fit(data_generator,
                           verbose=1,
                           initial_epoch=epoch,
                           epochs=epoch + 1,
                           use_multiprocessing=True,
                           steps_per_epoch=steps,
-                          callbacks=[tensorboard_callback],
+                          callbacks=[tensorboard_cb],
                           )
 
         # Save encoder and decoder models
