@@ -13,9 +13,10 @@ models:
     latent_dim: 32
     batch_size: 12
     learning_rate: 1e-05
-    # 512 batches per epoch allows for ~5min epochs on slightly older GPU hardware
-    batches_per_epoch: 512
-    epochs: 64
+    # Fewer per epoch allows for epochs spanning some minutes on slightly older GPU hardware
+    # This can probably be cranked up on newer hardware
+    batches_per_epoch: 256
+    epochs: 128
 
     conv2d:
       - filters: 32
