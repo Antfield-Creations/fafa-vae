@@ -1,3 +1,5 @@
+# YAML version: 1.2
+# Required for scientific notation of floats
 ---
 models:
   vae:
@@ -10,8 +12,9 @@ models:
 
     latent_dim: 32
     batch_size: 12
-    learning_rate: !!float 1e-05
-    batches_per_epoch: 1024
+    learning_rate: 1e-05
+    # 512 batches per epoch allows for ~5min epochs on slightly older GPU hardware
+    batches_per_epoch: 512
     epochs: 64
 
     conv2d:

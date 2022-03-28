@@ -6,7 +6,7 @@ from os.path import isfile
 from typing import List, Optional
 
 import pandas
-import yaml
+from ruamel.yaml import YAML
 from PIL import Image
 from keras_preprocessing.image import ImageDataGenerator
 from pandas import DataFrame
@@ -17,8 +17,9 @@ Config = dict
 
 
 def load_config(path: str = 'config.yaml') -> Config:
+    yaml = YAML(typ='safe')
     with open(path) as f:
-        config = yaml.safe_load(f)
+        config = yaml.load(f)
 
     # You can use common home-folder tildes '~' in folder specs
     config['models']['vae']['checkpoints']['folder'] = \
