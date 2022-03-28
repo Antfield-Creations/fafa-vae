@@ -75,6 +75,7 @@ def train(config: Config) -> Optional[History]:
         reconstructions = vae(sample_inputs)
 
         for img_idx in range(reconstructions.shape[0]):
-            save_img(os.path.join(reconstructions_folder, f'epoch-{epoch + 1}-{img_idx + 1}.png'), reconstructions[img_idx])
+            output_path = os.path.join(reconstructions_folder, f'epoch-{epoch + 1}-{img_idx + 1}.png')
+            save_img(output_path, reconstructions[img_idx])
 
     return history
