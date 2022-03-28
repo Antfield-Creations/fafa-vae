@@ -25,6 +25,8 @@ pandas = "*"
 pillow = "*"
 # Run-time image augmentation
 scipy = "*"
+# Model metrics analysis
+tensorboard = "*"
 
 [dev-packages]
 # Style checker
