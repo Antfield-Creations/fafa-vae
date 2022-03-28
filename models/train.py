@@ -1,4 +1,4 @@
-import logging
+from logging import getLogger
 import os.path
 from typing import Optional
 
@@ -11,6 +11,9 @@ from models.decoder import get_decoder
 from models.encoder import get_encoder
 from models.loaders import Config, FAFADataGenerator, load_metadata
 from models.vae import VAE
+
+
+logger = getLogger('Train')
 
 
 def train(config: Config) -> Optional[History]:
@@ -59,8 +62,8 @@ def train(config: Config) -> Optional[History]:
     # Reset data generator to training mode batch sizes
     data_generator.batch_size = config['models']['vae']['batch_size']
 
-    logging.info(f'Image preprocessor featurewise: std {fafa_loader.std}')
-    logging.info(f'Image preprocessor featurewise: mean {fafa_loader.mean}')
+    logger.info(f'Image preprocessor featurewise: std {fafa_loader.std}')
+    logger.info(f'Image preprocessor featurewise: mean {fafa_loader.mean}')
 
     # Checkpoints
     artifact_folder = config['models']['vae']['artifacts']['folder']
@@ -69,11 +72,11 @@ def train(config: Config) -> Optional[History]:
     epochs = config['models']['vae']['epochs']
     steps = config['models']['vae']['batches_per_epoch']
 
+    tensorboard_cb = tensorboard_callback(artifacts_folder=artifact_folder)
     history = None
 
     for epoch in range(epochs):
-        logging.info(f"Epoch {epoch + 1} of {epochs} in {steps} steps of batch size {data_generator.batch_size}:")
-        tensorboard_cb = tensorboard_callback(artifacts_folder=checkpoint_folder)
+        logger.info(f"Epoch {epoch + 1} of {epochs} in {steps} steps of batch size {data_generator.batch_size}:")
         history = vae.fit(data_generator,
                           verbose=1,
                           initial_epoch=epoch,
