@@ -12,7 +12,7 @@ models:
 
     latent_dim: 32
     batch_size: 12
-    learning_rate: 1e-05
+    learning_rate: 1e-04
     # Fewer per epoch allows for epochs spanning some minutes on slightly older GPU hardware
     # This can probably be cranked up on newer hardware
     batches_per_epoch: 256
