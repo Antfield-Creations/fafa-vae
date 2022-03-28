@@ -24,6 +24,9 @@ models:
       - filters: 64
         kernel_size: 4
 
+    dense:
+      size: 32
+
 images:
   width: 640
   height: 640

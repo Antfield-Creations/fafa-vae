@@ -18,9 +18,11 @@ def get_encoder(config: Config) -> keras.Model:
     height = config['images']['height']
     channels = config['images']['channels']
 
+    convs = config['models']['vae']['conv2d']
+    dense = config['models']['vae']['dense']
+
     inputs = keras.Input(shape=(width, height, channels))
 
-    convs = config['models']['vae']['conv2d']
     x = keras.layers.Conv2D(
         filters=convs[0]['filters'],
         kernel_size=convs[0]['kernel_size'],
@@ -36,7 +38,7 @@ def get_encoder(config: Config) -> keras.Model:
         padding="same"
     )(x)
     x = keras.layers.Flatten()(x)
-    x = keras.layers.Dense(16, activation="relu")(x)
+    x = keras.layers.Dense(dense['size'], activation="relu")(x)
 
     latent_dim = config['models']['vae']['latent_dim']
     z_mean = keras.layers.Dense(latent_dim, name="z_mean")(x)
