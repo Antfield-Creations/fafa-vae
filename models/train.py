@@ -57,14 +57,8 @@ def train(config: Config) -> Optional[History]:
         batch_size=batch_size,
     )
 
-    logging.info(f'Fitting {batch_size} samples for image loader normalization...')
-    fafa_loader.fit(data_generator.next())
-
     # Reset data generator to training mode batch sizes
     data_generator.batch_size = config['models']['vae']['batch_size']
-
-    logger.info(f'Image preprocessor featurewise: std {fafa_loader.std}')
-    logger.info(f'Image preprocessor featurewise: mean {fafa_loader.mean}')
 
     # Checkpoints, sample reconstructions and metric artifact folders
     run_id = time.strftime('%Y-%m-%d_%Hh%Mm%Ss')
