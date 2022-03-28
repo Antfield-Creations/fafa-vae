@@ -1,5 +1,6 @@
 from logging import getLogger
 import os.path
+import time
 from typing import Optional
 
 from keras_preprocessing.image import save_img
@@ -65,9 +66,13 @@ def train(config: Config) -> Optional[History]:
     logger.info(f'Image preprocessor featurewise: std {fafa_loader.std}')
     logger.info(f'Image preprocessor featurewise: mean {fafa_loader.mean}')
 
-    # Checkpoints
-    artifact_folder = config['models']['vae']['artifacts']['folder']
+    # Checkpoints, sample reconstructions and metric artifact folders
+    run_id = time.strftime('%Y-%m-%d_%Hh%Mm%Ss')
+    artifact_folder = os.path.join(config['models']['vae']['artifacts']['folder'], run_id)
     checkpoint_folder = os.path.join(artifact_folder, 'checkpoints')
+    # Each epoch, the script generates a batch-sized set of sample images
+    reconstructions_folder = os.path.join(artifact_folder, 'reconstructions')
+    os.makedirs(reconstructions_folder, exist_ok=True)
 
     epochs = config['models']['vae']['epochs']
     steps = config['models']['vae']['batches_per_epoch']
@@ -91,10 +96,6 @@ def train(config: Config) -> Optional[History]:
 
         vae.encoder.save(filepath=os.path.join(epoch_folder, 'encoder'))
         vae.decoder.save(filepath=os.path.join(epoch_folder, 'decoder'))
-
-        # Each epoch, the script generates a batch-sized set of sample images
-        reconstructions_folder = os.path.join(artifact_folder, 'reconstructions')
-        os.makedirs(reconstructions_folder, exist_ok=True)
 
         sample_inputs = data_generator.next()
         reconstructions = vae(sample_inputs)
