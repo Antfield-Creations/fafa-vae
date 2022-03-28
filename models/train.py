@@ -39,27 +39,6 @@ def train(config: Config) -> Optional[History]:
     vae = VAE(encoder, decoder)
     vae.compile(optimizer=keras.optimizers.Adam(learning_rate=config['models']['vae']['learning_rate']))
 
-    # Input data specifics
-    fafa_loader = FAFADataGenerator()
-    img_folder = config['images']['folder']
-    img_metadata = load_metadata(
-        img_folder=img_folder,
-        include_tags=config['images']['filter']['include'],
-        exclude_tags=config['images']['filter']['exclude'],
-    )
-
-    batch_size = config['models']['vae']['data_generator']['fit_samples']
-    data_generator = fafa_loader.flow_from_dataframe(
-        dataframe=img_metadata,
-        class_mode=None,
-        directory=img_folder,
-        target_size=(config['images']['width'], config['images']['height']),
-        batch_size=batch_size,
-    )
-
-    # Reset data generator to training mode batch sizes
-    data_generator.batch_size = config['models']['vae']['batch_size']
-
     # Checkpoints, sample reconstructions and metric artifact folders
     run_id = time.strftime('%Y-%m-%d_%Hh%Mm%Ss')
     artifact_folder = os.path.join(config['models']['vae']['artifacts']['folder'], run_id)
@@ -72,6 +51,7 @@ def train(config: Config) -> Optional[History]:
     steps = config['models']['vae']['batches_per_epoch']
 
     tensorboard_cb = tensorboard_callback(artifacts_folder=artifact_folder)
+    data_generator = get_generator(config)
     history = None
 
     for epoch in range(epochs):
