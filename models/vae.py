@@ -46,7 +46,7 @@ class VAE(keras.Model):
 
         :param data:
         :return: a dictionary of typical variational auto-encoder metrics:
-                    - a run-of-the-mill total loss
+                    - a total loss, summed from:
                     - the reconstruction loss - how much the result diverges from the input
                     - the Kullback-Leibler loss - how much the encoder outputs diverge from a normal distribution
         """
