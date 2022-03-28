@@ -1,5 +1,6 @@
 from keras_preprocessing.image import ImageDataGenerator
 
+from models.loaders.config import Config
 from models.loaders.metadata import load_metadata
 
 
@@ -13,7 +14,7 @@ class FAFADataGenerator(ImageDataGenerator):
         )
 
 
-def get_generator(config):
+def get_generator(config: Config) -> ImageDataGenerator:
     """
     Constucts a Keras ImageDataGenerator to load data from. You can iterate over the data in the dataset, or get a
     batch using the data_generator.next() method

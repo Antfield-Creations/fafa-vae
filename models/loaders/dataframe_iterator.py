@@ -1,4 +1,8 @@
+from typing import Optional, Tuple
+
 from keras_preprocessing import image
+from keras_preprocessing.image import ImageDataGenerator
+from pandas import DataFrame
 
 
 class DataFrameIterator(image.DataFrameIterator):  # pylint: disable=inconsistent-mro
@@ -74,27 +78,27 @@ class DataFrameIterator(image.DataFrameIterator):  # pylint: disable=inconsisten
 
     def __init__(
             self,
-            dataframe,
-            directory=None,
-            image_data_generator=None,
-            x_col='filename',
-            y_col='class',
-            weight_col=None,
-            target_size=(256, 256),
-            color_mode='rgb',
-            classes=None,
-            class_mode='categorical',
-            batch_size=32,
-            shuffle=True,
-            seed=None,
-            data_format='channels_last',
-            save_to_dir=None,
-            save_prefix='',
-            save_format='png',
-            subset=None,
-            interpolation='nearest',
-            dtype='float32',
-            validate_filenames=True):
+            dataframe: DataFrame,
+            directory: str = None,
+            image_data_generator: ImageDataGenerator = None,
+            x_col: str = 'filename',
+            y_col: str = 'class',
+            weight_col: Optional[str] = None,
+            target_size: Tuple[int, int] = (256, 256),
+            color_mode: str = 'rgb',
+            classes: Optional[str] = None,
+            class_mode: str = 'categorical',
+            batch_size: int = 32,
+            shuffle: bool = True,
+            seed: Optional[int] = None,
+            data_format: str = 'channels_last',
+            save_to_dir: Optional[str] = None,
+            save_prefix: str = '',
+            save_format: str = 'png',
+            subset: Optional[str] = None,
+            interpolation: str = 'nearest',
+            dtype: str = 'float32',
+            validate_filenames: bool = True):
         super(DataFrameIterator, self).__init__(
             dataframe=dataframe,
             directory=directory,
