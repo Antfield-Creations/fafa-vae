@@ -1,4 +1,6 @@
+import logging
 import os.path
+from typing import Union
 
 from tensorflow.python.keras.callbacks import ModelCheckpoint, TensorBoard
 
@@ -19,7 +21,7 @@ def checkpoint_callback(checkpoint_folder: str) -> ModelCheckpoint:
     )
 
 
-def tensorboard_callback(artifacts_folder: str, update_freq: int = 100) -> TensorBoard:
+def tensorboard_callback(artifacts_folder: str, update_freq: Union[int, str] = 100) -> TensorBoard:
     """
     Returns a Tensorboard logging callback instance
 
@@ -28,9 +30,11 @@ def tensorboard_callback(artifacts_folder: str, update_freq: int = 100) -> Tenso
 
     :return: a Tensorboard callback function
     """
+    tb_folder = os.path.join(artifacts_folder, 'tensorboard')
+    logging.info(f'You may inspect the logs using\n\n tensorboard --logdir={tb_folder}')
 
     return TensorBoard(
-        log_dir=os.path.join(artifacts_folder, 'tensorboard'),
+        log_dir=tb_folder,
         histogram_freq=0,
         write_graph=True,
         write_images=False,
