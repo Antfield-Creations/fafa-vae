@@ -21,8 +21,8 @@ models:
 
     # encoder
     dense:
-      size: 32
-    latent_dim: 32
+      size: 64
+    latent_dim: 64
 
     conv2d:
       - filters: 32
