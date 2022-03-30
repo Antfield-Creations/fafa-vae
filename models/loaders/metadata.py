@@ -52,8 +52,8 @@ def load_metadata(
         @lru_cache
         def tag_includer(tags: frozenset) -> bool:
             # The mask returns true for each record where the picture tags have any overlap with the inclusion tags
-            has_tags = tags.intersection(include_tags_set) != set()
-            return has_tags
+            has_overlap = not tags.isdisjoint(include_tags_set)
+            return has_overlap
 
         mask = df['tags'].apply(tag_includer)
         df = df[mask]
@@ -63,8 +63,8 @@ def load_metadata(
 
         @lru_cache
         def tag_excluder(tags: frozenset) -> bool:
-            no_matches = tags.intersection(exclude_tags_set) == set()
-            return no_matches
+            no_overlap = tags.isdisjoint(exclude_tags_set)
+            return no_overlap
 
         # The mask returns true for each record where the picture tags have no overlap with the exclusion tags
         mask = df['tags'].apply(tag_excluder)
