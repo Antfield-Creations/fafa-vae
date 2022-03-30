@@ -41,6 +41,8 @@ images:
     last_set: 5159
 
   filter:
+    # one of "any", "portrait" or "landscape"
+    orientation: portrait
     # if no values under "include" are specified, it includes all tags
     include:
 

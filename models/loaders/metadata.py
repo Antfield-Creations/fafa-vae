@@ -15,6 +15,7 @@ logger = getLogger('Metadata')
 
 def load_metadata(
         img_folder: str,
+        orientation: str = 'any',
         exclude_tags: Optional[List[str]] = None,
         include_tags: Optional[List[str]] = None) -> DataFrame:
 
@@ -29,7 +30,14 @@ def load_metadata(
         export_metadata(img_folder)
 
     df = pandas.read_json(metadata_path)
-    # Convert tags to immutabel in order to be able to hash it. The filter application requires this
+
+    # For now: only use portrait-oriented images
+    if orientation == 'portrait':
+        df = df[df['height'] > df['width']]
+    elif orientation == 'landscape':
+        df = df[df['width'] > df['height']]
+
+    # Convert tags to immutable in order to be able to hash it. The filter application requires this
     df['tags'] = df['tags'].apply(lambda tags: frozenset(tags))
 
     # Validate that the exclusion an inclusion tags do not overlap
