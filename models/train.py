@@ -44,7 +44,6 @@ def train(config: Config) -> Optional[History]:
     run_id = time.strftime('%Y-%m-%d_%Hh%Mm%Ss')
     artifact_folder = os.path.join(config['models']['vae']['artifacts']['folder'], run_id)
     checkpoint_folder = os.path.join(artifact_folder, 'checkpoints')
-    # Each epoch, the script generates a batch-sized set of sample images
     reconstructions_folder = os.path.join(artifact_folder, 'reconstructions')
     os.makedirs(reconstructions_folder, exist_ok=True)
 
