@@ -28,6 +28,7 @@ def get_generator(config: Config) -> ImageDataGenerator:
 
     img_metadata = load_metadata(
         img_folder=img_folder,
+        orientation=config['images']['filter']['orientation'],
         include_tags=config['images']['filter']['include'],
         exclude_tags=config['images']['filter']['exclude'],
     )
