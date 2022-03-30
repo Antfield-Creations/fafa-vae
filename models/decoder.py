@@ -21,27 +21,30 @@ def get_decoder(config: Config) -> keras.Model:
     img_height = config['images']['height']
     img_channels = config['images']['channels']
 
+    width_over_deconv = int(img_width / 2 ** len(convs))
+    height_over_deconv = int(img_height / 2 ** len(convs))
     x = keras.layers.Dense(
-        int(img_width / 4) * int(img_height / 4) * convs[1]['filters'], activation="relu")(latent_inputs)
+        width_over_deconv * height_over_deconv * convs[-1]['filters'], activation="relu")(latent_inputs)
     x = keras.layers.Reshape(
-        (int(img_width / 4), int(img_height / 4), convs[1]['filters']))(x)
+        (width_over_deconv, height_over_deconv, convs[-1]['filters']))(x)
 
     # The conv2d layers in reverse:
-    x = keras.layers.Conv2DTranspose(
-        filters=convs[1]['filters'],
-        kernel_size=convs[1]['kernel_size'],
-        activation="relu",
-        strides=2,
-        padding="same"
+    for conv in reversed(convs):
+        x = keras.layers.Conv2DTranspose(
+            filters=conv['filters'],
+            kernel_size=conv['kernel_size'],
+            activation="relu",
+            strides=2,
+            padding="same"
+        )(x)
+
+    decoder_outputs = keras.layers.Conv2DTranspose(
+        filters=img_channels,
+        kernel_size=3,
+        activation="sigmoid",
+        strides=1,
+        padding="same",
     )(x)
-    x = keras.layers.Conv2DTranspose(
-        filters=convs[0]['filters'],
-        kernel_size=convs[0]['kernel_size'],
-        activation="relu",
-        strides=2,
-        padding="same"
-    )(x)
-    decoder_outputs = keras.layers.Conv2DTranspose(img_channels, 3, activation="sigmoid", padding="same")(x)
 
     decoder = keras.Model(latent_inputs, decoder_outputs, name="decoder")
     return decoder
