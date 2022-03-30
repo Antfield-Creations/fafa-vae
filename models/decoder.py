@@ -41,7 +41,7 @@ def get_decoder(config: Config) -> keras.Model:
     decoder_outputs = keras.layers.Conv2DTranspose(
         filters=img_channels,
         kernel_size=3,
-        activation="sigmoid",
+        activation="tanh",
         strides=1,
         padding="same",
     )(x)
