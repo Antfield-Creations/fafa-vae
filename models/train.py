@@ -29,15 +29,16 @@ def train(config: Config) -> Optional[History]:
     encoder = get_encoder(config)
     # Compile the encoder separately to get rid of "uncompiled metrics" warnings
     # See also: https://stackoverflow.com/questions/67970389
-    encoder.compile(optimizer=keras.optimizers.Adam(learning_rate=config['models']['vae']['learning_rate']))
+    optimizer = keras.optimizers.Adam(learning_rate=config['models']['vae']['learning_rate'])
+    encoder.compile(optimizer=optimizer)
     encoder.summary()
 
     decoder = get_decoder(config)
-    decoder.compile(optimizer=keras.optimizers.Adam(learning_rate=config['models']['vae']['learning_rate']))
+    decoder.compile(optimizer=optimizer)
     decoder.summary()
 
     vae = VAE(encoder, decoder)
-    vae.compile(optimizer=keras.optimizers.Adam(learning_rate=config['models']['vae']['learning_rate']))
+    vae.compile(optimizer=optimizer)
 
     # Checkpoints, sample reconstructions and metric artifact folders
     run_id = time.strftime('%Y-%m-%d_%Hh%Mm%Ss')
