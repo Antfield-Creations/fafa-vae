@@ -10,22 +10,25 @@ models:
       # normalization batch_size
       fit_samples: 512
 
-    latent_dim: 32
-    batch_size: 12
-    learning_rate: 1e-04
+    batch_size: 10
+    learning_rate: 1e-05
     # Fewer per epoch allows for epochs spanning some minutes on slightly older GPU hardware
     # This can probably be cranked up on newer hardware
     batches_per_epoch: 256
     epochs: 128
+
+    # encoder
+    dense:
+      size: 32
+    latent_dim: 32
 
     conv2d:
       - filters: 32
         kernel_size: 4
       - filters: 64
         kernel_size: 4
-
-    dense:
-      size: 32
+      - filters: 128
+        kernel_size: 4
 
 images:
   width: 640
