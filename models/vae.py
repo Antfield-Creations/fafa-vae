@@ -45,6 +45,7 @@ class VAE(keras.Model):
         Trains a single mini-batch of tensors
 
         :param data:
+
         :return: a dictionary of typical variational auto-encoder metrics:
                     - a total loss, summed from:
                     - the reconstruction loss - how much the result diverges from the input
