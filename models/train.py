@@ -54,12 +54,12 @@ def train(config: Config) -> Optional[History]:
     data_generator = get_generator(config)
     history = None
 
-    for epoch in range(epochs):
-        logger.info(f"Epoch {epoch + 1} of {epochs} in {steps} steps of batch size {data_generator.batch_size}:")
+    for epoch in range(1, epochs + 1):
+        logger.info(f"Epoch {epoch} of {epochs} in {steps} steps of batch size {data_generator.batch_size}:")
         history = vae.fit(data_generator,
                           verbose=1,
-                          initial_epoch=epoch,
-                          epochs=epoch + 1,
+                          initial_epoch=epoch - 1,
+                          epochs=epoch,
                           use_multiprocessing=True,
                           steps_per_epoch=steps,
                           callbacks=[tensorboard_cb],
@@ -75,7 +75,7 @@ def train(config: Config) -> Optional[History]:
         reconstructions = vae(sample_inputs)
 
         for img_idx in range(reconstructions.shape[0]):
-            output_path = os.path.join(reconstructions_folder, f'epoch-{epoch + 1}-{img_idx + 1}.png')
+            output_path = os.path.join(reconstructions_folder, f'epoch-{epoch}-{img_idx + 1}.png')
             save_img(output_path, reconstructions[img_idx])
 
     return history
