@@ -65,11 +65,11 @@ def train(config: Config) -> Optional[History]:
                           callbacks=[tensorboard_cb],
                           )
 
-        # Save encoder and decoder models
-        epoch_folder = os.path.join(checkpoint_folder, f'epoch-{epoch + 1}')
-
-        vae.encoder.save(filepath=os.path.join(epoch_folder, 'encoder'))
-        vae.decoder.save(filepath=os.path.join(epoch_folder, 'decoder'))
+        # Save encoder and decoder models on interval
+        if epoch % config['models']['vae']['checkpoints']['save_every_epoch'] == 0:
+            epoch_folder = os.path.join(checkpoint_folder, f'epoch-{epoch}')
+            vae.encoder.save(filepath=os.path.join(epoch_folder, 'encoder'))
+            vae.decoder.save(filepath=os.path.join(epoch_folder, 'decoder'))
 
         sample_inputs = data_generator.next()
         reconstructions = vae(sample_inputs)

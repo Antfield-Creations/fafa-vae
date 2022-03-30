@@ -5,6 +5,8 @@ models:
   vae:
     artifacts:
       folder: ~/Downloads/FAFA/artifacts
+    checkpoints:
+      save_every_epoch: 16
 
     data_generator:
       # normalization batch_size
