@@ -17,7 +17,7 @@ models:
     # Fewer per epoch allows for epochs spanning some minutes on slightly older GPU hardware
     # This can probably be cranked up on newer hardware
     batches_per_epoch: 256
-    epochs: 128
+    epochs: 256
 
     # encoder
     dense:
