@@ -28,10 +28,22 @@ models:
     conv2d:
       - filters: 32
         kernel_size: 4
+        strides: 1
+      - filters: 32
+        kernel_size: 4
+        strides: 2
       - filters: 64
         kernel_size: 4
+        strides: 1
+      - filters: 64
+        kernel_size: 4
+        strides: 2
       - filters: 128
         kernel_size: 4
+        strides: 1
+      - filters: 128
+        kernel_size: 4
+        strides: 2
 
 images:
   width: 640

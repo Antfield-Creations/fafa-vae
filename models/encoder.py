@@ -30,7 +30,7 @@ def get_encoder(config: Config) -> keras.Model:
             filters=conv['filters'],
             kernel_size=conv['kernel_size'],
             activation="relu",
-            strides=2,
+            strides=conv['strides'],
             padding="same"
         )(encoder_layers)
 
