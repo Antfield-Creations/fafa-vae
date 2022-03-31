@@ -13,7 +13,7 @@ models:
       fit_samples: 512
 
     # This is a rather small batch size, but it allows training on a GTX1060
-    batch_size: 10
+    batch_size: 6
     learning_rate: 1e-05
     # Fewer batches per epoch allows for epochs of no more than a few minutes
     # on older GPU hardware. This can probably be cranked up on newer hardware
