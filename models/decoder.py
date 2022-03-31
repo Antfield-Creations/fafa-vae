@@ -1,3 +1,4 @@
+import numpy as np
 from tensorflow import keras
 
 from models.loaders.config import Config
@@ -21,8 +22,10 @@ def get_decoder(config: Config) -> keras.Model:
     img_height = config['images']['height']
     img_channels = config['images']['channels']
 
-    width_over_deconv = int(img_width / 2 ** len(convs))
-    height_over_deconv = int(img_height / 2 ** len(convs))
+    reductions = np.product([conv['strides'] for conv in convs])
+    width_over_deconv = int(img_width / reductions)
+    height_over_deconv = int(img_height / reductions)
+
     x = keras.layers.Dense(
         width_over_deconv * height_over_deconv * convs[-1]['filters'], activation="relu")(latent_inputs)
     x = keras.layers.Reshape(
