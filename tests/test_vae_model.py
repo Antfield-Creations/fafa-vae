@@ -35,6 +35,9 @@ class VAEModelTestCase(unittest.TestCase):
             num_epochs = 2
             config['models']['vae']['epochs'] = num_epochs
 
+            checkpoint_interval = num_epochs
+            config['models']['vae']['checkpoints']['save_every_epoch'] = checkpoint_interval
+
             batches_per_epoch = 16
             config['models']['vae']['batches_per_epoch'] = batches_per_epoch
 
@@ -47,7 +50,7 @@ class VAEModelTestCase(unittest.TestCase):
             artifacts_folder = str(config['models']['vae']['artifacts']['folder'])
             runs = listdir(artifacts_folder)
             artifacts_folder = os.path.join(artifacts_folder, runs[0])
-            epoch_1_folder = os.path.join(artifacts_folder, 'checkpoints', 'epoch-1')
+            epoch_2_folder = os.path.join(artifacts_folder, 'checkpoints', 'epoch-2')
 
             with self.subTest('The loss is a valid float'):
                 assert history is not None
@@ -58,12 +61,12 @@ class VAEModelTestCase(unittest.TestCase):
                 self.assertSetEqual(set(artifacts), {'checkpoints', 'reconstructions', 'tensorboard'},
                                     f"Got: {artifacts} from {artifacts_folder}")
 
-            with self.subTest('It generates a checkpoint dir for each epoch'):
+            with self.subTest(f'It generates a checkpoint dir for epoch intervals of {checkpoint_interval}'):
                 epochs = listdir(os.path.join(artifacts_folder, 'checkpoints'))
-                self.assertSetEqual(set(epochs), {'epoch-1', 'epoch-2'})
+                self.assertSetEqual(set(epochs), {'epoch-2'})
 
             with self.subTest('It generates a folder for the decoder and encoder'):
-                contents = listdir(epoch_1_folder)
+                contents = listdir(epoch_2_folder)
                 self.assertIn('encoder', contents)
                 self.assertIn('decoder', contents)
 
