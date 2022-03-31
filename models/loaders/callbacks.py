@@ -2,6 +2,7 @@ import os
 
 from keras_preprocessing.image import save_img
 from tensorflow import keras
+from tensorflow.python.ops.gen_batch_ops import Batch
 
 from models.loaders.config import Config
 from models.loaders.data_generator import get_generator
@@ -25,3 +26,14 @@ class CustomImageSamplerCallback(keras.callbacks.Callback):
         for img_idx in range(reconstructions.shape[0]):
             output_path = os.path.join(reconstructions_folder, f'epoch-{epoch + 1}-{img_idx + 1}.png')
             save_img(output_path, reconstructions[img_idx])
+
+    def on_train_batch_end(self, batch: Batch, logs: dict = None) -> None:
+        """
+        Overrides the default on_train_batch_end method to basically a no-op.
+        This fixes the message "Callback method `on_train_batch_end` is slow compared to the batch time"
+
+        :param batch:
+        :param logs:
+        :return:
+        """
+        pass
