@@ -3,13 +3,13 @@ import time
 from logging import getLogger
 from typing import Optional
 
-from keras_preprocessing.image import save_img
 from tensorflow import keras
 from tensorflow.python.keras.callbacks import History
 
 from models.callbacks import tensorboard_callback
 from models.decoder import get_decoder
 from models.encoder import get_encoder
+from models.loaders.callbacks import CustomImageSamplerCallback
 from models.loaders.config import Config
 from models.loaders.data_generator import get_generator
 from models.vae import VAE
@@ -44,14 +44,13 @@ def train(config: Config) -> Optional[History]:
     run_id = time.strftime('%Y-%m-%d_%Hh%Mm%Ss')
     artifact_folder = os.path.join(config['models']['vae']['artifacts']['folder'], run_id)
     checkpoint_folder = os.path.join(artifact_folder, 'checkpoints')
-    reconstructions_folder = os.path.join(artifact_folder, 'reconstructions')
-    os.makedirs(reconstructions_folder, exist_ok=True)
 
     epochs = config['models']['vae']['epochs']
     steps = config['models']['vae']['batches_per_epoch']
 
-    tensorboard_cb = tensorboard_callback(artifacts_folder=artifact_folder)
     data_generator = get_generator(config)
+    tensorboard_cb = tensorboard_callback(artifacts_folder=artifact_folder)
+    image_sampler = CustomImageSamplerCallback(config, run_id)
     history = None
 
     for epoch in range(1, epochs + 1):
@@ -62,7 +61,7 @@ def train(config: Config) -> Optional[History]:
                           epochs=epoch,
                           use_multiprocessing=True,
                           steps_per_epoch=steps,
-                          callbacks=[tensorboard_cb],
+                          callbacks=[tensorboard_cb, image_sampler],
                           )
 
         # Save encoder and decoder models on interval
@@ -70,12 +69,5 @@ def train(config: Config) -> Optional[History]:
             epoch_folder = os.path.join(checkpoint_folder, f'epoch-{epoch}')
             vae.encoder.save(filepath=os.path.join(epoch_folder, 'encoder'))
             vae.decoder.save(filepath=os.path.join(epoch_folder, 'decoder'))
-
-        sample_inputs = data_generator.next()
-        reconstructions = vae(sample_inputs)
-
-        for img_idx in range(reconstructions.shape[0]):
-            output_path = os.path.join(reconstructions_folder, f'epoch-{epoch}-{img_idx + 1}.png')
-            save_img(output_path, reconstructions[img_idx])
 
     return history
