@@ -34,6 +34,13 @@ def get_decoder(config: Config) -> keras.Model:
             filters=conv['filters'],
             kernel_size=conv['kernel_size'],
             activation="relu",
+            strides=1,
+            padding="same"
+        )(x)
+        x = keras.layers.Conv2DTranspose(
+            filters=conv['filters'],
+            kernel_size=conv['kernel_size'],
+            activation="relu",
             strides=2,
             padding="same"
         )(x)
