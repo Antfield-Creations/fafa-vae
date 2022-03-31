@@ -23,5 +23,5 @@ class CustomImageSamplerCallback(keras.callbacks.Callback):
         os.makedirs(reconstructions_folder, exist_ok=True)
 
         for img_idx in range(reconstructions.shape[0]):
-            output_path = os.path.join(reconstructions_folder, f'epoch-{epoch}-{img_idx + 1}.png')
+            output_path = os.path.join(reconstructions_folder, f'epoch-{epoch + 1}-{img_idx + 1}.png')
             save_img(output_path, reconstructions[img_idx])
