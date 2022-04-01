@@ -47,8 +47,8 @@ def train(config: Config) -> Optional[History]:
     checkpoint_folder = os.path.join(artifact_folder, 'checkpoints')
 
     # Copy model modules to artifacts for archiving
-    script_dir = os.path.dirname(os.path.realpath(__file__))
-    shutil.copytree(os.path.join(script_dir, 'models'), artifact_folder)
+    models_dir = os.path.dirname(os.path.realpath(__file__))
+    shutil.copytree(models_dir, artifact_folder)
 
     epochs = config['models']['vae']['epochs']
     steps = config['models']['vae']['batches_per_epoch']
