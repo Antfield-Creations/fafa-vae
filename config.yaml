@@ -44,12 +44,6 @@ models:
       - filters: 92
         kernel_size: 4
         strides: 2
-      - filters: 128
-        kernel_size: 4
-        strides: 1
-      - filters: 128
-        kernel_size: 4
-        strides: 2
 
 images:
   width: 640
