@@ -1,4 +1,5 @@
 import os.path
+import shutil
 import time
 from logging import getLogger
 from typing import Optional
@@ -44,6 +45,10 @@ def train(config: Config) -> Optional[History]:
     run_id = time.strftime('%Y-%m-%d_%Hh%Mm%Ss')
     artifact_folder = os.path.join(config['models']['vae']['artifacts']['folder'], run_id)
     checkpoint_folder = os.path.join(artifact_folder, 'checkpoints')
+
+    # Copy model modules to artifacts for archiving
+    script_dir = os.path.dirname(os.path.realpath(__file__))
+    shutil.copytree(os.path.join(script_dir, 'models'), artifact_folder)
 
     epochs = config['models']['vae']['epochs']
     steps = config['models']['vae']['batches_per_epoch']

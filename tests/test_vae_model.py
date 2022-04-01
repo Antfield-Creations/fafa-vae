@@ -58,7 +58,7 @@ class VAEModelTestCase(unittest.TestCase):
 
             with self.subTest('It generates a set of artifact directories'):
                 artifacts = listdir(artifacts_folder)
-                self.assertSetEqual(set(artifacts), {'checkpoints', 'reconstructions', 'tensorboard'},
+                self.assertSetEqual(set(artifacts), {'checkpoints', 'models', 'reconstructions', 'tensorboard'},
                                     f"Got: {artifacts} from {artifacts_folder}")
 
             with self.subTest(f'It generates a checkpoint dir for epoch intervals of {checkpoint_interval}'):
