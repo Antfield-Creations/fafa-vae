@@ -29,10 +29,10 @@ def get_encoder(config: Config) -> keras.Model:
         encoder_layers = keras.layers.Conv2D(
             filters=conv['filters'],
             kernel_size=conv['kernel_size'],
-            activation="relu",
             strides=conv['strides'],
             padding="same"
         )(encoder_layers)
+        encoder_layers = keras.layers.LeakyReLU()(encoder_layers)
 
     encoder_layers = keras.layers.Flatten()(encoder_layers)
     encoder_layers = keras.layers.Dense(dense['size'], activation="relu")(encoder_layers)

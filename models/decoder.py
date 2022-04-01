@@ -36,10 +36,10 @@ def get_decoder(config: Config) -> keras.Model:
         x = keras.layers.Conv2DTranspose(
             filters=conv['filters'],
             kernel_size=conv['kernel_size'],
-            activation="relu",
             strides=conv['strides'],
             padding="same"
         )(x)
+        x = keras.layers.LeakyReLU()(x)
 
     decoder_outputs = keras.layers.Conv2DTranspose(
         filters=img_channels,
