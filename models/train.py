@@ -45,10 +45,13 @@ def train(config: Config) -> Optional[History]:
     run_id = time.strftime('%Y-%m-%d_%Hh%Mm%Ss')
     artifact_folder = os.path.join(config['models']['vae']['artifacts']['folder'], run_id)
     checkpoint_folder = os.path.join(artifact_folder, 'checkpoints')
+    models_folder = os.path.join(artifact_folder, 'models')
+    os.makedirs(models_folder, exist_ok=True)
 
     # Copy model modules to artifacts for archiving
-    models_dir = os.path.dirname(os.path.realpath(__file__))
-    shutil.copytree(models_dir, artifact_folder)
+    models_src = os.path.dirname(os.path.realpath(__file__))
+    shutil.copytree(models_src, models_folder)
+    shutil.copy(os.path.join(models_src, '..', 'config.yaml'), os.path.join(models_src, 'config.yaml'))
 
     epochs = config['models']['vae']['epochs']
     steps = config['models']['vae']['batches_per_epoch']
