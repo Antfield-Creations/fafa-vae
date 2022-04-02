@@ -13,9 +13,9 @@ def get_decoder(config: Config) -> keras.Model:
     :return: A Keras model instance as the decoder
     """
 
-    latent_dim = config['models']['vae']['latent_dim']
+    latent_size = config['models']['vae']['latent_size']
 
-    latent_inputs = keras.Input(shape=(latent_dim,))
+    latent_inputs = keras.Input(shape=(latent_size,))
 
     convs = config['models']['vae']['conv2d']
     img_width = config['images']['width']
