@@ -37,9 +37,9 @@ def get_encoder(config: Config) -> keras.Model:
     encoder_layers = keras.layers.Flatten()(encoder_layers)
     encoder_layers = keras.layers.Dense(dense['size'], activation="relu")(encoder_layers)
 
-    latent_dim = config['models']['vae']['latent_dim']
-    z_mean = keras.layers.Dense(latent_dim, name="z_mean")(encoder_layers)
-    z_log_var = keras.layers.Dense(latent_dim, name="z_log_var")(encoder_layers)
+    latent_size = config['models']['vae']['latent_size']
+    z_mean = keras.layers.Dense(latent_size, name="z_mean")(encoder_layers)
+    z_log_var = keras.layers.Dense(latent_size, name="z_log_var")(encoder_layers)
     z = Sampling()((z_mean, z_log_var))
 
     encoder = tf.keras.Model(inputs, [z_mean, z_log_var, z], name="encoder")
