@@ -2,7 +2,6 @@ import os
 
 from keras_preprocessing.image import save_img
 from tensorflow import keras
-from tensorflow.python.ops.gen_batch_ops import Batch
 
 from models.loaders.config import Config
 from models.loaders.data_generator import get_generator
@@ -27,13 +26,27 @@ class CustomImageSamplerCallback(keras.callbacks.Callback):
             output_path = os.path.join(reconstructions_folder, f'epoch-{epoch + 1}-{img_idx + 1}.png')
             save_img(output_path, reconstructions[img_idx])
 
-    def on_train_batch_end(self, batch: Batch, logs: dict = None) -> None:
-        """
-        Overrides the default on_train_batch_end method to basically a no-op.
-        This fixes the message "Callback method `on_train_batch_end` is slow compared to the batch time"
 
-        :param batch:
-        :param logs:
-        :return:
+class CustomModelCheckpointSaver(keras.callbacks.Callback):
+    """
+    Saves encoder and decoder checkpoints at a given epoch interval
+    """
+
+    def __init__(self, config: Config, run_id: str) -> None:
+        self.epoch_interval = config['models']['vae']['checkpoints']['save_every_epoch']
+        artifact_folder = os.path.join(config['models']['vae']['artifacts']['folder'], run_id)
+        self.checkpoint_folder = os.path.join(artifact_folder, 'checkpoints')
+
+    def on_epoch_end(self, epoch: int, logs: dict = None) -> None:
         """
-        pass
+        Saves encoder and decoder sub-models on a given epoch interval
+
+        :param epoch: the current finished epoch number
+        :param logs: dictionary of epoch logging
+
+        :return: None
+        """
+        if epoch % self.epoch_interval == 0:
+            epoch_folder = os.path.join(self.checkpoint_folder, f'epoch-{epoch}')
+            self.model.encoder.save(filepath=os.path.join(epoch_folder, 'encoder'))
+            self.model.decoder.save(filepath=os.path.join(epoch_folder, 'decoder'))
