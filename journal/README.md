@@ -1,5 +1,31 @@
 # Lab journal
 
+Things to try next:
+- [X] lrelu activation on conv layers (works quite well)
+- [X] larger latent size 64 -> 128 (no significant change)
+- [X] Sigmoid on output layer (didn't work)
+- [ ] No activation on decoder output layer
+- [ ] Linear activation on decoder output layer
+
+## 2022-04-03
+I'm trying out too many changes at once, this hampers inspection on what actually works better. Today I'm trying to
+change _only_ the activation on the decoder output layer, switching from sigmoid to tanh. Taking one step at a time.
+Trouble is of course, that I'm impatient. I got some decent results earlier, but I need to test out one change at a time
+to see whether it actually improves the loss. So: yesterday's run ended on a reconstruction loss of about 3.2e5 and a
+KL loss of about 400. They all settle on about that KL number, regardless of what the network looks like. 
+
+Run 2022-04-03_11h51m10s uses a somewhat larger field of view (kernel size 5) on the conv layers, just like the run I
+did yesterday, but then only with the activation function on the decoder output set to hyperbolic tangent.
+
+Also: it's about time that I switch from my untrusty old laptop to a cloud GPU/TPU server, my sessions keep getting
+killed by Python somwhere after 150-200 epochs, due to the size of the model script. It takes over 22 Gb of (virtual)
+memory, I don't quite know why yet. At a batch size of 8, a single batch currently holds 8 images of 640x640x3 float32's
+so at that could certainly not account for more than just a couple of megabytes. The image metadata dataframe is
+probably substantially larger, in JSON format it's already ~120Mb. But I sure don't know where the other gigabytes go.
+
+I also made sure to copy all the Python model files and config.yaml to the artifacts folder to archive not only the
+model, checkpoints and reconstructions, but also the input files that generated it.
+
 ## 2022-04-01
 Started out this week from 
 the [Keras example code for variational autoencoders](https://keras.io/examples/generative/vae/). I departed from that
@@ -17,6 +43,3 @@ As for the results, I've seen a lot of improvement in the visuals for the networ
 ghostly figures, but nothing recognizable yet. The watermarks in some images are a nuisance: if I get rid of the sources
 with them, I have a "Ghost" VAE!
 
-Things to try next:
-- linear activation on decoder output layer
-- [X] lrelu activation on conv layers (works quite well)
