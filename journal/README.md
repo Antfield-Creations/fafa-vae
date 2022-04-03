@@ -4,6 +4,9 @@ Things to try next:
 - [X] lrelu activation on conv layers (works quite well)
 - [X] larger latent size 64 -> 128 (no significant change)
 - [X] Sigmoid on output layer (didn't work)
+- [ ] Use kernel size of 5 on conv layers (some promising preliminary results, needs better checking)
+- [ ] Use `he_normal` kernel initialisation on conv layers
+- [ ] Try only the 'standing' tag to constrain the domain to fewer poses
 - [ ] No activation on decoder output layer
 - [ ] Linear activation on decoder output layer
 
@@ -15,7 +18,9 @@ to see whether it actually improves the loss. So: yesterday's run ended on a rec
 KL loss of about 400. They all settle on about that KL number, regardless of what the network looks like. 
 
 Run 2022-04-03_11h51m10s uses a somewhat larger field of view (kernel size 5) on the conv layers, just like the run I
-did yesterday, but then only with the activation function on the decoder output set to hyperbolic tangent.
+did yesterday, but then only with the activation function on the decoder output set to hyperbolic tangent. After 16
+minutes it's already at the 56 minute mark performance of my best run so far, from friday. This should shape up to be a
+new best run for sure. Strangely enough, the KL loss starts out much higher on this one than the friday run.
 
 Also: it's about time that I switch from my untrusty old laptop to a cloud GPU/TPU server, my sessions keep getting
 killed by Python somwhere after 150-200 epochs, due to the size of the model script. It takes over 22 Gb of (virtual)
