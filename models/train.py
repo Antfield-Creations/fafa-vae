@@ -61,6 +61,9 @@ def train(config: Config) -> Optional[History]:
     history = None
 
     for epoch in range(1, epochs + 1):
+        # Clear state buildup to prevent down-the-run OOM errors
+        keras.clear_session()
+
         logger.info(f"Epoch {epoch} of {epochs} in {steps} steps of batch size {data_generator.batch_size}:")
         history = vae.fit(data_generator,
                           verbose=1,
