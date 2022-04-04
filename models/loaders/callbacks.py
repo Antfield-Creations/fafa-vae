@@ -1,3 +1,4 @@
+import logging
 import os
 
 from keras_preprocessing.image import save_img
@@ -46,7 +47,9 @@ class CustomModelCheckpointSaver(keras.callbacks.Callback):
 
         :return: None
         """
-        if (epoch - 1) % self.epoch_interval == 0:
+        if epoch > 0 and epoch % self.epoch_interval == 0:
             epoch_folder = os.path.join(self.checkpoint_folder, f'epoch-{epoch}')
             self.model.encoder.save(filepath=os.path.join(epoch_folder, 'encoder'))
             self.model.decoder.save(filepath=os.path.join(epoch_folder, 'decoder'))
+        else:
+            logging.info(f'Skipping model checkpoint save for epoch {epoch}')
