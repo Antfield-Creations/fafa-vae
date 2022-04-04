@@ -18,7 +18,9 @@ activation on the last layer is that the model figures take on a much more reali
 previously. The unspecified activation (is this linear by default?) results in much better skin-toned model "ghosts",
 right from epoch 2.
 
-I also switched to T4 instances, which greatly speeds up training, compared to my own GTX 1060 laptop.
+I also switched to T4 instances, which greatly speeds up training, compared to my own GTX 1060 laptop. This is the 
+second set of changes I made: I switched from a batch size of 8 to 10 and increased the first conv layer of 16 filters
+to 32 to see if that results in better model performance.
 
 ## 2022-04-03
 I'm trying out too many changes at once, this hampers inspection on what actually works better. Today I'm trying to
