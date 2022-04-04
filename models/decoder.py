@@ -26,20 +26,20 @@ def get_decoder(config: Config) -> keras.Model:
     width_over_deconv = int(img_width / reductions)
     height_over_deconv = int(img_height / reductions)
 
-    x = keras.layers.Dense(
+    decoder_layers = keras.layers.Dense(
         width_over_deconv * height_over_deconv * convs[-1]['filters'], activation="relu")(latent_inputs)
-    x = keras.layers.Reshape(
-        (width_over_deconv, height_over_deconv, convs[-1]['filters']))(x)
+    decoder_layers = keras.layers.Reshape(
+        (width_over_deconv, height_over_deconv, convs[-1]['filters']))(decoder_layers)
 
     # The conv2d layers in reverse:
     for conv in reversed(convs):
-        x = keras.layers.Conv2DTranspose(
+        decoder_layers = keras.layers.Conv2DTranspose(
             filters=conv['filters'],
             kernel_size=conv['kernel_size'],
             strides=conv['strides'],
             padding="same"
-        )(x)
-        x = keras.layers.LeakyReLU()(x)
+        )(decoder_layers)
+        decoder_layers = keras.layers.LeakyReLU()(decoder_layers)
 
     decoder_outputs = keras.layers.Conv2DTranspose(
         filters=img_channels,
@@ -47,7 +47,7 @@ def get_decoder(config: Config) -> keras.Model:
         activation="tanh",
         strides=1,
         padding="same",
-    )(x)
+    )(decoder_layers)
 
     decoder = keras.Model(latent_inputs, decoder_outputs, name="decoder")
     return decoder
