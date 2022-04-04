@@ -4,10 +4,10 @@ Things to try next:
 - [X] lrelu activation on conv layers (works quite well)
 - [X] larger latent size 64 -> 128 (no significant change)
 - [X] Sigmoid on output layer (didn't work)
+- [X] No activation on decoder output layer (works quite well)
+- [ ] Try only the 'standing' tag to constrain the domain to fewer poses
 - [ ] Use kernel size of 5 on conv layers (some promising preliminary results, needs better checking)
 - [ ] Use `he_normal` kernel initialisation on conv layers
-- [ ] Try only the 'standing' tag to constrain the domain to fewer poses
-- [X] No activation on decoder output layer (works quite well)
 - [ ] Linear activation on decoder output layer
 
 ## 2022-04-03
