@@ -46,7 +46,7 @@ class CustomModelCheckpointSaver(keras.callbacks.Callback):
 
         :return: None
         """
-        if (epoch + 1) % self.epoch_interval == 0:
+        if (epoch - 1) % self.epoch_interval == 0:
             epoch_folder = os.path.join(self.checkpoint_folder, f'epoch-{epoch}')
             self.model.encoder.save(filepath=os.path.join(epoch_folder, 'encoder'))
             self.model.decoder.save(filepath=os.path.join(epoch_folder, 'decoder'))
