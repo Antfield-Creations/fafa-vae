@@ -7,8 +7,18 @@ Things to try next:
 - [ ] Use kernel size of 5 on conv layers (some promising preliminary results, needs better checking)
 - [ ] Use `he_normal` kernel initialisation on conv layers
 - [ ] Try only the 'standing' tag to constrain the domain to fewer poses
-- [ ] No activation on decoder output layer
+- [X] No activation on decoder output layer (works quite well)
 - [ ] Linear activation on decoder output layer
+
+## 2022-04-03
+Despite my intentions to the contrary, I tried some changes simultaneously today. But disabling a specific activation
+on the last layer paid off big. The reconstruction error breached the barrier of 1e5 today, at a KL loss that is still
+on the large side however, but the loss improvements have been substantial today. The main thing that dropping `tanh` 
+activation on the last layer is that the model figures take on a much more realistic color, they were very dark shapes
+previously. The unspecified activation (is this linear by default?) results in much better skin-toned model "ghosts",
+right from epoch 2.
+
+I also switched to T4 instances, which greatly speeds up training, compared to my own GTX 1060 laptop.
 
 ## 2022-04-03
 I'm trying out too many changes at once, this hampers inspection on what actually works better. Today I'm trying to
