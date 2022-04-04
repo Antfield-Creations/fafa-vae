@@ -6,6 +6,7 @@ Things to try next:
 - [X] Sigmoid on output layer (didn't work)
 - [X] No activation on decoder output layer (works quite well)
 - [ ] Try only the 'standing' tag to constrain the domain to fewer poses
+- [ ] Try increasing the learning rate to 5e-05
 - [ ] Use kernel size of 5 on conv layers (some promising preliminary results, needs better checking)
 - [ ] Use `he_normal` kernel initialisation on conv layers
 - [ ] Linear activation on decoder output layer
