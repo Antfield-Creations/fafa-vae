@@ -8,7 +8,7 @@ models:
       reconstructions:
         save_every_epoch: 8
       checkpoints:
-        save_every_epoch: 16
+        save_every_epoch: 32
 
     data_generator:
       # normalization batch_size
