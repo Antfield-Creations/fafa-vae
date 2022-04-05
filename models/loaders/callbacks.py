@@ -18,7 +18,7 @@ class CustomImageSamplerCallback(keras.callbacks.Callback):
         self.artifact_folder = os.path.join(config['models']['vae']['artifacts']['folder'], run_id)
 
     def on_epoch_end(self, epoch: int, logs: dict = None) -> None:
-        sample_inputs = self.data_generator.next()
+        sample_inputs = next(self.data_generator)
         reconstructions = self.model(sample_inputs)
         reconstructions_folder = os.path.join(self.artifact_folder, 'reconstructions')
         os.makedirs(reconstructions_folder, exist_ok=True)
