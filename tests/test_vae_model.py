@@ -1,4 +1,3 @@
-import itertools
 import logging
 import os.path
 import unittest
@@ -36,7 +35,8 @@ class VAEModelTestCase(unittest.TestCase):
             config['models']['vae']['epochs'] = num_epochs
 
             checkpoint_interval = num_epochs
-            config['models']['vae']['checkpoints']['save_every_epoch'] = checkpoint_interval
+            config['models']['vae']['artifacts']['checkpoints']['save_every_epoch'] = checkpoint_interval
+            config['models']['vae']['artifacts']['reconstructions']['save_every_epoch'] = checkpoint_interval
 
             batches_per_epoch = 16
             config['models']['vae']['batches_per_epoch'] = batches_per_epoch
@@ -72,6 +72,6 @@ class VAEModelTestCase(unittest.TestCase):
                 self.assertIn('decoder', contents)
 
             samples = listdir(os.path.join(artifacts_folder, 'reconstructions'))
-            for epoch, img_idx in itertools.product(range(num_epochs), range(batch_size)):
+            for img_idx in range(batch_size):
                 with self.subTest(f"It generates the image {img_idx + 1} sample"):
-                    self.assertIn(f'epoch-{epoch + 1}-{img_idx + 1}.png', samples)
+                    self.assertIn(f'epoch-{num_epochs}-{img_idx + 1}.png', samples)

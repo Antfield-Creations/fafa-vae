@@ -13,19 +13,21 @@ class CustomImageSamplerCallback(keras.callbacks.Callback):
     Saves image reconstructions sampled from the input dataset at the end of each epoch
     """
     def __init__(self, config: Config, run_id: str) -> None:
+        self.epoch_interval = config['models']['vae']['artifacts']['reconstructions']['save_every_epoch']
         self.data_generator = get_generator(config)
         self.run_id = run_id
         self.artifact_folder = os.path.join(config['models']['vae']['artifacts']['folder'], run_id)
 
     def on_epoch_end(self, epoch: int, logs: dict = None) -> None:
-        sample_inputs = next(self.data_generator)
-        reconstructions = self.model(sample_inputs)
-        reconstructions_folder = os.path.join(self.artifact_folder, 'reconstructions')
-        os.makedirs(reconstructions_folder, exist_ok=True)
+        if (epoch + 1) % self.epoch_interval == 0:
+            sample_inputs = next(self.data_generator)
+            reconstructions = self.model(sample_inputs)
+            reconstructions_folder = os.path.join(self.artifact_folder, 'reconstructions')
+            os.makedirs(reconstructions_folder, exist_ok=True)
 
-        for img_idx in range(reconstructions.shape[0]):
-            output_path = os.path.join(reconstructions_folder, f'epoch-{epoch + 1}-{img_idx + 1}.png')
-            save_img(output_path, reconstructions[img_idx])
+            for img_idx in range(reconstructions.shape[0]):
+                output_path = os.path.join(reconstructions_folder, f'epoch-{epoch + 1}-{img_idx + 1}.png')
+                save_img(output_path, reconstructions[img_idx])
 
 
 class CustomModelCheckpointSaver(keras.callbacks.Callback):
@@ -34,7 +36,7 @@ class CustomModelCheckpointSaver(keras.callbacks.Callback):
     """
 
     def __init__(self, config: Config, run_id: str) -> None:
-        self.epoch_interval = config['models']['vae']['checkpoints']['save_every_epoch']
+        self.epoch_interval = config['models']['vae']['artifacts']['checkpoints']['save_every_epoch']
         artifact_folder = os.path.join(config['models']['vae']['artifacts']['folder'], run_id)
         self.checkpoint_folder = os.path.join(artifact_folder, 'checkpoints')
 
