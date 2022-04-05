@@ -54,7 +54,8 @@ class VAEModelTestCase(unittest.TestCase):
 
             with self.subTest('The loss is a valid float'):
                 assert history is not None
-                self.assertFalse(np.isnan(history.history.get('loss')))
+                last_epoch_loss = history.history.get('loss')[-1]
+                self.assertFalse(np.isnan(last_epoch_loss))
 
             with self.subTest('It generates a set of artifact directories'):
                 artifacts = listdir(artifacts_folder)
