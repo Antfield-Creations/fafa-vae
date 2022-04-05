@@ -58,21 +58,14 @@ def train(config: Config) -> Optional[History]:
     tensorboard_cb = tensorboard_callback(artifacts_folder=artifact_folder)
     image_sampler = CustomImageSamplerCallback(config, run_id)
     checkpoint_saver = CustomModelCheckpointSaver(config, run_id)
-    history = None
 
-    for epoch in range(1, epochs + 1):
-        # Clear state buildup to prevent down-the-run OOM errors
-        keras.backend.clear_session()
-
-        logger.info(f"Epoch {epoch} of {epochs} in {steps} steps of batch size {data_generator.batch_size}:")
-        history = vae.fit(
-            data_generator,
-            verbose=1,
-            initial_epoch=epoch - 1,
-            epochs=epoch,
-            use_multiprocessing=True,
-            steps_per_epoch=steps,
-            callbacks=[tensorboard_cb, image_sampler, checkpoint_saver],
-        )
+    history = vae.fit(
+        data_generator,
+        verbose=1,
+        epochs=epochs,
+        use_multiprocessing=True,
+        steps_per_epoch=steps,
+        callbacks=[tensorboard_cb, image_sampler, checkpoint_saver],
+    )
 
     return history
