@@ -5,13 +5,25 @@ Things to try next:
 - [X] larger latent size 64 -> 128 (no significant change)
 - [X] Sigmoid on output layer (didn't work)
 - [X] No activation on decoder output layer (works quite well)
+- [X] Try increasing the learning rate to 5e-05 (works well)
 - [ ] Try only the 'standing' tag to constrain the domain to fewer poses
-- [ ] Try increasing the learning rate to 5e-05
 - [ ] Use kernel size of 5 on conv layers (some promising preliminary results, needs better checking)
 - [ ] Use `he_normal` kernel initialisation on conv layers
 - [ ] Linear activation on decoder output layer
 
-## 2022-04-03
+## 2022-04-05
+The T4 experiments of yesterday were quite spectacular. The reconstruction loss at the end of the full 256 epoch 
+training session ended up at about 5.8e4 which is better than any run before, and resulted in clear human-like figure
+reconstructions! There are clear lighting and shadow effects, some poses do not show up very clearly but the current
+architecture is definitely on the right track. I'll start increasing the learning rate a little because the end of the
+session definitely did not flatten on the loss, so there's more to be gained from the net. This time I'm _only_ going to
+fiddle with the learning rate.
+
+Started a new run and it definitely benefits from the higher learning rate of 5e-5. The model goes through the 1e5
+reconstruction on epoch 7 instead of epoch 22 on the same batch size. At epoch 9, it is 30 epochs ahead of the previous
+best run.
+
+## 2022-04-04
 Despite my intentions to the contrary, I tried some changes simultaneously today. But disabling a specific activation
 on the last layer paid off big. The reconstruction error breached the barrier of 1e5 today, at a KL loss that is still
 on the large side however, but the loss improvements have been substantial today. The main thing that dropping `tanh` 
