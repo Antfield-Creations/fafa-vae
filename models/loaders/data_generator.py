@@ -1,3 +1,6 @@
+from typing import Generator
+
+import numpy as np
 from keras_preprocessing.image import ImageDataGenerator
 
 from models.loaders.config import Config
@@ -43,3 +46,17 @@ def get_generator(config: Config) -> ImageDataGenerator:
     )
 
     return data_generator
+
+
+def padding_generator(config: Config) -> Generator:
+    """
+    Conventional Keras loaders use some kind of interpolation method
+
+    :param config: The VAE config
+
+    :return: A generator over batches of image tensors
+    """
+
+    while True:
+        img_cfg = config['images']
+        yield np.ones((config['models']['vae']['batch_size'], img_cfg['height'], img_cfg['width'], img_cfg['channels']))
