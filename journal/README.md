@@ -6,6 +6,7 @@ Things to try next:
 - [X] Sigmoid on output layer (didn't work)
 - [X] No activation on decoder output layer (works quite well)
 - [X] Try increasing the learning rate to 5e-05 (works well)
+- [ ] Try increasing the learning rate to 1e-04
 - [ ] Try only the 'standing' tag to constrain the domain to fewer poses
 - [ ] Use kernel size of 5 on conv layers (some promising preliminary results, needs better checking)
 - [ ] Use `he_normal` kernel initialisation on conv layers
@@ -21,7 +22,16 @@ fiddle with the learning rate.
 
 Started a new run and it definitely benefits from the higher learning rate of 5e-5. The model goes through the 1e5
 reconstruction on epoch 7 instead of epoch 22 on the same batch size. At epoch 9, it is 30 epochs ahead of the previous
-best run.
+best run. End of the day result is looking quite spectacular, both loss-wise and visual inspection. Figures in the
+reconstructed images start more and more resembling actual human shapes and hues. Loss on the latest run dropped from 
+~5.8e4 to ~4.1e4, so that's a big improvement. Again: after 256 epochs the loss curve is still pointing downwards a few
+degrees, so training longer will quite probably result in better results. First I'm going to try a run with a 1e-4 
+learning rate tomorrow and see where that ends up.
+
+I also spent some time refactoring the data generator. I'm going to try and see if I can build a generator that pads the
+input images instead of stretching them to the target size. Frankly, I'm a bit surprised that this option isn't provided
+for the ImageDataGenerator class - it isn't supported. If I can find the time, I may spend some to try and make a pull
+request for this.
 
 ## 2022-04-04
 Despite my intentions to the contrary, I tried some changes simultaneously today. But disabling a specific activation
