@@ -7,6 +7,7 @@ Things to try next:
 - [X] No activation on decoder output layer (works quite well)
 - [X] Try increasing the learning rate to 5e-05 (works well)
 - [ ] Try increasing the learning rate to 1e-04
+- [ ] Pad images instead of stretching them to the target size
 - [ ] Try only the 'standing' tag to constrain the domain to fewer poses
 - [ ] Use kernel size of 5 on conv layers (some promising preliminary results, needs better checking)
 - [ ] Use `he_normal` kernel initialisation on conv layers
