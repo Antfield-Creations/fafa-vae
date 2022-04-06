@@ -48,20 +48,23 @@ class CustomImageSamplerCallback(keras.callbacks.Callback):
         self.data_generator = get_generator(config)
         self.run_id = run_id
         self.artifact_folder = os.path.join(config['models']['vae']['artifacts']['folder'], run_id)
+        self.reconstructions_folder = os.path.join(self.artifact_folder, 'reconstructions')
+        os.makedirs(self.reconstructions_folder, exist_ok=True)
 
     def on_epoch_end(self, epoch: int, logs: dict = None) -> None:
         if (epoch + 1) % self.epoch_interval == 0:
             sample_inputs = next(self.data_generator)
             reconstructions = self.model(sample_inputs)
-            reconstructions_folder = os.path.join(self.artifact_folder, 'reconstructions')
-            os.makedirs(reconstructions_folder, exist_ok=True)
 
             for img_idx in range(reconstructions.shape[0]):
-                output_path = os.path.join(reconstructions_folder, f'epoch-{epoch + 1}-{img_idx + 1}.png')
-                sample = reconstructions[img_idx]
-                # Manual re-scale
-                sample = tf.maximum(0, tf.minimum(255, sample * 255))
-                save_img(path=output_path, x=sample, scale=False)
+                self.save_reconstruction(reconstructions, epoch, img_idx)
+
+    def save_reconstruction(self, reconstructions: tf.Tensor, epoch: int, img_idx: int) -> None:
+        output_path = os.path.join(self.reconstructions_folder, f'epoch-{epoch + 1}-{img_idx + 1}.png')
+        sample = reconstructions[img_idx]
+        # Manual re-scale
+        sample = tf.maximum(0, tf.minimum(255, sample * 255))
+        save_img(path=output_path, x=sample, scale=False)
 
 
 class CustomModelCheckpointSaver(keras.callbacks.Callback):
