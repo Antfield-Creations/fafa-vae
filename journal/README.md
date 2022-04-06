@@ -6,12 +6,23 @@ Things to try next:
 - [X] Sigmoid on output layer (didn't work)
 - [X] No activation on decoder output layer (works quite well)
 - [X] Try increasing the learning rate to 5e-05 (works well)
-- [ ] Try increasing the learning rate to 1e-04
+- [X] Try increasing the learning rate to 1e-04 (no significant change)
 - [ ] Pad images instead of stretching them to the target size
 - [ ] Try only the 'standing' tag to constrain the domain to fewer poses
 - [ ] Use kernel size of 5 on conv layers (some promising preliminary results, needs better checking)
 - [ ] Use `he_normal` kernel initialisation on conv layers
 - [ ] Linear activation on decoder output layer
+
+## 2022-04-06
+Tried increasing the learning rate from 5e-5 to 1e-4 this morning but it did not appear to have any impact on the
+reconstruction loss development. The initial loss spike on the KL-loss is somewhat lower, but it settles on the same
+value as a learning rate of 5e-5. The 1e-4 loss curve of the reconstruction loss hugs the 5e-5 curve closely, so I might
+just as well stick to 5e-5.
+
+Also implemented a image tensor padding data generator, that was fun. It's a bit unfortunate that the ImageDataGenerator
+class by Keras is so inaccessible, it's a deeply nested entangled set of classes and methods that all require 
+re-implementing. Instead, I just implemented a generator function of a couple of lines, without the overload of 22 
+function parameters. A lot more manageable.
 
 ## 2022-04-05
 The T4 experiments of yesterday were quite spectacular. The reconstruction loss at the end of the full 256 epoch 
