@@ -34,6 +34,17 @@ input images instead of stretching them to the target size. Frankly, I'm a bit s
 for the ImageDataGenerator class - it isn't supported. If I can find the time, I may spend some to try and make a pull
 request for this.
 
+Trying the new data preprocessor for a first run, the effect is quite dramatic on the loss figures. The KL loss is about
+half from the standard ImageDataGenerator. The reconstruction loss is an order of magnitude smaller - shrinking from
+7.4e4 to 4.2e4 after one hour of training on otherwise identical settings. Visual inspection, though, is not quite as
+impressive - reconstructions of the human shapes are just as vague. Hopefully though, results will improve otherwise the
+loss does not confer much information on the actual reconstruction quality. There is of course the matter of 
+normalisation. I'm having the `save_image` export the image, but it automatically scales the values to values within
+[0..255]. I'm guessing it does this by de-centering and de-scaling, but I'm not sure. Instead, I could just hard-scale
+the network output by `min(255, (max(0, output) * 255)` to undo the normalisation. In the case of the auto-encoder, it
+is fully unsupervised - the normalized inputs are supposed to be the same as the outputs, that's where the loss function
+gets its score from.
+
 ## 2022-04-04
 Despite my intentions to the contrary, I tried some changes simultaneously today. But disabling a specific activation
 on the last layer paid off big. The reconstruction error breached the barrier of 1e5 today, at a KL loss that is still
