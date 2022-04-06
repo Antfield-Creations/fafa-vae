@@ -12,7 +12,7 @@ from models.decoder import get_decoder
 from models.encoder import get_encoder
 from models.loaders.callbacks import CustomImageSamplerCallback, CustomModelCheckpointSaver
 from models.loaders.config import Config
-from models.loaders.data_generator import get_generator
+from models.loaders.data_generator import padding_generator
 from models.vae import VAE
 
 logger = getLogger('Train')
@@ -54,7 +54,7 @@ def train(config: Config) -> Optional[History]:
     epochs = config['models']['vae']['epochs']
     steps = config['models']['vae']['batches_per_epoch']
 
-    data_generator = get_generator(config)
+    data_generator = padding_generator(config)
     tensorboard_cb = tensorboard_callback(artifacts_folder=artifact_folder)
     image_sampler = CustomImageSamplerCallback(config, run_id)
     checkpoint_saver = CustomModelCheckpointSaver(config, run_id)
