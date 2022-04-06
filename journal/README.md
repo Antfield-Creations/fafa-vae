@@ -22,7 +22,14 @@ just as well stick to 5e-5.
 Also implemented a image tensor padding data generator, that was fun. It's a bit unfortunate that the ImageDataGenerator
 class by Keras is so inaccessible, it's a deeply nested entangled set of classes and methods that all require 
 re-implementing. Instead, I just implemented a generator function of a couple of lines, without the overload of 22 
-function parameters. A lot more manageable.
+function parameters. A lot more manageable. I took a bit of a shortcut in normalizing the image data. I just divide by
+255, leaving tensors with floats between 0 and 1. I believe this should be fine, I'd be very surprised if the network
+did not know how to handle it. Admittedly, this data isn't centered, but the bias weights in the layers should easily be
+able to handle data within [0., 1.].
+
+The upside of having a padding data generator is twofold:
+- it does not require the network to learn 'stretched' representations of the domain
+- it drops the requirement of having to scale the image to original size on generated/reconstructed images.
 
 ## 2022-04-05
 The T4 experiments of yesterday were quite spectacular. The reconstruction loss at the end of the full 256 epoch 
