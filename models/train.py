@@ -7,10 +7,9 @@ from typing import Optional
 from tensorflow import keras
 from tensorflow.python.keras.callbacks import History
 
-from models.callbacks import tensorboard_callback
 from models.decoder import get_decoder
 from models.encoder import get_encoder
-from models.loaders.callbacks import CustomImageSamplerCallback, CustomModelCheckpointSaver
+from models.loaders.callbacks import CustomImageSamplerCallback, CustomModelCheckpointSaver, tensorboard_callback
 from models.loaders.config import Config
 from models.loaders.data_generator import padding_generator
 from models.vae import VAE
