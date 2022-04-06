@@ -2,6 +2,7 @@ import logging
 import os
 
 from keras_preprocessing.image import save_img
+import tensorflow as tf
 from tensorflow import keras
 
 from models.loaders.config import Config
@@ -27,7 +28,10 @@ class CustomImageSamplerCallback(keras.callbacks.Callback):
 
             for img_idx in range(reconstructions.shape[0]):
                 output_path = os.path.join(reconstructions_folder, f'epoch-{epoch + 1}-{img_idx + 1}.png')
-                save_img(output_path, reconstructions[img_idx])
+                sample = reconstructions[img_idx]
+                # Manual re-scale
+                sample = tf.minimum(0, tf.maximum(255, sample) * 255)
+                save_img(path=output_path, x=sample, scale=False)
 
 
 class CustomModelCheckpointSaver(keras.callbacks.Callback):
