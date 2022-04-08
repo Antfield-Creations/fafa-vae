@@ -1,4 +1,5 @@
 import os.path
+import shutil
 import unittest
 from tempfile import TemporaryDirectory
 
@@ -12,10 +13,12 @@ from models.loaders.config import load_config
 class CallbacksTestCase(unittest.TestCase):
     def test_reconstruction_save(self) -> None:
         with TemporaryDirectory() as tempdir:
+            img_root_dir = tempdir + '/img'
+            shutil.copytree('tests/data', img_root_dir + '/set-1/')
 
             config = load_config()
             config['models']['vae']['artifacts']['folder'] = tempdir
-            config['images']['folder'] = tempdir
+            config['images']['folder'] = img_root_dir
 
             reconstructor = CustomImageSamplerCallback(config, run_id='dummy')
             zeroes = np.zeros((1, 640, 640, 3))
