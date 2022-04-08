@@ -9,13 +9,13 @@ from models.loaders.callbacks import CustomImageSamplerCallback
 from models.loaders.config import load_config
 
 
-class MyTestCase(unittest.TestCase):
+class CallbacksTestCase(unittest.TestCase):
     def test_reconstruction_save(self) -> None:
         with TemporaryDirectory() as tempdir:
 
             config = load_config()
-            artifacts_cfg = config['models']['vae']['artifacts']
-            artifacts_cfg['folder'] = tempdir
+            config['models']['vae']['artifacts']['folder'] = tempdir
+            config['images']['folder'] = tempdir
 
             reconstructor = CustomImageSamplerCallback(config, run_id='dummy')
             zeroes = np.zeros((1, 640, 640, 3))
