@@ -26,4 +26,3 @@ class MyTestCase(unittest.TestCase):
             with self.subTest('It scales 0.5 floats by 255 to 128'):
                 first_pixel = saved_img[0, 0]
                 self.assertEqual(first_pixel, (127, 127, 127))  # add assertion here
-
