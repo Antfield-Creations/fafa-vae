@@ -28,5 +28,5 @@ class CallbacksTestCase(unittest.TestCase):
 
             expected_values = (0, 0, 0)
             with self.subTest(f'It scales 0.5 floats by 255 to {expected_values}'):
-                first_pixel = saved_img[0, 0]
+                first_pixel = saved_img[0, 0]  # type: ignore
                 self.assertEqual(first_pixel, expected_values)  # add assertion here
