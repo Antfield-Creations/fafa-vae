@@ -27,6 +27,8 @@ pillow = "*"
 scipy = "*"
 # Model metrics analysis
 tensorboard = "*"
+# For padding images
+numpy = "*"
 
 [dev-packages]
 # Style checker
@@ -41,8 +43,6 @@ types-retry = "*"
 types-beautifulsoup4 = "*"
 # Linter for yaml files
 yamllint = "*"
-# For integration testing model output
-numpy = "*"
 
 [requires]
 python_version = "3.9"
