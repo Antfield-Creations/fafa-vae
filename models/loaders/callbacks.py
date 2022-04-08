@@ -88,5 +88,3 @@ class CustomModelCheckpointSaver(keras.callbacks.Callback):
             epoch_folder = os.path.join(self.checkpoint_folder, f'epoch-{epoch + 1}')
             self.model.encoder.save(filepath=os.path.join(epoch_folder, 'encoder'))
             self.model.decoder.save(filepath=os.path.join(epoch_folder, 'decoder'))
-        else:
-            logging.info(f'Skipping model checkpoint save for epoch {epoch + 1}')
