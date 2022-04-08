@@ -9,7 +9,7 @@ from tensorflow import keras
 from tensorflow.python.keras.callbacks import TensorBoard
 
 from models.loaders.config import Config
-from models.loaders.data_generator import get_generator
+from models.loaders.data_generator import padding_generator
 
 logger = logging.getLogger(__name__)
 
@@ -45,7 +45,7 @@ class CustomImageSamplerCallback(keras.callbacks.Callback):
     """
     def __init__(self, config: Config, run_id: str) -> None:
         self.epoch_interval = config['models']['vae']['artifacts']['reconstructions']['save_every_epoch']
-        self.data_generator = get_generator(config)
+        self.data_generator = padding_generator(config)
         self.run_id = run_id
         self.artifact_folder = os.path.join(config['models']['vae']['artifacts']['folder'], run_id)
         self.reconstructions_folder = os.path.join(self.artifact_folder, 'reconstructions')
