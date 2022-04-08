@@ -62,9 +62,7 @@ class CustomImageSamplerCallback(keras.callbacks.Callback):
     def save_reconstruction(self, reconstructions: tf.Tensor, epoch: int, img_idx: int) -> None:
         output_path = os.path.join(self.reconstructions_folder, f'epoch-{epoch + 1}-{img_idx + 1}.png')
         sample = reconstructions[img_idx]
-        # Manual re-scale
-        sample = tf.maximum(0, tf.minimum(255, sample * 255))
-        save_img(path=output_path, x=sample, scale=False)
+        save_img(path=output_path, x=sample, scale=True)
 
 
 class CustomModelCheckpointSaver(keras.callbacks.Callback):

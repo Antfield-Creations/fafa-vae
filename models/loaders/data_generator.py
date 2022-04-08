@@ -94,13 +94,12 @@ def padding_generator(config: Config) -> Generator:
             img = load_img(path=os.path.join(img_folder, record.filename))
             # img_to_array will result in an ndarray of size (height, width, channels)
             img_values = pad_image(img, img_cfg)
-
+            # Sample-wise normalize
+            img_values -= np.mean(img_values, keepdims=True)
+            img_values /= (np.std(img_values, keepdims=True) + 1e-6)
             img_data.append(img_values)
 
         batch = np.array(img_data)
-
-        batch = batch / 255
-
         yield batch
 
 
