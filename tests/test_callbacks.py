@@ -26,6 +26,7 @@ class CallbacksTestCase(unittest.TestCase):
             reconstructor.save_reconstruction(reconstructions=halves, epoch=0, img_idx=0)
             saved_img = Image.open(os.path.join(tempdir, 'dummy', 'reconstructions', 'epoch-1-1.png')).load()
 
-            with self.subTest('It scales 0.5 floats by 255 to 128'):
+            expected_values = (0, 0, 0)
+            with self.subTest(f'It scales 0.5 floats by 255 to {expected_values}'):
                 first_pixel = saved_img[0, 0]
-                self.assertEqual(first_pixel, (127, 127, 127))  # add assertion here
+                self.assertEqual(first_pixel, expected_values)  # add assertion here
