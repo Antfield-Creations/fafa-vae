@@ -8,9 +8,11 @@ Things to try next:
 - [X] Try increasing the learning rate to 5e-05 (works well)
 - [X] Try increasing the learning rate to 1e-04 (no significant change)
 - [X] Pad images instead of stretching them to the target size (works quite well)
-- [ ] Use simpler feature scaling to floats in range [0..1] to aid in reconstruction simplification
+- [ ] Resume training on a saved model
+- [ ] Tweak the latent size, how does it affect the two loss components?
 - [ ] Try only the 'standing' tag to constrain the domain to fewer poses
-- [ ] Use kernel size of 5 on conv layers (some promising preliminary results, needs better checking)
+- [ ] Use simpler feature scaling to floats in range [0..1] to aid in reconstruction simplification
+- [ ] Use kernel size of 3 or 5 on conv layers (some promising preliminary results, needs better checking)
 - [ ] Use `he_normal` kernel initialisation on conv layers
 - [ ] Linear activation on decoder output layer
 
@@ -22,7 +24,7 @@ producing a spectacular drop in loss, resulted in no usable output images. Back 
 
 I took a look at
 the [`standardize`](https://github.com/keras-team/keras-preprocessing/blob/master/keras_preprocessing/image/image_data_generator.py#L707)
-methond from Keras and took their method of sample-wise normalization to apply to my images. At least this produced
+method from Keras and took their method of sample-wise normalization to apply to my images. At least this produced
 intelligible reconstructions from previous runs. Phew, at least the epoch callback function produces FAFA-like images
 again! The loss is still significantly lower than on the standard Keras scaling image preprocessor functions, the gains
 in quality cannot be explained away just by having more "blank" image data from the padding. The padding is quite
@@ -33,6 +35,18 @@ reconstruction loss from 8.9e4 to 3.7e4 on otherwise identical settings.
 I'm letting this one run for a full 256 epochs and see where it ends up. I found the bug that produced the 
 unintelligible reconstruction results: the reconstruction image sampler used the old data generator! I still would like
 to decouple the padding from the scaling operation though, and see how a sample-wise default normalization pans out.
+
+Results are in for the 256 epochs. The model still learns after 256 epochs, so it definitely is not at the end of its
+use of tuning the model weights. Question is where to go from here. I'm thinking of adding code to resume training on a
+saved model. This way, I can alternate days - one is for tweaking the model, the other day is for training continuation
+and seeing how many epochs it takes to finish training the model.
+
+One thing I noticed today, is that after about 50 epochs or so, the Kullback-Leibler divergence loss starts going up,
+just very slightly but decidedly so. At about a constant rate, not sure how much but still. I'm unsure on what this
+actually means, but it might mean that the model needs the latent vector as part of the network, to learn the features
+at a very condensed state. Is the latent size too small? I would have hoped not, at a size of 64 I already think it's
+rather large. Tweaking 64 numbers to generate images is quite a bit of a hassle. So, I may have to experiment a little
+on changing the latent size and see how it affects the loss figures, both on the reconstruction loss and the KL loss.
 
 ## 2022-04-06
 Tried increasing the learning rate from 5e-5 to 1e-4 this morning but it did not appear to have any impact on the
