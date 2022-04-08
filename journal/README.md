@@ -7,11 +7,32 @@ Things to try next:
 - [X] No activation on decoder output layer (works quite well)
 - [X] Try increasing the learning rate to 5e-05 (works well)
 - [X] Try increasing the learning rate to 1e-04 (no significant change)
-- [ ] Pad images instead of stretching them to the target size
+- [X] Pad images instead of stretching them to the target size (works quite well)
+- [ ] Use simpler scaling by 255 normalization to aid in reconstruction simplification
 - [ ] Try only the 'standing' tag to constrain the domain to fewer poses
 - [ ] Use kernel size of 5 on conv layers (some promising preliminary results, needs better checking)
 - [ ] Use `he_normal` kernel initialisation on conv layers
 - [ ] Linear activation on decoder output layer
+
+## 2022-04-08
+I refactored the image loader so that it produces padded instead of stretched image tensors, but now the model produces
+unintelligible reconstruction garbage. Clearly I made some miscalculation in scaling/unscaling the input/output images.
+Previously I just divided the input space by 255 to map the pixel range to floats between 0 and 1, but this, besides
+producing a spectacular drop in loss, resulted in no usable output images. Back to the drawing board. 
+
+I took a look at
+the [`standardize`](https://github.com/keras-team/keras-preprocessing/blob/master/keras_preprocessing/image/image_data_generator.py#L707)
+methond from Keras and took their method of sample-wise normalization to apply to my images. At least this produced
+intelligible reconstructions from previous runs. Phew, at least the epoch callback function produces FAFA-like images
+again! The loss is still significantly lower than on the standard Keras scaling image preprocessor functions, the gains
+in quality cannot be explained away just by having more "blank" image data from the padding. The padding is quite
+substantial, of course: it is (640 - 427) / 640 = 33 % of the total data. So the loss should be at least 33% lower, as
+the reconstruction MSE loss over the padding should be 0. However, the KL loss drops from 670 to 419 at epoch 10, the
+reconstruction loss from 8.9e4 to 3.7e4 on otherwise identical settings.
+
+I'm letting this one run for a full 256 epochs and see where it ends up. I found the bug that produced the 
+unintelligible reconstruction results: the reconstruction image sampler used the old data generator! I still would like
+to decouple the padding from the scaling operation though, and see how a sample-wise default normalization pans out.
 
 ## 2022-04-06
 Tried increasing the learning rate from 5e-5 to 1e-4 this morning but it did not appear to have any impact on the
