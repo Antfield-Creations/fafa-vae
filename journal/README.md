@@ -8,12 +8,12 @@ Things to try next:
 - [X] Try increasing the learning rate to 5e-05 (works well)
 - [X] Try increasing the learning rate to 1e-04 (no significant change)
 - [X] Pad images instead of stretching them to the target size (works quite well)
+- [X] Use `he_normal` kernel initialisation on conv layers
 - [ ] Resume training on a saved model
 - [ ] Tweak the latent size, how does it affect the two loss components?
 - [ ] Try only the 'standing' tag to constrain the domain to fewer poses
 - [ ] Use simpler feature scaling to floats in range [0..1] to aid in reconstruction simplification
 - [ ] Use kernel size of 3 or 5 on conv layers (some promising preliminary results, needs better checking)
-- [ ] Use `he_normal` kernel initialisation on conv layers
 - [ ] Linear activation on decoder output layer
 
 ## 2022-04-08

@@ -30,7 +30,8 @@ def get_encoder(config: Config) -> keras.Model:
             filters=conv['filters'],
             kernel_size=conv['kernel_size'],
             strides=conv['strides'],
-            padding="same"
+            padding="same",
+            kernel_initializer='random_normal',
         )(encoder_layers)
         encoder_layers = keras.layers.LeakyReLU()(encoder_layers)
 

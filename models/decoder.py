@@ -37,7 +37,8 @@ def get_decoder(config: Config) -> keras.Model:
             filters=conv['filters'],
             kernel_size=conv['kernel_size'],
             strides=conv['strides'],
-            padding="same"
+            padding="same",
+            kernel_initializer='random_normal',
         )(decoder_layers)
         decoder_layers = keras.layers.LeakyReLU()(decoder_layers)
 
