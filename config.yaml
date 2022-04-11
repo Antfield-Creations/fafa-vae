@@ -4,7 +4,7 @@
 models:
   vae:
     artifacts:
-      folder: ~/Downloads/FAFA/artifacts
+      folder: ~/mnt/antfield/FAFA/artifacts
       reconstructions:
         save_every_epoch: 8
       checkpoints:
