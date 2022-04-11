@@ -8,13 +8,31 @@ Things to try next:
 - [X] Try increasing the learning rate to 5e-05 (works well)
 - [X] Try increasing the learning rate to 1e-04 (no significant change)
 - [X] Pad images instead of stretching them to the target size (works quite well)
-- [X] Use `he_normal` kernel initialisation on conv layers
+- [X] Use `he_normal` kernel initialisation on conv layers (works quite well)
+- [ ] Try only the 'standing' tag to constrain the domain to fewer poses
 - [ ] Resume training on a saved model
 - [ ] Tweak the latent size, how does it affect the two loss components?
-- [ ] Try only the 'standing' tag to constrain the domain to fewer poses
 - [ ] Use simpler feature scaling to floats in range [0..1] to aid in reconstruction simplification
 - [ ] Use kernel size of 3 or 5 on conv layers (some promising preliminary results, needs better checking)
 - [ ] Linear activation on decoder output layer
+
+## 2022-04-11
+
+This weekend's session ran to 927 of the 1024 intended epochs until the disk was full. I already created a bucket to
+store the data in, but 927 epochs is fine to get a clearer picture of what the model is capable of, running for a longer
+period. These 927 epochs took about 34 hours. The model learned _some_ extra domain features, but it still does not
+produce clear pictures of humans. Strangely enough, the KL loss was still _rising_ after 900 epochs, and the
+reconstruction loss still dropping! Do I have to configure a higher learning rate after all? Or is this normal? Anyway,
+I do start to think that the domain is a little bit too diverse or complicated for the model. I may have to constrain it
+to the `standing` tagged images.
+
+What did work well, was to initialize the conv kernels with `he_normal`ly distributed weights. It clearly shows about
+25% reduce in reconstruction loss after 100 epochs. At least on the run I did this weekend, I don't have the means to
+create statistically significant measurements on my artist's free tier budget.
+
+So, the reconstruction MSE loss ended up on ~1.5e4 after 900 epochs. That's pretty OK, but quite frankly it's not good
+enough to reconstruct life-like pictures. I'm going to have to take a different approach and I'm going to start with the
+`standing` tag constraint.
 
 ## 2022-04-08
 I refactored the image loader so that it produces padded instead of stretched image tensors, but now the model produces
@@ -32,9 +50,10 @@ substantial, of course: it is (640 - 427) / 640 = 33 % of the total data. So the
 the reconstruction MSE loss over the padding should be 0. However, the KL loss drops from 670 to 419 at epoch 10, the
 reconstruction loss from 8.9e4 to 3.7e4 on otherwise identical settings.
 
-I'm letting this one run for a full 256 epochs and see where it ends up. I found the bug that produced the 
+I'm letting this one run for a full 256 epochs and see where it ends up. I found the bug that produced the
 unintelligible reconstruction results: the reconstruction image sampler used the old data generator! I still would like
 to decouple the padding from the scaling operation though, and see how a sample-wise default normalization pans out.
+This indicates that the spectacular drops in losses from the /255 scaler could still be meaningful!
 
 Results are in for the 256 epochs. The model still learns after 256 epochs, so it definitely is not at the end of its
 use of tuning the model weights. Question is where to go from here. I'm thinking of adding code to resume training on a
