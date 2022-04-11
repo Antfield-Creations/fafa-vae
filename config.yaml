@@ -53,9 +53,10 @@ images:
 
   filter:
     # one of "any", "portrait" or "landscape"
-    orientation: portrait
+    orientation: any
     # if no values under "include" are specified, it includes all tags
     include:
+      - standing
 
     exclude:
       - duo
