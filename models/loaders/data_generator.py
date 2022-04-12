@@ -74,9 +74,11 @@ def padding_generator(config: Config) -> Generator:
         yield batch
 
 
-def scale(img_values):
+def scale(img_values: ndarray) -> ndarray:
     """
     Simplistic feature-wise normalization. Scales pixel int values from [0..255] to floats [0..1]
+    This is helpful, because it allows you to activate the last vae decoder layer to sigmoid, and use
+    binary cross-entropy as reconstruction loss, as the original VAE implementation did.
 
     :param img_values: batch of image data
 
