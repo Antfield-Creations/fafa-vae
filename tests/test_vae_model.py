@@ -1,6 +1,7 @@
 import logging
 import os.path
 import unittest
+import time
 from os import listdir
 from tempfile import TemporaryDirectory
 
@@ -18,7 +19,12 @@ class VAEModelTestCase(unittest.TestCase):
         with TemporaryDirectory() as tempdir:
             config = load_config()
 
+            # Override image location and filter settings
             config['images']['folder'] = os.path.join(tempdir, 'img')
+            config['images']['filter']['include'] = None
+            config['images']['filter']['exclude'] = []
+            config['images']['filter']['orientation'] = 'any'
+
             set_no = 5159
             config['images']['scraper']['first_set'] = set_no
             config['images']['scraper']['last_set'] = set_no
@@ -26,7 +32,10 @@ class VAEModelTestCase(unittest.TestCase):
             with self.subTest(f'It harvests set number {set_no}'):
                 scraper.scrape(config)
 
-            config['models']['vae']['artifacts']['folder'] = os.path.join(tempdir, 'checkpoints')
+            artifact_dir = os.path.join(tempdir, 'artifacts')
+            config['models']['vae']['artifacts']['folder'] = artifact_dir
+            run_id: str = time.strftime('%Y-%m-%d_%Hh%Mm%Ss')
+            config['models']['vae']['artifacts']['logs']['folder'] = os.path.join(artifact_dir, run_id)
 
             # Simplify training
             config['models']['vae']['data_generator']['fit_samples'] = 10
@@ -45,7 +54,7 @@ class VAEModelTestCase(unittest.TestCase):
             config['models']['vae']['batch_size'] = batch_size
 
             # Dummy-train
-            history = train(config)
+            history = train(config, run_id)
 
             artifacts_folder = str(config['models']['vae']['artifacts']['folder'])
             runs = listdir(artifacts_folder)

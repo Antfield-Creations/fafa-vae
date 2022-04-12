@@ -17,11 +17,12 @@ from models.vae import VAE
 logger = getLogger('Train')
 
 
-def train(config: Config) -> Optional[History]:
+def train(config: Config, run_id: str = time.strftime('%Y-%m-%d_%Hh%Mm%Ss')) -> Optional[History]:
     """
     Trains the VAE model on the images
 
     :param config: a Config object from the load_config function
+    :param run_id: The timestamp of the run. Allows setting to a custom value, mostly for testing
 
     :return: None
     """
@@ -41,7 +42,6 @@ def train(config: Config) -> Optional[History]:
     vae.compile(optimizer=optimizer)
 
     # Checkpoints, sample reconstructions and metric artifact folders
-    run_id = time.strftime('%Y-%m-%d_%Hh%Mm%Ss')
     artifact_folder = os.path.join(config['models']['vae']['artifacts']['folder'], run_id)
     logs_folder = config['models']['vae']['artifacts']['logs']['folder'].format(run_id=run_id)
     models_folder = os.path.join(artifact_folder, 'models')
