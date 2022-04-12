@@ -24,7 +24,26 @@ The 'standing' constraint works fine on reducing the loss on the reconstructions
 my taste. I'm going to switch tack and make a few changes. First of all, I'm going to refactor the model to be closer to
 the original VAE implementation, with inputs scaled between 0 and 1 and using bce loss for the reconstructions. I intend
 to increase the batch size a bit, in the hopes that that will reduce the jaggedness of the loss curve. It jumps around
-a bit too much, which I suspect inhibits the learning process.
+a bit too much, which I suspect inhibits the learning process. So I refactored the data generator function to scale the
+images to within [0 + epsilon ... 1 - epsilon]. I factored in the epsilons, as I don't want the model to go to great
+lengths trying to reach exactly 0. and 1., because I put the sigmoid activation back in on the last decoder layer. I 
+didn't need to touch the reconstruction sampler callback because it automagically scales the image pixel values back up
+again. I also used the binary cross-entropy loss for the reconstructions to get back to the original implementation as
+well. I haven't looked into that loss function yet, but I wonder if BCE will help reduce the infamous 'haze' on MSE VAE
+generated images.
+
+Learned a lesson today on lab journal logging today as well. Setting up de `gcsfuse` command on my GPU machine is far
+from trivial. I still use it to mount the bucket in order to directly write reconstruction sample images to it, and
+model checkpoints, but I forgot the command. So here goes:
+```shell
+sudo GOOGLE_APPLICATION_CREDENTIALS=/path/to/credentials.json gcsfuse \
+  -o allow_other \
+  --implicit-dirs \
+  --uid 1001 --gid 1001 \
+  antfield ~/mnt/antfield
+```
+It needs sudo because of -o allow_other, and it needs the google credentials path because root doesn't know where to 
+look.
 
 ## 2022-04-11
 This weekend's session ran to 927 of the 1024 intended epochs until the disk was full. I already created a bucket to
