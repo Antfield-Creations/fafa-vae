@@ -13,10 +13,15 @@ class DataGeneratorTestCase(unittest.TestCase):
         config = load_config()
 
         with TemporaryDirectory() as tempdir:
-            img_dir = os.path.join(tempdir, 'img')
+            img_dir = os.path.join(tempdir, 'set-1')
             shutil.copytree('tests/data', img_dir)
             export_metadata(tempdir)
-            config['images']['folder'] = img_dir
+
+            # Force-include everything
+            config['images']['folder'] = tempdir
+            config['images']['filter']['orientation'] = 'any'
+            config['images']['filter']['include'] = None
+            config['images']['filter']['exclude'] = []
 
             data_generator = padding_generator(config=config)
 

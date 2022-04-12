@@ -47,6 +47,9 @@ def padding_generator(config: Config) -> Generator:
         exclude_tags=config['images']['filter']['exclude'],
     )
 
+    if len(img_metadata) == 0:
+        raise ValueError('Combination of orientation, include and exclude filters resulted in empty list')
+
     record_indices: List[int] = []
     while True:
         # Keep adding items to the record indices until we have a large enough list to sample a batch
