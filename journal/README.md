@@ -9,15 +9,24 @@ Things to try next:
 - [X] Try increasing the learning rate to 1e-04 (no significant change)
 - [X] Pad images instead of stretching them to the target size (works quite well)
 - [X] Use `he_normal` kernel initialisation on conv layers (works quite well)
-- [ ] Try only the 'standing' tag to constrain the domain to fewer poses
+- [X] Try only the 'standing' tag to constrain the domain to fewer poses (improvements, still blurry)
 - [ ] Resume training on a saved model
 - [ ] Tweak the latent size, how does it affect the two loss components?
 - [ ] Use simpler feature scaling to floats in range [0..1] to aid in reconstruction simplification
 - [ ] Use kernel size of 3 or 5 on conv layers (some promising preliminary results, needs better checking)
 - [ ] Linear activation on decoder output layer
 
-## 2022-04-11
+## 2022-04-12
+The bucket is working very nicely, it's an excellent solution. It allows me to power off the T4 machine whilst still
+having full access to the artifacts.
 
+The 'standing' constraint works fine on reducing the loss on the reconstructions, but the result is still too blurry for
+my taste. I'm going to switch tack and make a few changes. First of all, I'm going to refactor the model to be closer to
+the original VAE implementation, with inputs scaled between 0 and 1 and using bce loss for the reconstructions. I intend
+to increase the batch size a bit, in the hopes that that will reduce the jaggedness of the loss curve. It jumps around
+a bit too much, which I suspect inhibits the learning process.
+
+## 2022-04-11
 This weekend's session ran to 927 of the 1024 intended epochs until the disk was full. I already created a bucket to
 store the data in, but 927 epochs is fine to get a clearer picture of what the model is capable of, running for a longer
 period. These 927 epochs took about 34 hours. The model learned _some_ extra domain features, but it still does not
@@ -33,6 +42,14 @@ create statistically significant measurements on my artist's free tier budget.
 So, the reconstruction MSE loss ended up on ~1.5e4 after 900 epochs. That's pretty OK, but quite frankly it's not good
 enough to reconstruct life-like pictures. I'm going to have to take a different approach and I'm going to start with the
 `standing` tag constraint.
+
+Started a new run with only standing images, to see whether the model size is the bottleneck here. If it manages to
+produce convincing standing poses, then that could be enough for a working system for now. Then, I can always try to
+enlargen the model to accomodate a larger selection of poses. I also moved writing artifacts to a storage bucket, to
+prevent flooding the harddisk once more. I'm leaving the training data on the harddisk however, because it needs to do
+so many reading operations from disk. I don't believe that either the model or my wallet is going to benefit from having
+the training data in a storage bucket. Already I can see a substantial loss improvement over the full pose range. 
+Although I'd have to inspect the images soon in order to be sure.
 
 ## 2022-04-08
 I refactored the image loader so that it produces padded instead of stretched image tensors, but now the model produces
