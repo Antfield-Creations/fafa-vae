@@ -43,6 +43,7 @@ def train(config: Config) -> Optional[History]:
     # Checkpoints, sample reconstructions and metric artifact folders
     run_id = time.strftime('%Y-%m-%d_%Hh%Mm%Ss')
     artifact_folder = os.path.join(config['models']['vae']['artifacts']['folder'], run_id)
+    logs_folder = config['models']['vae']['artifacts']['logs']['folder'].format(run_id=run_id)
     models_folder = os.path.join(artifact_folder, 'models')
 
     # Copy model modules to artifacts for archiving
@@ -54,7 +55,7 @@ def train(config: Config) -> Optional[History]:
     steps = config['models']['vae']['batches_per_epoch']
 
     data_generator = padding_generator(config)
-    tensorboard_cb = tensorboard_callback(artifacts_folder=artifact_folder)
+    tensorboard_cb = tensorboard_callback(artifacts_folder=logs_folder)
     image_sampler = CustomImageSamplerCallback(config, run_id)
     checkpoint_saver = CustomModelCheckpointSaver(config, run_id)
 
