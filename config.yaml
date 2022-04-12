@@ -9,9 +9,11 @@ models:
         save_every_epoch: 8
       checkpoints:
         save_every_epoch: 32
+      logs:
+        folder: gs://antfield/FAFA/artifacts/{run_id}
 
     data_generator:
-      # normalization batch_size
+      # normalization batch_size, for when using feature-wise normalization
       fit_samples: 512
 
     # This is a rather small batch size, but it allows training on a GTX1060
@@ -20,7 +22,7 @@ models:
     # Fewer batches per epoch allows for epochs of no more than a few minutes
     # on older GPU hardware. This can probably be cranked up on newer hardware
     batches_per_epoch: 256
-    epochs: 1024
+    epochs: 256
 
     # encoder
     dense:
