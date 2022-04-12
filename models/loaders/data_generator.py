@@ -3,6 +3,7 @@ import random
 from math import floor, ceil
 from typing import Generator, Dict, List
 
+import keras.backend
 import numpy as np
 from PIL.Image import Image
 from numpy import ndarray
@@ -66,13 +67,28 @@ def padding_generator(config: Config) -> Generator:
             img = load_img(path=os.path.join(img_folder, record.filename))
             # img_to_array will result in an ndarray of size (height, width, channels)
             img_values = pad_image(img, img_cfg)
-            # Sample-wise normalize
-            img_values -= np.mean(img_values, keepdims=True)
-            img_values /= (np.std(img_values, keepdims=True) + 1e-6)
+            img_values = scale(img_values)
             img_data.append(img_values)
 
         batch = np.array(img_data)
         yield batch
+
+
+def scale(img_values):
+    """
+    Simplistic feature-wise normalization. Scales pixel int values from [0..255] to floats [0..1]
+
+    :param img_values: batch of image data
+
+    :return: The same image data, scaled down.
+
+    """
+    # Prevents 1. values: hard 1. floats cannot be reached by sigmoid activations
+    img_values /= (255 + (255 * 2 * keras.backend.epsilon()))  # type: ignore
+    # Prevent 0. values: hard 0. floats cannot be reached by sigmoid activations
+    img_values += keras.backend.epsilon()
+
+    return img_values
 
 
 def pad_image(img: Image, img_cfg: Dict[str, int]) -> ndarray:
