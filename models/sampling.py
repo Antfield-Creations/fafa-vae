@@ -5,8 +5,8 @@ from typing import Tuple
 
 import tensorflow as tf
 from tensorflow import Tensor
-from tensorflow.python.keras import layers
-from tensorflow.python.keras.backend import random_normal
+from tensorflow.keras import layers
+from tensorflow.keras.backend import random_normal
 
 
 class Sampling(layers.Layer):

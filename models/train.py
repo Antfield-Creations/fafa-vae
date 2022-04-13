@@ -5,7 +5,7 @@ from logging import getLogger
 from typing import Optional
 
 from tensorflow import keras
-from tensorflow.python.keras.callbacks import History
+from tensorflow.keras.callbacks import History
 
 from models.decoder import get_decoder
 from models.encoder import get_encoder

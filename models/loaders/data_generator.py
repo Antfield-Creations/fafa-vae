@@ -3,7 +3,7 @@ import random
 from math import floor, ceil
 from typing import Generator, Dict, List
 
-import keras.backend
+from tensorflow import keras
 import numpy as np
 from PIL.Image import Image
 from numpy import ndarray
