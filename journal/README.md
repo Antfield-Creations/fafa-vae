@@ -10,11 +10,22 @@ Things to try next:
 - [X] Pad images instead of stretching them to the target size (works quite well)
 - [X] Use `he_normal` kernel initialisation on conv layers (works quite well)
 - [X] Try only the 'standing' tag to constrain the domain to fewer poses (improvements, still blurry)
+- [ ] Use vector-quantized VAE
 - [ ] Resume training on a saved model
 - [ ] Tweak the latent size, how does it affect the two loss components?
 - [ ] Use simpler feature scaling to floats in range [0..1] to aid in reconstruction simplification
 - [ ] Use kernel size of 3 or 5 on conv layers (some promising preliminary results, needs better checking)
 - [ ] Linear activation on decoder output layer
+
+## 2022-04-13
+
+Looks I've run into something
+that [others have as well](https://www.reddit.com/r/deeplearning/comments/rjpsmt/what_are_some_variational_autoencoder/)
+. 'Standard' VAEs appear to scale up badly to higher-resolution images. With that, almost anything beyond MNIST digits.
+640x640 appears to be solidly beyond the resolution that VAEs can handle. Fortunately, there is a 
+[code example](https://keras.io/examples/generative/vq_vae/) from 
+Keras that makes refactoring my model easier. That sample is designed to work on the dreaded MNIST digits again, but 
+using the larger encoder and decoder layers, it should not be a lot of work to refactor the model.
 
 ## 2022-04-12
 The bucket is working very nicely, it's an excellent solution. It allows me to power off the T4 machine whilst still
