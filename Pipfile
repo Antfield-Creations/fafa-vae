@@ -29,6 +29,8 @@ scipy = "*"
 tensorboard = "*"
 # For padding images
 numpy = "*"
+# For sampling from the latent distribution
+tensorflow-probability = "*"
 
 [dev-packages]
 # Style checker
