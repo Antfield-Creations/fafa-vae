@@ -44,10 +44,10 @@ class CustomImageSamplerCallback(keras.callbacks.Callback):
     Saves image reconstructions sampled from the input dataset at the end of each epoch
     """
     def __init__(self, config: Config, run_id: str) -> None:
-        self.epoch_interval = config['models']['vae']['artifacts']['reconstructions']['save_every_epoch']
+        self.epoch_interval = config['models']['vqvae']['artifacts']['reconstructions']['save_every_epoch']
         self.data_generator = padding_generator(config)
         self.run_id = run_id
-        self.artifact_folder = os.path.join(config['models']['vae']['artifacts']['folder'], run_id)
+        self.artifact_folder = os.path.join(config['models']['vqvae']['artifacts']['folder'], run_id)
         self.reconstructions_folder = os.path.join(self.artifact_folder, 'reconstructions')
         os.makedirs(self.reconstructions_folder, exist_ok=True)
 
@@ -71,8 +71,8 @@ class CustomModelCheckpointSaver(keras.callbacks.Callback):
     """
 
     def __init__(self, config: Config, run_id: str) -> None:
-        self.epoch_interval = config['models']['vae']['artifacts']['checkpoints']['save_every_epoch']
-        artifact_folder = os.path.join(config['models']['vae']['artifacts']['folder'], run_id)
+        self.epoch_interval = config['models']['vqvae']['artifacts']['checkpoints']['save_every_epoch']
+        artifact_folder = os.path.join(config['models']['vqvae']['artifacts']['folder'], run_id)
         self.checkpoint_folder = os.path.join(artifact_folder, 'checkpoints')
 
     def on_epoch_end(self, epoch: int, logs: dict = None) -> None:

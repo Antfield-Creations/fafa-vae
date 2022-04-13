@@ -33,30 +33,30 @@ class VAEModelTestCase(unittest.TestCase):
                 scraper.scrape(config)
 
             artifact_dir = os.path.join(tempdir, 'artifacts')
-            config['models']['vae']['artifacts']['folder'] = artifact_dir
+            config['models']['vqvae']['artifacts']['folder'] = artifact_dir
             run_id: str = time.strftime('%Y-%m-%d_%Hh%Mm%Ss')
-            config['models']['vae']['artifacts']['logs']['folder'] = os.path.join(artifact_dir, run_id)
+            config['models']['vqvae']['artifacts']['logs']['folder'] = os.path.join(artifact_dir, run_id)
 
             # Simplify training
-            config['models']['vae']['data_generator']['fit_samples'] = 10
+            config['models']['vqvae']['data_generator']['fit_samples'] = 10
 
             num_epochs = 2
-            config['models']['vae']['epochs'] = num_epochs
+            config['models']['vqvae']['epochs'] = num_epochs
 
             checkpoint_interval = num_epochs
-            config['models']['vae']['artifacts']['checkpoints']['save_every_epoch'] = checkpoint_interval
-            config['models']['vae']['artifacts']['reconstructions']['save_every_epoch'] = checkpoint_interval
+            config['models']['vqvae']['artifacts']['checkpoints']['save_every_epoch'] = checkpoint_interval
+            config['models']['vqvae']['artifacts']['reconstructions']['save_every_epoch'] = checkpoint_interval
 
             batches_per_epoch = 16
-            config['models']['vae']['batches_per_epoch'] = batches_per_epoch
+            config['models']['vqvae']['batches_per_epoch'] = batches_per_epoch
 
             batch_size = 2
-            config['models']['vae']['batch_size'] = batch_size
+            config['models']['vqvae']['batch_size'] = batch_size
 
             # Dummy-train
             history = train(config, run_id)
 
-            artifacts_folder = str(config['models']['vae']['artifacts']['folder'])
+            artifacts_folder = str(config['models']['vqvae']['artifacts']['folder'])
             runs = listdir(artifacts_folder)
             artifacts_folder = os.path.join(artifacts_folder, runs[0])
             epoch_2_folder = os.path.join(artifacts_folder, 'checkpoints', 'epoch-2')

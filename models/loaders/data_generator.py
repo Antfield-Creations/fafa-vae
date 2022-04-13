@@ -39,7 +39,7 @@ def padding_generator(config: Config) -> Generator:
 
     img_folder = config['images']['folder']
     img_cfg = config['images']
-    batch_size = config['models']['vae']['batch_size']
+    batch_size = config['models']['vqvae']['batch_size']
 
     img_metadata = load_metadata(
         img_folder=img_folder,

@@ -17,7 +17,7 @@ class CallbacksTestCase(unittest.TestCase):
             shutil.copytree('tests/data', img_root_dir + '/set-1/')
 
             config = load_config()
-            config['models']['vae']['artifacts']['folder'] = tempdir
+            config['models']['vqvae']['artifacts']['folder'] = tempdir
             config['images']['folder'] = img_root_dir
 
             reconstructor = CustomImageSamplerCallback(config, run_id='dummy')

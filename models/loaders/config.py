@@ -19,8 +19,8 @@ def load_config(path: str = 'config.yaml') -> Config:
         config = yaml.load(f)
 
     # You can use common home-folder tildes '~' in folder specs
-    config['models']['vae']['artifacts']['folder'] = \
-        os.path.expanduser(config['models']['vae']['artifacts']['folder'])
+    config['models']['vqvae']['artifacts']['folder'] = \
+        os.path.expanduser(config['models']['vqvae']['artifacts']['folder'])
 
     config['images']['folder'] = \
         os.path.expanduser(config['images']['folder'])
