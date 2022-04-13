@@ -2,9 +2,10 @@ import os.path
 import shutil
 import time
 from logging import getLogger
-from typing import Optional
+from typing import Optional, List
 
 import numpy as np
+from numpy import ndarray
 from tensorflow import keras
 from tensorflow.keras.callbacks import History
 
@@ -41,7 +42,7 @@ def train(config: Config, run_id: str = time.strftime('%Y-%m-%d_%Hh%Mm%Ss')) -> 
 
     data_generator = padding_generator(config)
 
-    variance_sample = []
+    variance_sample: List[ndarray] = []
     while len(variance_sample) < config['models']['vqvae']['data_generator']['fit_samples']:
         variance_sample.extend(next(data_generator))
 
