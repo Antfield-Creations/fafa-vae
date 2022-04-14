@@ -7,7 +7,7 @@ from typing import Optional, List
 import numpy as np
 from numpy import ndarray
 from tensorflow import keras
-from tensorflow.keras.callbacks import History
+from tensorflow.keras.callbacks import History  # type: ignore
 
 from models.decoder import get_decoder
 from models.encoder import get_encoder
@@ -29,10 +29,10 @@ def train(config: Config, run_id: str = time.strftime('%Y-%m-%d_%Hh%Mm%Ss')) -> 
     :return: None
     """
 
-    encoder = get_encoder(config)
-    # Compile the encoder separately to get rid of "uncompiled metrics" warnings
+    # Compile the encoder and decoder separately to get rid of "uncompiled metrics" warnings
     # See also: https://stackoverflow.com/questions/67970389
     optimizer = keras.optimizers.Adam(learning_rate=config['models']['vqvae']['learning_rate'])
+    encoder = get_encoder(config)
     encoder.compile(optimizer=optimizer)
     encoder.summary()
 
