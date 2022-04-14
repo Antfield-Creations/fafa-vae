@@ -1,3 +1,4 @@
+import logging
 import os.path
 import random
 from math import floor, ceil
@@ -47,6 +48,7 @@ def padding_generator(config: Config) -> Generator:
         include_tags=config['images']['filter']['include'],
         exclude_tags=config['images']['filter']['exclude'],
     )
+    logging.info(f'Set contains {len(img_metadata)} images to train on.')
 
     if len(img_metadata) == 0:
         raise ValueError('Combination of orientation, include and exclude filters resulted in empty list')
