@@ -47,6 +47,10 @@ models:
         kernel_size: 5
         strides: 2
 
+  pixelcnn:
+    num_residual_blocks: 2
+    num_pixelcnn_layers: 2
+
 images:
   width: 640
   height: 640
