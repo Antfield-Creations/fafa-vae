@@ -1,6 +1,7 @@
 # Lab journal
 
 Things to try next:
+"Standard" VAE
 - [X] lrelu activation on conv layers (works quite well)
 - [X] larger latent size 64 -> 128 (no significant change)
 - [X] Sigmoid on output layer (didn't work)
@@ -10,15 +11,44 @@ Things to try next:
 - [X] Pad images instead of stretching them to the target size (works quite well)
 - [X] Use `he_normal` kernel initialisation on conv layers (works quite well)
 - [X] Try only the 'standing' tag to constrain the domain to fewer poses (improvements, still blurry)
-- [ ] Use vector-quantized VAE
+
+VQ-VAE
+- [X] Use simpler feature scaling to floats in range [0..1] to aid in reconstruction simplification (is fine)
+- [X] Implement vector-quantized VAE
+- [ ] Implement the pixelCNN
 - [ ] Resume training on a saved model
+- [ ] Refactor reconstruction callback so that it can write directly to the data bucket
+- [ ] Refactor checkpoint callback so that it can write directly to the data bucket
+- [ ] Tweak learning rate
 - [ ] Tweak the latent size, how does it affect the two loss components?
-- [ ] Use simpler feature scaling to floats in range [0..1] to aid in reconstruction simplification
 - [ ] Use kernel size of 3 or 5 on conv layers (some promising preliminary results, needs better checking)
 - [ ] Linear activation on decoder output layer
 
-## 2022-04-13
+## 2022-04-14
+I've successfully refactored the autoencoder model to a vector-quantized VAE but it took me about a day to structure it
+to my implementation. The changes are very, very complex, and that is saying something when starting out from a VAE to
+begin with. The concept of the VQVAE 'codebook' in itself is very complex, although it is maybe best described as an
+one-hot embedding space (hence the 'quantized' predicate) that encodes the input feature space in a lower-dimensional
+latent space. 
 
+With the new implementation, of course now my previous loss figures are utterly meaningless and I have to inspect the
+reconstructed images to see how it fares. One interesting thing is that the number of weights on the VQ-VAE is much,
+much lower than on the vanilla VAE. The VAE uses a flattening operation and a subsequent fully connected layer close to
+the latent, as the latent is a simple vector. The fully connected layer, however, was absolutely humongous, given the
+size of the images on the one hand, and the size of the latent vector on the other. At least that is solved in the
+VQVAE implementation, but I may have to add in some conv/deconv layers to give the model enough weights to learn a good
+reconstruction.
+
+I haven't implemented the pixelCNN yet, however, and I'm still not exactly clear on its purpose. I suspect it has to do
+with enhancing the reconstructions from the code book, but why it isn't trained end-to-end but as a separate part of a
+pipeline I cannot fathom. Perhaps it has to do with a certain incompatibility with the quantization part of the training
+of the encoder, quantizer and decoder part. Also, I have to reach the part on how to sample from the codebook to 
+generate novel images.
+
+Interesting, after the first half hour, the model outputs blocky reconstructions of stick figures. The output is much
+less fuzzy than on the first iterations of the VAE, but also much more abstract.
+
+## 2022-04-13
 Looks I've run into something
 that [others have as well](https://www.reddit.com/r/deeplearning/comments/rjpsmt/what_are_some_variational_autoencoder/)
 . 'Standard' VAEs appear to scale up badly to higher-resolution images. With that, almost anything beyond MNIST digits.
