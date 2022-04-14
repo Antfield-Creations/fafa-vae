@@ -12,7 +12,7 @@ from models.encoder import get_encoder
 from models.loaders.config import Config
 
 
-def get_vqvae(config: Config) -> Tuple[keras.Model, keras.Model, keras.Model]:
+def get_vqvae(config: Config) -> keras.Model:
     vq_layer = VectorQuantizer(
         num_embeddings=config['models']['vqvae']['num_embeddings'],
         embedding_dim=config['models']['vqvae']['latent_size'])
@@ -26,7 +26,7 @@ def get_vqvae(config: Config) -> Tuple[keras.Model, keras.Model, keras.Model]:
     quantized_latents = vq_layer(encoder_outputs)
     reconstructions = decoder(quantized_latents)
 
-    return encoder, decoder, keras.Model(inputs, reconstructions, name="vq_vae")
+    return keras.Model(inputs, reconstructions, name="vq_vae")
 
 
 class VectorQuantizer(layers.Layer):
@@ -103,7 +103,7 @@ class VQVAETrainer(keras.models.Model):
         self.latent_dim = config['models']['vqvae']['latent_size']
         self.num_embeddings = config['models']['vqvae']['num_embeddings']
 
-        self.encoder, self.decoder, self.vqvae = get_vqvae(config)
+        self.vqvae = get_vqvae(config)
 
         self.total_loss_tracker = keras.metrics.Mean(name="total_loss")
         self.reconstruction_loss_tracker = keras.metrics.Mean(
