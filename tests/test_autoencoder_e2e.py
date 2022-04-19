@@ -77,8 +77,7 @@ class VAEModelTestCase(unittest.TestCase):
 
             with self.subTest('It generates a folder for the decoder and encoder'):
                 contents = listdir(epoch_2_folder)
-                self.assertIn('encoder', contents)
-                self.assertIn('decoder', contents)
+                self.assertIn('vq_vae', contents)
 
             samples = listdir(os.path.join(artifacts_folder, 'reconstructions'))
             for img_idx in range(batch_size):
