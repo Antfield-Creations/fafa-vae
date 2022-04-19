@@ -86,5 +86,4 @@ class CustomModelCheckpointSaver(keras.callbacks.Callback):
         """
         if (epoch + 1) % self.epoch_interval == 0:
             epoch_folder = os.path.join(self.checkpoint_folder, f'epoch-{epoch + 1}')
-            self.model.encoder.save(filepath=os.path.join(epoch_folder, 'encoder'))
-            self.model.decoder.save(filepath=os.path.join(epoch_folder, 'decoder'))
+            self.model.get_layer('vq_vae').save(filepath=os.path.join(epoch_folder, 'vq_vae'))
