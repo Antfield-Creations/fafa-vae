@@ -24,6 +24,16 @@ VQ-VAE
 - [ ] Use kernel size of 3 or 5 on conv layers (some promising preliminary results, needs better checking)
 - [ ] Linear activation on decoder output layer
 
+## 2022-04-15
+After try 1 the VQVAE already shows much, much better reconstructions than the standard VAE. The 256 epochs I train for,
+show much clearer figures. Interestingly, the model focuses much more on the general picture than on trivial things,
+such as logos and watermarks. It shows decent quality images and it can certainly improve with a bit more training, for
+sure. This is all on a 4-layer conv mirrored to deconv on the decoder, with the largest layer having 64 filters. It'd
+definitely be worth adding another 64 filter, or even a 128 filter layer.
+
+Thing is, though, that I'm still pretty clueless on the role of the pixelCNN. Until I know what it does, I'm not sure if
+it's worth training deeper VAE nets. 
+
 ## 2022-04-14
 I've successfully refactored the autoencoder model to a vector-quantized VAE but it took me about a day to structure it
 to my implementation. The changes are very, very complex, and that is saying something when starting out from a VAE to
