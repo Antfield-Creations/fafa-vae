@@ -15,6 +15,7 @@ models:
         folder: gs://antfield/FAFA/artifacts/{run_id}
 
     data_generator:
+      num_workers: 8
       # normalization batch_size, for when using feature-wise normalization
       fit_samples: 256
 
