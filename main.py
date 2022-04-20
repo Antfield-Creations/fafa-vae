@@ -3,16 +3,12 @@ This is the 'entrypoint' so to say for running or creating ML models.
 You will need to run the scraper script first if you want to use the FAFA images.
 """
 import logging
-from logging import getLogger
 from argparse import ArgumentParser
 
 from models.loaders.config import load_config
 from models.loaders.metadata import export_metadata, load_metadata
 from models.train import train
 from scraper.scraper import scrape
-
-logging.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s', level=logging.DEBUG)
-logger = getLogger('Main')
 
 if __name__ == '__main__':
     known_modes = ['scrape', 'index', 'train', 'encode', 'decode']
@@ -33,7 +29,7 @@ if __name__ == '__main__':
             exclude_tags=config['images']['filter']['exclude'],
             include_tags=config['images']['filter']['include'],
         )
-        logger.info(f'{len(metadata)} images to train on')
+        logging.info(f'{len(metadata)} images to train on')
     elif args.mode == 'train':
         train(config)
     else:

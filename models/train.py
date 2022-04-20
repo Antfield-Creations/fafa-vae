@@ -1,7 +1,5 @@
 import os.path
 import shutil
-import time
-from logging import getLogger
 from typing import Optional, List
 
 import numpy as np
@@ -16,7 +14,6 @@ from models.loaders.config import Config
 from models.loaders.data_generator import padding_generator
 from models.vqvae import VQVAETrainer
 
-logger = getLogger('Train')
 
 def train(config: Config) -> Optional[History]:
     """

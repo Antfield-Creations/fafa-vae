@@ -1,7 +1,7 @@
 import json
+import logging
 import os
 from functools import lru_cache
-from logging import getLogger
 from os.path import isfile
 from typing import Optional, List
 
@@ -9,8 +9,6 @@ import pandas
 from PIL import Image
 from pandas import DataFrame
 from tqdm import tqdm
-
-logger = getLogger('Metadata')
 
 
 def load_metadata(
@@ -43,7 +41,7 @@ def load_metadata(
     # Validate that the exclusion an inclusion tags do not overlap
     # If no include tags are given, anything is included and any exclusion tag may be applied
     if include_tags is not None:
-        logger.info("Filtering include tags...")
+        logging.info("Filtering include tags...")
         include_tags_set = set(include_tags)
         both = include_tags_set.intersection(exclude_tags_set)
         if len(both) > 0:
@@ -59,7 +57,7 @@ def load_metadata(
         df = df[mask]
 
     if exclude_tags_set != set():
-        logger.info("Filtering exclude tags...")
+        logging.info("Filtering exclude tags...")
 
         @lru_cache
         def tag_excluder(tags: frozenset) -> bool:
@@ -78,7 +76,7 @@ def export_metadata(img_folder: str) -> None:
     export_path = os.path.join(img_folder, 'metadata.json')
 
     # Force dir recursion into a list so that we can show a progressbar
-    logger.info(f'Creating image index for {img_folder}...')
+    logging.info(f'Creating image index for {img_folder}...')
     dirlist = list(os.walk(img_folder))
 
     metadata = []
@@ -104,7 +102,7 @@ def export_metadata(img_folder: str) -> None:
                 # Truncated images lead to hard errors in machine learning
                 img.load()
             except Exception as e:
-                logger.error(f"Couldn't load image at {img_path}: {e}, skipping")
+                logging.error(f"Couldn't load image at {img_path}: {e}, skipping")
                 continue
 
             metadata.append({
@@ -118,4 +116,4 @@ def export_metadata(img_folder: str) -> None:
     with open(export_path, 'wt') as f:
         f.write(json.dumps(metadata, indent=2))
 
-    logger.info(f'Finished writing metadata to {export_path}')
+    logging.info(f'Finished writing metadata to {export_path}')

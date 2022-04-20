@@ -11,8 +11,6 @@ from tensorflow.keras.callbacks import TensorBoard  # noqa
 from models.loaders.config import Config
 from models.loaders.data_generator import padding_generator
 
-logger = logging.getLogger(__name__)
-
 
 def tensorboard_callback(artifacts_folder: str, update_freq: Union[int, str] = 'epoch') -> TensorBoard:
     """
@@ -24,7 +22,7 @@ def tensorboard_callback(artifacts_folder: str, update_freq: Union[int, str] = '
     :return: a Tensorboard callback function
     """
     tb_folder = os.path.join(artifacts_folder, 'tensorboard')
-    logger.info(f'You may inspect the logs using\n\n tensorboard --logdir={tb_folder}')
+    logging.info(f'You may inspect the logs using\n\n tensorboard --logdir={tb_folder}')
 
     return TensorBoard(
         log_dir=tb_folder,

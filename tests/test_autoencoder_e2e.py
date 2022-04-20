@@ -1,7 +1,5 @@
-import logging
 import os.path
 import unittest
-import time
 from os import listdir
 from tempfile import TemporaryDirectory
 
@@ -10,8 +8,6 @@ import numpy as np
 from models.loaders.config import load_config
 from models.train import train
 from scraper import scraper
-
-logging.basicConfig(format='%(asctime)s - %(message)s', level=logging.INFO)
 
 
 class VAEModelTestCase(unittest.TestCase):
