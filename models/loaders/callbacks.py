@@ -6,7 +6,7 @@ from typing import Union
 import tensorflow as tf
 from keras_preprocessing.image import save_img
 from tensorflow import keras
-from tensorflow.keras.callbacks import TensorBoard
+from tensorflow.keras.callbacks import TensorBoard  # noqa
 
 from models.loaders.config import Config
 from models.loaders.data_generator import padding_generator
