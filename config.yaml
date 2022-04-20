@@ -6,9 +6,9 @@ models:
     artifacts:
       folder: ~/mnt/antfield/FAFA/artifacts
       reconstructions:
-        save_every_epoch: 8
+        save_every_epoch: 1
       checkpoints:
-        save_every_epoch: 32
+        save_every_epoch: 1
       logs:
         folder: gs://antfield/FAFA/artifacts/{run_id}
 
@@ -16,13 +16,12 @@ models:
       # normalization batch_size, for when using feature-wise normalization
       fit_samples: 256
 
-    # This is a rather small batch size, but it allows training on a GTX1060
-    batch_size: 16
+    batch_size: 24
     learning_rate: 1e-04
     # Fewer batches per epoch allows for epochs of no more than a few minutes
     # on older GPU hardware. This can probably be cranked up on newer hardware
     batches_per_epoch: 256
-    epochs: 256
+    epochs: 128
 
     # code book settings
     latent_size: 128
