@@ -1,9 +1,10 @@
 import logging
+import multiprocessing
 import os.path
 import random
 from math import floor, ceil
-from multiprocessing import Queue, Process
-from typing import Generator, Dict
+from multiprocessing import Queue
+from typing import Dict, List
 
 import numpy as np
 from PIL.Image import Image
@@ -25,65 +26,90 @@ class FAFADataGenerator(ImageDataGenerator):
         )
 
 
-def padding_generator(config: Config) -> Generator:
+class PaddingGenerator:
     """
     Conventional Keras loaders use some kind of interpolation method to rescale images to a target size. This one,
     however, adds padding instead of stretching the image. In this way, the network does not need to learn stretched
     representations of the domain, instead it can learn the representations directly.
 
     Hopefully, this will not only help the network learn, but it also drops the requirement of re-scaling reconstructed
-    images to their original, unstretched size.
-
-    :param config: The VAE config
-
-    :return: An infinite generator over batches of image tensors
+    images to their original orientation.
     """
 
-    img_folder = config['images']['folder']
-    img_cfg = config['images']
-    batch_size = config['models']['vqvae']['batch_size']
+    def __init__(self, config: Config):
+        """
+        :param config: The VAE config
 
-    img_metadata = load_metadata(
-        img_folder=img_folder,
-        orientation=config['images']['filter']['orientation'],
-        include_tags=config['images']['filter']['include'],
-        exclude_tags=config['images']['filter']['exclude'],
-    )
-    logging.info(f'Set contains {len(img_metadata)} images to train on.')
+        :return: An infinite generator over batches of image tensors
+        """
 
-    if len(img_metadata) == 0:
-        raise ValueError('Combination of orientation, include and exclude filters resulted in empty list')
+        self.img_folder = config['images']['folder']
+        self.img_cfg = config['images']
+        self.batch_size = config['models']['vqvae']['batch_size']
 
-    srcs_queue: Queue = Queue()
-    data_queue: Queue = Queue(maxsize=config['models']['vqvae']['batch_size'] * 10)
+        self.img_metadata = load_metadata(
+            img_folder=self.img_folder,
+            orientation=config['images']['filter']['orientation'],
+            include_tags=config['images']['filter']['include'],
+            exclude_tags=config['images']['filter']['exclude'],
+        )
+        logging.info(f'Set contains {len(self.img_metadata)} images to train on.')
 
-    # Start workers
-    for worker in range(config['models']['vqvae']['data_generator']['num_workers']):
-        process = Process(target=load_image_data, args=(srcs_queue, data_queue))
-        process.start()
+        if len(self.img_metadata) == 0:
+            raise ValueError('Combination of orientation, include and exclude filters resulted in empty list')
 
-    while True:
+        ctx = multiprocessing.get_context('spawn')
+        maxsize = self.batch_size
+        self.srcs_queue: Queue = ctx.Queue(maxsize=maxsize)
+        self.data_queue: Queue = ctx.Queue(maxsize=maxsize)
+
+        # Start workers
+        self.workers = []
+        for worker in range(config['models']['vqvae']['data_generator']['num_workers']):
+            process = ctx.Process(target=load_image_data, args=(self.srcs_queue, self.data_queue))
+            process.start()
+            self.workers.append(process)
+
+        self.record_indices: List[int] = []
+
+    def __next__(self) -> ndarray:
         # Keep adding items to the record indices until we have a large enough list to sample a batch
-        while srcs_queue.qsize() < batch_size:
-            record_indices = list(range(len(img_metadata)))
-            random.shuffle(record_indices)
-            for item in record_indices:
-                src = dict(img_metadata.iloc[item])
-                src['img_cfg'] = img_cfg
-                src['img_folder'] = img_folder
-                srcs_queue.put(src)
+        self.fill_srcs_queue()
 
-        img_data = [data_queue.get(block=True, timeout=5) for _ in range(batch_size)]
+        img_data = []
+        for _ in range(self.batch_size):
+            data = self.data_queue.get(block=True, timeout=5)
+            img_data.append(data)
+
         batch = np.array(img_data)
-        yield batch
+        return batch
+
+    def fill_srcs_queue(self) -> None:
+        while len(self.record_indices) < self.batch_size:
+            self.record_indices.extend(list(range(len(self.img_metadata))))
+            random.shuffle(self.record_indices)
+
+        # Fill the sources queue
+        for _ in self.record_indices:
+            src = dict(self.img_metadata.iloc[self.record_indices.pop()])
+            src['img_folder'] = self.img_folder
+            src['img_cfg'] = self.img_cfg
+
+            if not self.srcs_queue.full():
+                self.srcs_queue.put(obj=src, block=True, timeout=5)
+
+    def __del__(self) -> None:
+        for worker in self.workers:
+            worker.terminate()
 
 
 def load_image_data(srcs_queue: Queue, data_queue: Queue) -> None:
-    src: dict = srcs_queue.get(block=True, timeout=5)
-    img = load_img(path=os.path.join(src['img_folder'], src['filename']))
-    img_values = pad_image(img, src['img_cfg'])
-    img_values = scale(img_values)
-    data_queue.put(img_values)
+    while True:
+        src: dict = srcs_queue.get(block=True, timeout=5)
+        img = load_img(path=os.path.join(src['img_folder'], src['filename']))
+        img_values = pad_image(img, src['img_cfg'])
+        img_values = scale(img_values)
+        data_queue.put(obj=img_values)
 
 
 def scale(img_values: ndarray) -> ndarray:

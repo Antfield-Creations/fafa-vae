@@ -9,7 +9,7 @@ from tensorflow import keras
 from tensorflow.keras.callbacks import TensorBoard  # noqa
 
 from models.loaders.config import Config
-from models.loaders.data_generator import padding_generator
+from models.loaders.data_generator import PaddingGenerator
 
 
 def tensorboard_callback(artifacts_folder: str, update_freq: Union[int, str] = 'epoch') -> TensorBoard:
@@ -43,7 +43,7 @@ class CustomImageSamplerCallback(keras.callbacks.Callback):
     """
     def __init__(self, config: Config) -> None:
         self.epoch_interval = config['models']['vqvae']['artifacts']['reconstructions']['save_every_epoch']
-        self.data_generator = padding_generator(config)
+        self.data_generator = PaddingGenerator(config)
         self.run_id = config['run_id']
         self.artifact_folder = config['models']['vqvae']['artifacts']['folder']
         self.reconstructions_folder = os.path.join(self.artifact_folder, 'reconstructions')

@@ -3,7 +3,7 @@ from tensorflow.keras import layers  # type: ignore
 import tensorflow_probability as tfp
 
 from models.loaders.config import load_config
-from models.loaders.data_generator import padding_generator
+from models.loaders.data_generator import PaddingGenerator
 from models.pixelcnn import get_pixelcnn
 from models.vqvae import get_vqvae
 
@@ -17,7 +17,7 @@ raise NotImplementedError('Please load a trained model')
 
 encoder = vqvae_trainer.vqvae.get_layer('encoder')
 quantizer = vqvae_trainer.vqvae.get_layer("vector_quantizer")
-data_generator = padding_generator(config)
+data_generator = PaddingGenerator(config)
 
 # Generate the codebook indices.
 encoded_outputs = encoder.predict(next(data_generator))

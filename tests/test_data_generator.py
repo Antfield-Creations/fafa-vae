@@ -7,7 +7,7 @@ import keras.backend
 import numpy as np
 
 from models.loaders.config import load_config
-from models.loaders.data_generator import padding_generator, scale
+from models.loaders.data_generator import PaddingGenerator, scale
 from models.loaders.metadata import export_metadata
 
 
@@ -26,7 +26,7 @@ class DataGeneratorTestCase(unittest.TestCase):
             config['images']['filter']['include'] = None
             config['images']['filter']['exclude'] = []
 
-            data_generator = padding_generator(config=config)
+            data_generator = PaddingGenerator(config=config)
 
             batch = next(data_generator)
             img_cfg = config['images']
