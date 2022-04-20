@@ -4,6 +4,7 @@ import os.path
 import random
 from math import floor, ceil
 from multiprocessing import Queue
+from queue import Empty
 from typing import Dict, List
 
 import numpy as np
@@ -63,6 +64,9 @@ class PaddingGenerator:
         self.srcs_queue: Queue = ctx.Queue(maxsize=maxsize)
         self.data_queue: Queue = ctx.Queue(maxsize=maxsize)
 
+        self.record_indices: List[int] = []
+        self.fill_srcs_queue()
+
         # Start workers
         self.workers = []
         for worker in range(config['models']['vqvae']['data_generator']['num_workers']):
@@ -70,22 +74,25 @@ class PaddingGenerator:
             process.start()
             self.workers.append(process)
 
-        self.record_indices: List[int] = []
-
     def __next__(self) -> ndarray:
         # Keep adding items to the record indices until we have a large enough list to sample a batch
         self.fill_srcs_queue()
 
         img_data = []
         for _ in range(self.batch_size):
-            data = self.data_queue.get(block=True, timeout=5)
+            try:
+                data = self.data_queue.get()
+            except Empty:
+                logging.error(f'Empty queue after {len(img_data)} data instances')
+                raise
+
             img_data.append(data)
 
         batch = np.array(img_data)
         return batch
 
     def fill_srcs_queue(self) -> None:
-        while len(self.record_indices) < self.batch_size:
+        while len(self.record_indices) <= self.batch_size:
             self.record_indices.extend(list(range(len(self.img_metadata))))
             random.shuffle(self.record_indices)
 
@@ -94,9 +101,7 @@ class PaddingGenerator:
             src = dict(self.img_metadata.iloc[self.record_indices.pop()])
             src['img_folder'] = self.img_folder
             src['img_cfg'] = self.img_cfg
-
-            if not self.srcs_queue.full():
-                self.srcs_queue.put(obj=src, block=True, timeout=5)
+            self.srcs_queue.put(obj=src)
 
     def __del__(self) -> None:
         for worker in self.workers:
