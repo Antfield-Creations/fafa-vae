@@ -16,15 +16,16 @@ class CallbacksTestCase(unittest.TestCase):
             img_root_dir = tempdir + '/img'
             shutil.copytree('tests/data', img_root_dir + '/set-1/')
 
-            config = load_config()
-            config['models']['vqvae']['artifacts']['folder'] = tempdir
+            config = load_config(run_id='dummy')
+            config['models']['vqvae']['artifacts']['folder'] = os.path.join(tempdir, config['run_id'])
+            artifacts_folder = config['models']['vqvae']['artifacts']['folder']
             config['images']['folder'] = img_root_dir
 
-            reconstructor = CustomImageSamplerCallback(config, run_id='dummy')
+            reconstructor = CustomImageSamplerCallback(config)
             zeroes = np.zeros((1, 640, 640, 3))
             halves = zeroes + 0.5
             reconstructor.save_reconstruction(reconstructions=halves, epoch=0, img_idx=0)
-            saved_img = Image.open(os.path.join(tempdir, 'dummy', 'reconstructions', 'epoch-1-1.png')).load()
+            saved_img = Image.open(os.path.join(artifacts_folder, 'reconstructions', 'epoch-1-1.png')).load()
 
             expected_values = (0, 0, 0)
             with self.subTest(f'It scales 0.5 floats by 255 to {expected_values}'):

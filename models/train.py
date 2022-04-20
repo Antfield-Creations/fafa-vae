@@ -18,13 +18,11 @@ from models.vqvae import VQVAETrainer
 
 logger = getLogger('Train')
 
-
-def train(config: Config, run_id: str = time.strftime('%Y-%m-%d_%Hh%Mm%Ss')) -> Optional[History]:
+def train(config: Config) -> Optional[History]:
     """
     Trains the VAE model on the images
 
     :param config: a Config object from the load_config function
-    :param run_id: The timestamp of the run. Allows setting to a custom value, mostly for testing
 
     :return: None
     """
@@ -51,8 +49,8 @@ def train(config: Config, run_id: str = time.strftime('%Y-%m-%d_%Hh%Mm%Ss')) -> 
     vqvae_trainer.compile(optimizer=optimizer)
 
     # Checkpoints, sample reconstructions and metric artifact folders
-    artifact_folder = os.path.join(config['models']['vqvae']['artifacts']['folder'], run_id)
-    logs_folder = config['models']['vqvae']['artifacts']['logs']['folder'].format(run_id=run_id)
+    artifact_folder = config['models']['vqvae']['artifacts']['folder']
+    logs_folder = config['models']['vqvae']['artifacts']['logs']['folder']
     models_folder = os.path.join(artifact_folder, 'models')
 
     # Copy model modules to artifacts for archiving
@@ -64,8 +62,8 @@ def train(config: Config, run_id: str = time.strftime('%Y-%m-%d_%Hh%Mm%Ss')) -> 
     steps = config['models']['vqvae']['batches_per_epoch']
 
     tensorboard_cb = tensorboard_callback(artifacts_folder=logs_folder)
-    image_sampler = CustomImageSamplerCallback(config, run_id)
-    checkpoint_saver = CustomModelCheckpointSaver(config, run_id)
+    image_sampler = CustomImageSamplerCallback(config)
+    checkpoint_saver = CustomModelCheckpointSaver(config)
 
     history = vqvae_trainer.fit(
         data_generator,

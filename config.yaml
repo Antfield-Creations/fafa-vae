@@ -1,10 +1,12 @@
 # YAML version: 1.2
 # Required for scientific notation of floats
 ---
+run_id:  # Keep empty to let the config function create one by itself
+
 models:
   vqvae:
     artifacts:
-      folder: ~/mnt/antfield/FAFA/artifacts
+      folder: ~/mnt/antfield/FAFA/artifacts/{run_id}
       reconstructions:
         save_every_epoch: 1
       checkpoints:

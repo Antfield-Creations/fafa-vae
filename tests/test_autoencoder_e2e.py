@@ -17,7 +17,7 @@ logging.basicConfig(format='%(asctime)s - %(message)s', level=logging.INFO)
 class VAEModelTestCase(unittest.TestCase):
     def test_training(self) -> None:
         with TemporaryDirectory() as tempdir:
-            config = load_config()
+            config = load_config(run_id='dummy')
 
             # Override image location and filter settings
             config['images']['folder'] = os.path.join(tempdir, 'img')
@@ -32,10 +32,9 @@ class VAEModelTestCase(unittest.TestCase):
             with self.subTest(f'It harvests set number {set_no}'):
                 scraper.scrape(config)
 
-            artifact_dir = os.path.join(tempdir, 'artifacts')
+            artifact_dir = os.path.join(tempdir, 'artifacts', config['run_id'])
             config['models']['vqvae']['artifacts']['folder'] = artifact_dir
-            run_id: str = time.strftime('%Y-%m-%d_%Hh%Mm%Ss')
-            config['models']['vqvae']['artifacts']['logs']['folder'] = os.path.join(artifact_dir, run_id)
+            config['models']['vqvae']['artifacts']['logs']['folder'] = os.path.join(artifact_dir, 'tensorboard')
 
             # Simplify training
             config['models']['vqvae']['data_generator']['fit_samples'] = 10
@@ -54,12 +53,9 @@ class VAEModelTestCase(unittest.TestCase):
             config['models']['vqvae']['batch_size'] = batch_size
 
             # Dummy-train
-            history = train(config, run_id)
+            history = train(config)
 
-            artifacts_folder = str(config['models']['vqvae']['artifacts']['folder'])
-            runs = listdir(artifacts_folder)
-            artifacts_folder = os.path.join(artifacts_folder, runs[0])
-            epoch_2_folder = os.path.join(artifacts_folder, 'checkpoints', 'epoch-2')
+            epoch_2_folder = os.path.join(artifact_dir, 'checkpoints', 'epoch-2')
 
             with self.subTest('The loss is a valid float'):
                 assert history is not None
@@ -67,19 +63,21 @@ class VAEModelTestCase(unittest.TestCase):
                 self.assertFalse(np.isnan(last_epoch_loss))
 
             with self.subTest('It generates a set of artifact directories'):
-                artifacts = listdir(artifacts_folder)
-                self.assertSetEqual(set(artifacts), {'checkpoints', 'models', 'reconstructions', 'tensorboard'},
-                                    f"Got: {artifacts} from {artifacts_folder}")
+                artifacts = listdir(artifact_dir)
+                self.assertSetEqual(
+                    set(artifacts),
+                    {'checkpoints', 'models', 'reconstructions', 'tensorboard'},
+                    f"Got: {artifacts} from {artifact_dir}")
 
             with self.subTest(f'It generates a checkpoint dir for epoch intervals of {checkpoint_interval}'):
-                epochs = listdir(os.path.join(artifacts_folder, 'checkpoints'))
+                epochs = listdir(os.path.join(artifact_dir, 'checkpoints'))
                 self.assertSetEqual(set(epochs), {'epoch-2'})
 
             with self.subTest('It generates a folder for the decoder and encoder'):
                 contents = listdir(epoch_2_folder)
                 self.assertIn('vq_vae', contents)
 
-            samples = listdir(os.path.join(artifacts_folder, 'reconstructions'))
+            samples = listdir(os.path.join(artifact_dir, 'reconstructions'))
             for img_idx in range(batch_size):
                 with self.subTest(f"It generates the image {img_idx + 1} sample"):
                     self.assertIn(f'epoch-{num_epochs}-{img_idx + 1}.png', samples)
