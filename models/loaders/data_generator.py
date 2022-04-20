@@ -58,8 +58,7 @@ def padding_generator(config: Config) -> Generator:
         # Keep adding items to the record indices until we have a large enough list to sample a batch
         while len(record_indices) < batch_size:
             record_indices.extend(list(range(len(img_metadata))))
-
-        random.shuffle(record_indices)
+            random.shuffle(record_indices)
 
         batch_indices = [record_indices.pop() for _ in range(batch_size)]
         batch_meta = img_metadata.iloc[batch_indices]
