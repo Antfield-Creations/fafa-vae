@@ -48,6 +48,7 @@ def load_config(
     # Replace run id template with actual run id value
     assert config['run_id'] is not None
     artifact_folder = artifact_folder.replace('{run_id}', config['run_id'])
+    config['models']['vqvae']['artifacts']['logs']['folder'].replace('{run_id}', config['run_id'])
     os.makedirs(artifact_folder, exist_ok=True)
 
     config['images']['folder'] = os.path.expanduser(config['images']['folder'])
