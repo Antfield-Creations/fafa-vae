@@ -16,8 +16,7 @@ class CallbacksTestCase(unittest.TestCase):
             img_root_dir = tempdir + '/img'
             shutil.copytree('tests/data', img_root_dir + '/set-1/')
 
-            config = load_config(run_id='dummy')
-            config['models']['vqvae']['artifacts']['folder'] = os.path.join(tempdir, config['run_id'])
+            config = load_config(run_id='dummy', artifact_folder=tempdir)
             artifacts_folder = config['models']['vqvae']['artifacts']['folder']
             config['images']['folder'] = img_root_dir
 

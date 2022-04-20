@@ -13,7 +13,8 @@ from scraper import scraper
 class VAEModelTestCase(unittest.TestCase):
     def test_training(self) -> None:
         with TemporaryDirectory() as tempdir:
-            config = load_config(run_id='dummy')
+            config = load_config(run_id='dummy', artifact_folder=os.path.join(tempdir, 'dummy'))
+            artifact_folder = config['models']['vqvae']['artifacts']['folder']
 
             # Override image location and filter settings
             config['images']['folder'] = os.path.join(tempdir, 'img')
@@ -28,9 +29,7 @@ class VAEModelTestCase(unittest.TestCase):
             with self.subTest(f'It harvests set number {set_no}'):
                 scraper.scrape(config)
 
-            artifact_dir = os.path.join(tempdir, 'artifacts', config['run_id'])
-            config['models']['vqvae']['artifacts']['folder'] = artifact_dir
-            config['models']['vqvae']['artifacts']['logs']['folder'] = os.path.join(artifact_dir, 'tensorboard')
+            config['models']['vqvae']['artifacts']['logs']['folder'] = artifact_folder
 
             # Simplify training
             config['models']['vqvae']['data_generator']['fit_samples'] = 10
@@ -51,7 +50,7 @@ class VAEModelTestCase(unittest.TestCase):
             # Dummy-train
             history = train(config)
 
-            epoch_2_folder = os.path.join(artifact_dir, 'checkpoints', 'epoch-2')
+            epoch_2_folder = os.path.join(artifact_folder, 'checkpoints', 'epoch-2')
 
             with self.subTest('The loss is a valid float'):
                 assert history is not None
@@ -59,21 +58,21 @@ class VAEModelTestCase(unittest.TestCase):
                 self.assertFalse(np.isnan(last_epoch_loss))
 
             with self.subTest('It generates a set of artifact directories'):
-                artifacts = listdir(artifact_dir)
+                artifacts = listdir(artifact_folder)
                 self.assertSetEqual(
                     set(artifacts),
-                    {'checkpoints', 'models', 'reconstructions', 'tensorboard'},
-                    f"Got: {artifacts} from {artifact_dir}")
+                    {'checkpoints', 'models', 'reconstructions', 'tensorboard', 'logfile.txt'},
+                    f"Got: {artifacts} from {artifact_folder}")
 
             with self.subTest(f'It generates a checkpoint dir for epoch intervals of {checkpoint_interval}'):
-                epochs = listdir(os.path.join(artifact_dir, 'checkpoints'))
+                epochs = listdir(os.path.join(artifact_folder, 'checkpoints'))
                 self.assertSetEqual(set(epochs), {'epoch-2'})
 
             with self.subTest('It generates a folder for the decoder and encoder'):
                 contents = listdir(epoch_2_folder)
                 self.assertIn('vq_vae', contents)
 
-            samples = listdir(os.path.join(artifact_dir, 'reconstructions'))
+            samples = listdir(os.path.join(artifact_folder, 'reconstructions'))
             for img_idx in range(batch_size):
                 with self.subTest(f"It generates the image {img_idx + 1} sample"):
                     self.assertIn(f'epoch-{num_epochs}-{img_idx + 1}.png', samples)
