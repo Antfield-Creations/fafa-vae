@@ -2,13 +2,14 @@ import logging
 import os.path
 import random
 from math import floor, ceil
-from typing import Generator, Dict, List
+from multiprocessing import Queue, Process
+from typing import Generator, Dict
 
-from tensorflow import keras
 import numpy as np
 from PIL.Image import Image
-from numpy import ndarray
 from keras_preprocessing.image import ImageDataGenerator, img_to_array, load_img
+from numpy import ndarray
+from tensorflow import keras
 
 from models.loaders.config import Config
 from models.loaders.metadata import load_metadata
@@ -53,26 +54,36 @@ def padding_generator(config: Config) -> Generator:
     if len(img_metadata) == 0:
         raise ValueError('Combination of orientation, include and exclude filters resulted in empty list')
 
-    record_indices: List[int] = []
+    srcs_queue: Queue = Queue()
+    data_queue: Queue = Queue(maxsize=config['models']['vqvae']['batch_size'] * 10)
+
+    # Start workers
+    for worker in range(config['models']['vqvae']['data_generator']['num_workers']):
+        process = Process(target=load_image_data, args=(srcs_queue, data_queue))
+        process.start()
+
     while True:
         # Keep adding items to the record indices until we have a large enough list to sample a batch
-        while len(record_indices) < batch_size:
-            record_indices.extend(list(range(len(img_metadata))))
+        while srcs_queue.qsize() < batch_size:
+            record_indices = list(range(len(img_metadata)))
             random.shuffle(record_indices)
+            for item in record_indices:
+                src = dict(img_metadata.iloc[item])
+                src['img_cfg'] = img_cfg
+                src['img_folder'] = img_folder
+                srcs_queue.put(src)
 
-        batch_indices = [record_indices.pop() for _ in range(batch_size)]
-        batch_meta = img_metadata.iloc[batch_indices]
-
-        img_data = []
-        for record in batch_meta.itertuples():
-            img = load_img(path=os.path.join(img_folder, record.filename))
-            # img_to_array will result in an ndarray of size (height, width, channels)
-            img_values = pad_image(img, img_cfg)
-            img_values = scale(img_values)
-            img_data.append(img_values)
-
+        img_data = [data_queue.get(block=True, timeout=5) for _ in range(batch_size)]
         batch = np.array(img_data)
         yield batch
+
+
+def load_image_data(srcs_queue: Queue, data_queue: Queue) -> None:
+    src: dict = srcs_queue.get(block=True, timeout=5)
+    img = load_img(path=os.path.join(src['img_folder'], src['filename']))
+    img_values = pad_image(img, src['img_cfg'])
+    img_values = scale(img_values)
+    data_queue.put(img_values)
 
 
 def scale(img_values: ndarray) -> ndarray:
@@ -103,6 +114,7 @@ def pad_image(img: Image, img_cfg: Dict[str, int]) -> ndarray:
 
     :return:
     """
+    # img_to_array will result in an ndarray of size (height, width, channels)
     img_values = img_to_array(img)
 
     height_padding = img_cfg['height'] - img.height
