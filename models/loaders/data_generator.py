@@ -60,7 +60,7 @@ class PaddingGenerator:
             raise ValueError('Combination of orientation, include and exclude filters resulted in empty list')
 
         ctx = multiprocessing.get_context('spawn')
-        maxsize = self.batch_size
+        maxsize = self.batch_size * 8
         self.srcs_queue: Queue = ctx.Queue(maxsize=maxsize)
         self.data_queue: Queue = ctx.Queue(maxsize=maxsize)
 
@@ -78,7 +78,7 @@ class PaddingGenerator:
         # Keep adding items to the record indices until we have a large enough list to sample a batch
         self.fill_srcs_queue()
 
-        img_data = []
+        img_data: List[ndarray] = []
         for _ in range(self.batch_size):
             try:
                 data = self.data_queue.get()
@@ -89,6 +89,8 @@ class PaddingGenerator:
             img_data.append(data)
 
         batch = np.array(img_data)
+        # Keep adding items to the record indices until we have a large enough list to sample a batch
+        self.fill_srcs_queue()
         return batch
 
     def fill_srcs_queue(self) -> None:
