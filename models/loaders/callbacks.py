@@ -14,7 +14,7 @@ from models.loaders.data_generator import padding_generator
 logger = logging.getLogger(__name__)
 
 
-def tensorboard_callback(artifacts_folder: str, update_freq: Union[int, str] = 100) -> TensorBoard:
+def tensorboard_callback(artifacts_folder: str, update_freq: Union[int, str] = 'epoch') -> TensorBoard:
     """
     Returns a Tensorboard logging callback instance
 
