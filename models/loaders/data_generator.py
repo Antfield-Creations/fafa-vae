@@ -1,14 +1,12 @@
 import logging
-import multiprocessing
 import os.path
 import random
 from math import floor, ceil
-from multiprocessing import Queue
-from queue import Empty
-from typing import Dict, List
+from typing import Dict, List, Optional
 
 import numpy as np
 from PIL.Image import Image
+from keras.utils.data_utils import Sequence
 from keras_preprocessing.image import ImageDataGenerator, img_to_array, load_img
 from numpy import ndarray
 from tensorflow import keras
@@ -27,7 +25,7 @@ class FAFADataGenerator(ImageDataGenerator):
         )
 
 
-class PaddingGenerator:
+class PaddingGenerator(Sequence):
     """
     Conventional Keras loaders use some kind of interpolation method to rescale images to a target size. This one,
     however, adds padding instead of stretching the image. In this way, the network does not need to learn stretched
@@ -47,6 +45,7 @@ class PaddingGenerator:
         self.img_folder = config['images']['folder']
         self.img_cfg = config['images']
         self.batch_size = config['models']['vqvae']['batch_size']
+        self.num_processes = config['models']['vqvae']['data_generator']['num_workers']
 
         self.img_metadata = load_metadata(
             img_folder=self.img_folder,
@@ -54,69 +53,44 @@ class PaddingGenerator:
             include_tags=config['images']['filter']['include'],
             exclude_tags=config['images']['filter']['exclude'],
         )
-        logging.info(f'Set contains {len(self.img_metadata)} images to train on.')
-
         if len(self.img_metadata) == 0:
             raise ValueError('Combination of orientation, include and exclude filters resulted in empty list')
 
-        ctx = multiprocessing.get_context('spawn')
-        maxsize = self.batch_size * 8
-        self.srcs_queue: Queue = ctx.Queue(maxsize=maxsize)
-        self.data_queue: Queue = ctx.Queue(maxsize=maxsize)
+        logging.info(f'Set contains {len(self.img_metadata)} images to train on.')
+        self.record_indices = list(range(len(self.img_metadata)))
 
-        self.record_indices: List[int] = []
-        self.fill_srcs_queue()
-
-        # Start workers
-        self.workers = []
-        for worker in range(config['models']['vqvae']['data_generator']['num_workers']):
-            process = ctx.Process(target=load_image_data, args=(self.srcs_queue, self.data_queue))
-            process.start()
-            self.workers.append(process)
+    def __len__(self) -> int:
+        return floor(len(self.img_metadata)/self.batch_size)
 
     def __next__(self) -> ndarray:
-        # Keep adding items to the record indices until we have a large enough list to sample a batch
-        self.fill_srcs_queue()
+        return self.__getitem__()
+
+    def __getitem__(self, index: Optional[int] = None) -> ndarray:
+        if index is None:
+            start_index = random.choice(self.record_indices)
+        else:
+            start_index = index * self.batch_size
 
         img_data: List[ndarray] = []
-        for _ in range(self.batch_size):
-            try:
-                data = self.data_queue.get()
-            except Empty:
-                logging.error(f'Empty queue after {len(img_data)} data instances')
-                raise
 
-            img_data.append(data)
-
-        batch = np.array(img_data)
-        # Keep adding items to the record indices until we have a large enough list to sample a batch
-        self.fill_srcs_queue()
-        return batch
-
-    def fill_srcs_queue(self) -> None:
-        while len(self.record_indices) <= self.batch_size:
-            self.record_indices.extend(list(range(len(self.img_metadata))))
-            random.shuffle(self.record_indices)
-
-        # Fill the sources queue
-        for _ in self.record_indices:
-            src = dict(self.img_metadata.iloc[self.record_indices.pop()])
+        for idx in self.record_indices[start_index:start_index + self.batch_size]:
+            src = dict(self.img_metadata.iloc[idx])
             src['img_folder'] = self.img_folder
             src['img_cfg'] = self.img_cfg
-            self.srcs_queue.put(obj=src)
+            img_data.append(load_image_data(src))
 
-    def __del__(self) -> None:
-        for worker in self.workers:
-            worker.terminate()
+        batch = np.array(img_data)
+        return batch
+
+    def on_epoch_end(self) -> None:
+        random.shuffle(self.record_indices)
 
 
-def load_image_data(srcs_queue: Queue, data_queue: Queue) -> None:
-    while True:
-        src: dict = srcs_queue.get(block=True, timeout=5)
-        img = load_img(path=os.path.join(src['img_folder'], src['filename']))
-        img_values = pad_image(img, src['img_cfg'])
-        img_values = scale(img_values)
-        data_queue.put(obj=img_values)
+def load_image_data(src: dict) -> ndarray:
+    img = load_img(path=os.path.join(src['img_folder'], src['filename']))
+    img_values = pad_image(img, src['img_cfg'])
+    img_values = scale(img_values)
+    return img_values
 
 
 def scale(img_values: ndarray) -> ndarray:

@@ -1,3 +1,4 @@
+import json
 import logging
 import os
 import time
@@ -39,26 +40,36 @@ def load_config(
 
     if artifact_folder is not None:
         config['models']['vqvae']['artifacts']['folder'] = artifact_folder
-    else:
-        artifact_folder = config['models']['vqvae']['artifacts']['folder']
-
-    # You can use common home-folder tildes '~' in folder specs
-    artifact_folder = os.path.expanduser(artifact_folder)
 
     # Replace run id template with actual run id value
     assert config['run_id'] is not None
-    artifact_folder = artifact_folder.replace('{run_id}', config['run_id'])
-    config['models']['vqvae']['artifacts']['logs']['folder'].replace('{run_id}', config['run_id'])
-    os.makedirs(artifact_folder, exist_ok=True)
+    config['models']['vqvae']['artifacts']['folder'] = \
+        config['models']['vqvae']['artifacts']['folder'].replace('{run_id}', config['run_id'])
+
+    # You can use common home-folder tildes '~' in folder specs
+    config['models']['vqvae']['artifacts']['folder'] = \
+        os.path.expanduser(config['models']['vqvae']['artifacts']['folder'])
+
+    config['models']['vqvae']['artifacts']['logs']['folder'] = \
+        config['models']['vqvae']['artifacts']['logs']['folder'].replace('{run_id}', config['run_id'])
+    config['models']['vqvae']['artifacts']['logs']['folder'] = \
+        os.path.expanduser(config['models']['vqvae']['artifacts']['logs']['folder'])
+
+    os.makedirs(config['models']['vqvae']['artifacts']['folder'], exist_ok=True)
 
     config['images']['folder'] = os.path.expanduser(config['images']['folder'])
+    config['images']['folder'] = config['images']['folder'].replace('{run_id}', config['run_id'])
 
     # Configure logging
     logger = logging.getLogger()
     file_handler = logging.FileHandler(
-        filename=os.path.join(artifact_folder, 'logfile.txt'),
+        filename=os.path.join(config['models']['vqvae']['artifacts']['folder'], 'logfile.txt'),
         mode='a',
     )
     logger.addHandler(file_handler)
+
+    config_json = json.dumps(config)
+    if '~' in config_json:
+        raise ValueError(f'Not all home-dir tildes were substituted: \n{config_json}')
 
     return config
