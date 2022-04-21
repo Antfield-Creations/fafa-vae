@@ -1,7 +1,7 @@
-import json
 import logging
 import os
 import time
+from io import StringIO
 from typing import Optional
 
 from ruamel.yaml import YAML
@@ -67,9 +67,18 @@ def load_config(
         mode='a',
     )
     logger.addHandler(file_handler)
+    logging.info(f"Session has run id {config['run_id']}")
 
-    config_json = json.dumps(config)
-    if '~' in config_json:
-        raise ValueError(f'Not all home-dir tildes were substituted: \n{config_json}')
+    # Validate the config: convert to text and check for template markers "~" and "{"
+    string_stream = StringIO()
+    yaml.indent(mapping=2, sequence=4, offset=2)
+    yaml.default_flow_style = False
+    yaml.dump(config, string_stream)
+    config_as_text = string_stream.getvalue()
+
+    if '~' in config_as_text:
+        raise ValueError(f'Not all home-dir tildes "~" were substituted: \n{config_as_text}')
+    if '{' in config_as_text:
+        raise ValueError(f'Not all template values with "{{" were substituted: \n{config_as_text}')
 
     return config
