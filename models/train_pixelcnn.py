@@ -1,3 +1,5 @@
+import logging
+
 import tensorflow_probability as tfp
 from tensorflow import keras
 from tensorflow.keras import layers  # noqa
@@ -45,3 +47,5 @@ def train(config: Config) -> History:
     dist = tfp.distributions.Categorical(logits=x)
     sampled = dist.sample()
     sampler = keras.Model(inputs, sampled)
+    # TODO: do something useful with the sampler
+    logging.info(sampler)
