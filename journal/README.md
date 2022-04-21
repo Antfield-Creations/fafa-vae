@@ -14,15 +14,29 @@ Things to try next:
 
 VQ-VAE
 - [X] Use simpler feature scaling to floats in range [0..1] to aid in reconstruction simplification (is fine)
-- [X] Implement vector-quantized VAE
+- [X] Implement vector-quantized VAE (excellent, huge improvement)
 - [ ] Implement the pixelCNN
+- [x] Tweak learning rate (worked well)
 - [ ] Resume training on a saved model
+- [ ] Implement the vqvae model training as an Argo Workflow 
 - [ ] Refactor reconstruction callback so that it can write directly to the data bucket
 - [ ] Refactor checkpoint callback so that it can write directly to the data bucket
-- [ ] Tweak learning rate
 - [ ] Tweak the latent size, how does it affect the two loss components?
 - [ ] Use kernel size of 3 or 5 on conv layers (some promising preliminary results, needs better checking)
 - [ ] Linear activation on decoder output layer
+
+## 2022-04-21
+I spent about two days refactoring code to end up basically exactly where I was three days ago. I spent time redesigning
+the data loader, creating an implementation that used queues from the multiprocessing standard library, only to find out
+that Keras already implements data loaders that way under the hood, if you fit your training data with 
+`use_multiprocessing=True`. So that was helpful ... in the learning process at least.
+
+So in the end the only functional change I made was to implement the loader as a `keras.utils.data_utils.Sequence` which
+is for the best I guess, although it is decidely more complex than the simple generator function I implemented earlier.
+But whatever. At least I got a new run started today, with a slightly higher learning rate, to see how it fares.
+
+Couple of hours later it is already apparent that the higher learning rate works quite well, the model does benefit from
+it so it appears. Let's see where the model performance ends up after 128 epochs.
 
 ## 2022-04-15
 After try 1 the VQVAE already shows much, much better reconstructions than the standard VAE. The 256 epochs I train for,
