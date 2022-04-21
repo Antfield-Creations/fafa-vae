@@ -1,5 +1,5 @@
-# YAML version: 1.2
-# Required for scientific notation of floats
+# YAML version: 1.2 Required for scientific notation of floats
+%YAML 1.2
 ---
 run_id:  # Keep empty to let the config function create one by itself
 
@@ -20,7 +20,7 @@ models:
       fit_samples: 256
 
     batch_size: 16
-    learning_rate: 1e-04
+    learning_rate: 2e-04
     # Fewer batches per epoch allows for epochs of no more than a few minutes
     # on older GPU hardware. This can probably be cranked up on newer hardware
     batches_per_epoch: 256
