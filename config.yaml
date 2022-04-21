@@ -53,6 +53,7 @@ models:
         strides: 2
 
   pixelcnn:
+    input_vqvae: gs://antfield/FAFA/artifacts/2022-04-21_10h10m14s/checkpoints/epoch-128/
     num_residual_blocks: 2
     num_pixelcnn_layers: 2
 
