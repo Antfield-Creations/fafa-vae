@@ -42,7 +42,8 @@ keep the storage bucket I think, it's a very useful way of storing the training 
 
 Today I'm going to drop the learning rate back to 1e-4 and also I'm going to drop the 'standing' filter on the images. I
 want to see how the model does on the much more complete image collection. I think it should do fine, and if it does I
-can start re-training sessions instead of learning from scratch every time.
+can start re-training sessions instead of learning from scratch every time. Started run 
+gs://antfield/FAFA/artifacts/2022-04-22_09h33m57s/ in order to follow this plan.
 
 ## 2022-04-21
 I spent about two days refactoring code to end up basically exactly where I was three days ago. I spent time redesigning
