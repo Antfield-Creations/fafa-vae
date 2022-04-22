@@ -27,12 +27,12 @@ VQ-VAE
 - [ ] Linear activation on decoder output layer
 
 ## 2022-04-21
-From the increased learning rate of 2e-4 I can conclude that it did not really help. The initial curve angle is steeper, but the
-learning process appears to be more erratic. Intermittent spikes in loss increase (once from 0.015 to 0.8) in the
-reconstruction loss occur, after which the model tries to settle back to loss values that match the slightly lower
+From the increased learning rate of 2e-4 I can conclude that it did not really help. The initial curve angle is steeper,
+but the learning process appears to be more erratic. Intermittent spikes in loss increase (once from 0.015 to 0.8) in
+the reconstruction loss occur, after which the model tries to settle back to loss values that match the slightly lower
 learning rate of 1e-4. I'm not sure what the model does here, but when I inspect the images at this point, the model
 clearly suffered some kind of collapse because it appears as though all it has learned is lost: it produces stick
-figures again. 
+figures again.
 
 Looks as though I'm burning through my starting freebie credits as well. I'm losing about € 10 a day on a single
 experiment of about 12 hours of training, and that's the minimum I can do to get a somewhat clear picture of what the
@@ -44,6 +44,10 @@ Today I'm going to drop the learning rate back to 1e-4 and also I'm going to dro
 want to see how the model does on the much more complete image collection. I think it should do fine, and if it does I
 can start re-training sessions instead of learning from scratch every time. Started run 
 gs://antfield/FAFA/artifacts/2022-04-22_09h33m57s/ in order to follow this plan.
+
+Also changed the call to `model.fit`, to set the number of workers to 8 and the max queue size to twice that of a batch
+size. Maybe this will speed up the learning process and get rid of the 'on batch end is slow compared to batch training'
+kind messages.
 
 ## 2022-04-21
 I spent about two days refactoring code to end up basically exactly where I was three days ago. I spent time redesigning
