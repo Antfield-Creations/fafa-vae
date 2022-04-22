@@ -69,7 +69,7 @@ images:
     orientation: any
     # if no values under "include" are specified, it includes all tags
     include:
-      - standing
+     # - standing
 
     exclude:
       - duo
