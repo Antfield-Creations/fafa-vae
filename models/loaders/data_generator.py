@@ -58,6 +58,7 @@ class PaddingGenerator(Sequence):
 
         logging.info(f'Set contains {len(self.img_metadata)} images to train on.')
         self.record_indices = list(range(len(self.img_metadata)))
+        random.shuffle(self.record_indices)
 
     def __len__(self) -> int:
         return floor(len(self.img_metadata)/self.batch_size)
