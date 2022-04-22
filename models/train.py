@@ -67,6 +67,8 @@ def train(config: Config) -> Optional[History]:
         verbose=1,
         epochs=epochs,
         use_multiprocessing=True,
+        workers=8,
+        max_queue_size=config['models']['vqvae']['batch_size'] * 2,
         steps_per_epoch=steps,
         callbacks=[tensorboard_cb, image_sampler, checkpoint_saver],
     )
