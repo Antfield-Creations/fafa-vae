@@ -15,8 +15,9 @@ Things to try next:
 VQ-VAE
 - [X] Use simpler feature scaling to floats in range [0..1] to aid in reconstruction simplification (is fine)
 - [X] Implement vector-quantized VAE (excellent, huge improvement)
+- [x] Tweak learning rate (no significant improvement, more erratic learning curve)
+- [ ] Drop the 'standing' filter
 - [ ] Implement the pixelCNN
-- [x] Tweak learning rate (worked well)
 - [ ] Resume training on a saved model
 - [ ] Implement the vqvae model training as an Argo Workflow 
 - [ ] Refactor reconstruction callback so that it can write directly to the data bucket
@@ -24,6 +25,24 @@ VQ-VAE
 - [ ] Tweak the latent size, how does it affect the two loss components?
 - [ ] Use kernel size of 3 or 5 on conv layers (some promising preliminary results, needs better checking)
 - [ ] Linear activation on decoder output layer
+
+## 2022-04-21
+From the increased learning rate of 2e-4 I can conclude that it did not really help. The initial curve angle is steeper, but the
+learning process appears to be more erratic. Intermittent spikes in loss increase (once from 0.015 to 0.8) in the
+reconstruction loss occur, after which the model tries to settle back to loss values that match the slightly lower
+learning rate of 1e-4. I'm not sure what the model does here, but when I inspect the images at this point, the model
+clearly suffered some kind of collapse because it appears as though all it has learned is lost: it produces stick
+figures again. 
+
+Looks as though I'm burning through my starting freebie credits as well. I'm losing about € 10 a day on a single
+experiment of about 12 hours of training, and that's the minimum I can do to get a somewhat clear picture of what the
+model learning accomplishes. This means I'll be out of budget by the end of this month and I'll either have to switch to
+training on my good old mobile GTX 1060 or decide to spend some of my own budget on a T4 again. I'll certainly want to 
+keep the storage bucket I think, it's a very useful way of storing the training artifacts.
+
+Today I'm going to drop the learning rate back to 1e-4 and also I'm going to drop the 'standing' filter on the images. I
+want to see how the model does on the much more complete image collection. I think it should do fine, and if it does I
+can start re-training sessions instead of learning from scratch every time.
 
 ## 2022-04-21
 I spent about two days refactoring code to end up basically exactly where I was three days ago. I spent time redesigning
