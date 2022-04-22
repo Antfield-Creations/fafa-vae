@@ -30,10 +30,6 @@ models:
     latent_size: 128
     num_embeddings: 256
 
-    # encoder
-    dense:
-      size: 128
-
     # encoder, mirrored decoder
     conv2d:
       - filters: 32
