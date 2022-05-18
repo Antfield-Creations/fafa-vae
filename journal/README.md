@@ -15,8 +15,8 @@ Things to try next:
 VQ-VAE
 - [X] Use simpler feature scaling to floats in range [0..1] to aid in reconstruction simplification (is fine)
 - [X] Implement vector-quantized VAE (excellent, huge improvement)
-- [x] Tweak learning rate (no significant improvement, more erratic learning curve)
-- [ ] Drop the 'standing' filter
+- [X] Tweak learning rate (no significant improvement, more erratic learning curve)
+- [X] Drop the 'standing' filter
 - [ ] Implement the pixelCNN
 - [ ] Resume training on a saved model
 - [ ] Implement the vqvae model training as an Argo Workflow 
@@ -25,6 +25,11 @@ VQ-VAE
 - [ ] Tweak the latent size, how does it affect the two loss components?
 - [ ] Use kernel size of 3 or 5 on conv layers (some promising preliminary results, needs better checking)
 - [ ] Linear activation on decoder output layer
+
+## 2022-05-10
+I suspended work on FAFA-VAE of a moment to take some days off and to work on things that actually get the bills paid.
+Also, I started investigating some more into the VQVAE architecture and on why it is a two-stage process. There was an
+existing stackoverflow question on this: 
 
 ## 2022-04-21
 From the increased learning rate of 2e-4 I can conclude that it did not really help. The initial curve angle is steeper,
@@ -38,7 +43,10 @@ Looks as though I'm burning through my starting freebie credits as well. I'm los
 experiment of about 12 hours of training, and that's the minimum I can do to get a somewhat clear picture of what the
 model learning accomplishes. This means I'll be out of budget by the end of this month and I'll either have to switch to
 training on my good old mobile GTX 1060 or decide to spend some of my own budget on a T4 again. I'll certainly want to 
-keep the storage bucket I think, it's a very useful way of storing the training artifacts.
+keep the storage bucket I think, it's a very useful way of storing the training artifacts. Training sessions now cost
+about €0,40 for a T4 on an n2-4 machine, with sessions lasting for ~12hrs is about €5 a day without vm disk and bucket
+usage. It's certainly worth looking into pre-emptible machines, but I want to set up a machine learning Kubernetes
+environment for that first, I think, to automatically reschedule failed training jobs.
 
 Today I'm going to drop the learning rate back to 1e-4 and also I'm going to drop the 'standing' filter on the images. I
 want to see how the model does on the much more complete image collection. I think it should do fine, and if it does I

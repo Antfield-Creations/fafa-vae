@@ -1,0 +1,1 @@
+You deployed {{ .Release.Name }} version {{ .Chart.Version }} to {{ .Release.Namespace }}
