@@ -3,7 +3,7 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
-  name: {{ template "argo-event-based-operator.fullname" $ }}-{{ $.Values.customResourceDefinition.kind | lower }}
+  name: {{ template "argo-mlops-operator.fullname" $ }}-{{ $.Values.customResourceDefinition.kind | lower }}
   namespace: {{ $namespace }}
 rules:
   - apiGroups:

@@ -1,7 +1,7 @@
 {{/*
 Expand the name of the chart.
 */}}
-{{- define "fafa-ml-operator.name" -}}
+{{- define "argo-mlops-operator.name" -}}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
@@ -10,7 +10,7 @@ Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 If release name contains chart name it will be used as a full name.
 */}}
-{{- define "fafa-ml-operator.fullname" -}}
+{{- define "argo-mlops-operator.fullname" -}}
 {{- if .Values.fullnameOverride }}
 {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
 {{- else }}
@@ -26,16 +26,16 @@ If release name contains chart name it will be used as a full name.
 {{/*
 Create chart name and version as used by the chart label.
 */}}
-{{- define "fafa-ml-operator.chart" -}}
+{{- define "argo-mlops-operator.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 {{/*
 Common labels
 */}}
-{{- define "fafa-ml-operator.labels" -}}
-helm.sh/chart: {{ include "fafa-ml-operator.chart" . }}
-{{ include "fafa-ml-operator.selectorLabels" . }}
+{{- define "argo-mlops-operator.labels" -}}
+helm.sh/chart: {{ include "argo-mlops-operator.chart" . }}
+{{ include "argo-mlops-operator.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
@@ -45,17 +45,17 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{/*
 Selector labels
 */}}
-{{- define "fafa-ml-operator.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "fafa-ml-operator.name" . }}
+{{- define "argo-mlops-operator.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "argo-mlops-operator.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{/*
 Create the name of the service account to use
 */}}
-{{- define "fafa-ml-operator.serviceAccountName" -}}
+{{- define "argo-mlops-operator.serviceAccountName" -}}
 {{- if .Values.serviceAccount.create }}
-{{- default (include "fafa-ml-operator.fullname" .) .Values.serviceAccount.name }}
+{{- default (include "argo-mlops-operator.fullname" .) .Values.serviceAccount.name }}
 {{- else }}
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
