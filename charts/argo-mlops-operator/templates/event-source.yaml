@@ -1,0 +1,23 @@
+{{- range $namespace := .Values.customResourceDefinition.namespaces }}
+---
+apiVersion: argoproj.io/v1alpha1
+kind: EventSource
+metadata:
+  name: {{ $.Values.customResourceDefinition.kind | lower }}-source
+  namespace: {{ $namespace }}
+spec:
+  template:
+    # assign a service account with `get`, `list` and `watch` permissions on the resource being watched.
+    serviceAccountName: {{ $.Values.customResourceDefinition.serviceAccount.name }}
+  resource:
+    geodata:
+      namespace: {{ $namespace }}
+      group: {{ $.Values.customResourceDefinition.apiGroup }}
+      version: v1alpha1
+      resource: {{ $.Values.customResourceDefinition.kind | lower }}
+      eventTypes:
+        - ADD
+        - UPDATE
+      filter:
+        afterStart: true
+{{- end }}

@@ -1,0 +1,50 @@
+{{- range $namespace := .Values.customResourceDefinition.namespaces }}
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Sensor
+metadata:
+  name: {{ $.Values.customResourceDefinition.kind | lower }}-sensor
+  namespace: {{ $namespace }}
+spec:
+  template:
+    serviceAccountName: {{ $.Values.customResourceDefinition.serviceAccount.name }}
+  dependencies:
+    - name: source-dependency
+      # References the metadata.name in the event source
+      eventSourceName: {{ $.Values.customResourceDefinition.kind | lower }}-source
+      # References the key directly under "resource:" in the event source
+      eventName: {{ $.Values.customResourceDefinition.kind | lower }}
+  triggers:
+    - template:
+        name: argo-workflow-trigger
+        argoWorkflow:
+          operation: submit
+          source:
+            resource:
+              apiVersion: argoproj.io/v1alpha1
+              kind: Workflow
+              metadata:
+                generateName: process-{{ $.Values.customResourceDefinition.kind | lower }}-
+              spec:
+                serviceAccountName: {{ $.Values.customResourceDefinition.serviceAccount.workflowServiceAccountName }}
+                entrypoint: whalesay
+                arguments:
+                  parameters:
+                    - name: message
+                      # the value will get overridden by event payload from test-dep
+                      value: hello world
+                templates:
+                  - name: whalesay
+                    inputs:
+                      parameters:
+                        - name: message
+                    container:
+                      image: docker/whalesay:latest
+                      command: [cowsay]
+                      args: [{{`"{{inputs.parameters.message}}"`}}]
+          parameters:
+            - src:
+                dependencyName: source-dependency
+                dataKey: body
+              dest: spec.arguments.parameters.0.value
+{{- end }}
