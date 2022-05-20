@@ -29,7 +29,7 @@ def load_config(
     """
     yaml = YAML(typ='safe')
     with open(path) as f:
-        config = yaml.load(f)
+        config = yaml.load(f)['spec']
 
     if run_id is not None:
         config['run_id'] = run_id
