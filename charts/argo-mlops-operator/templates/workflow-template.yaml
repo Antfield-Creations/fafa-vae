@@ -1,0 +1,43 @@
+{{- range $namespace := .Values.customResourceDefinition.namespaces }}
+---
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+  name: tensorflow-workflow-template
+  namespace: {{ $namespace }}
+  generateName: tensorflow-check-
+spec:
+  serviceAccountName: argo-workflow
+  tolerations:
+    - key: nvidia.com/gpu
+      value: present
+      effect: NoSchedule
+  nodeSelector:
+    cloud.google.com/gke-nodepool: gpu-pool
+
+  entrypoint: main
+
+  templates:
+    - name: main
+      inputs:
+        parameters:
+          - name: mlops-manifest
+      container:
+        image: tensorflow/tensorflow:2.7.1-gpu
+        command:
+          - bash
+          - -eux
+          - -c
+        args:
+          - |
+            python -m pip install pipenv
+            curl -fsSLO https://github.com/stedolan/jq/releases/download/jq-1.5/jq-linux64 -o /usr/bin/jq
+            chmod +x /usr/bin/jq
+            mkdir script
+            cd script
+            echo {{`{{inputs.parameters.mlops-manifest}}`}} > config.json
+            # Clone into current directory
+            git clone $(jq .spec.repository config.json) .
+            pipenv install --deploy
+            {{`{{inputs.parameters.cmd}}`}}
+{{- end }}
