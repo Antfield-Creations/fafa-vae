@@ -14,3 +14,7 @@ customResourceDefinition:
   namespaces:
     - operators
     - data
+
+templateRef:
+  name: tensorflow-gke-workflow
+  entrypoint: main
