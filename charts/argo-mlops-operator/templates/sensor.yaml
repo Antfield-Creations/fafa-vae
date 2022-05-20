@@ -27,21 +27,33 @@ spec:
                 generateName: process-{{ $.Values.customResourceDefinition.kind | lower }}-
               spec:
                 serviceAccountName: {{ $.Values.customResourceDefinition.serviceAccount.workflowServiceAccountName }}
-                entrypoint: whalesay
+                entrypoint: deploy
                 arguments:
                   parameters:
-                    - name: message
-                      # the value will get overridden by event payload from test-dep
-                      value: hello world
+                    # the values will get overridden by event payload from below
+                    - name: mlops-manifest
+                      value: ""
                 templates:
-                  - name: whalesay
-                    inputs:
-                      parameters:
-                        - name: message
-                    container:
-                      image: docker/whalesay:latest
-                      command: [cowsay]
-                      args: [{{`"{{inputs.parameters.message}}"`}}]
+                  - name: deploy
+                    steps:
+                      - - name: validate-gpu
+                          script:
+                            image: tensorflow/tensorflow:2.7.1-gpu
+                            command: [ python ]
+                            source: |
+                              import tensorflow as tf
+                              devices = tf.config.list_physical_devices('GPU')
+
+                              if len(devices) == 0:
+                                raise RuntimeError('No GPUs found')
+
+                              for device in devices:
+                                print(device)
+
+                      - - name: call-template
+                          templateRef:
+                            {{- $.Values.templateRef | toYaml | nindent 28 }}
+
           parameters:
             - src:
                 dependencyName: source-dependency
