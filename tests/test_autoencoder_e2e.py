@@ -1,4 +1,5 @@
 import os.path
+import time
 import unittest
 from os import listdir
 from tempfile import TemporaryDirectory
@@ -49,6 +50,9 @@ class VAEModelTestCase(unittest.TestCase):
 
             # Dummy-train
             history = train(config)
+            # There is some kind of asynchronicity/data race going on where the tests _sometimes_ do not see all
+            # sample images
+            time.sleep(1)
 
             epoch_2_folder = os.path.join(artifact_folder, 'checkpoints', 'epoch-2')
 
