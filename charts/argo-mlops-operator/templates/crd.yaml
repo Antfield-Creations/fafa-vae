@@ -25,9 +25,14 @@ spec:
             spec:
               type: object
               properties:
+
                 image:
                   type: string
-                  description: Image to use when running the workflow
+                  description: Base image to use when running the workflow
+
+                repository:
+                  type: string
+                  description: Source for the application to check out and run in the image
 
                 command:
                   type: string
