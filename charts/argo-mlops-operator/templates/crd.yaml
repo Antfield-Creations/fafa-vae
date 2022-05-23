@@ -30,10 +30,8 @@ spec:
                   description: Image to use when running the workflow
 
                 command:
-                  type: array
-                  description: Commands to run on executing the image
-                  items:
-                    type: string
+                  type: string
+                  description: Command to run on executing the image
 
                 run_id:
                   type:
