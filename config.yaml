@@ -1,5 +1,4 @@
 # YAML version: 1.2 Required for scientific notation of floats
-%YAML 1.2
 ---
 apiVersion: api.antfield.nl/v1alpha1
 kind: ArgoMLOps
