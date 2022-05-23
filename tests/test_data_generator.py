@@ -21,15 +21,15 @@ class DataGeneratorTestCase(unittest.TestCase):
             export_metadata(tempdir)
 
             # Force-include everything
-            config['images']['folder'] = tempdir
-            config['images']['filter']['orientation'] = 'any'
-            config['images']['filter']['include'] = None
-            config['images']['filter']['exclude'] = []
+            config['data']['images']['folder'] = tempdir
+            config['data']['images']['filter']['orientation'] = 'any'
+            config['data']['images']['filter']['include'] = None
+            config['data']['images']['filter']['exclude'] = []
 
             data_generator = PaddingGenerator(config=config)
 
             batch = next(data_generator)
-            img_cfg = config['images']
+            img_cfg = config['data']['images']
             self.assertEqual(batch[0].shape, (img_cfg['height'], img_cfg['width'], img_cfg['channels']))
 
     def test_scaling(self) -> None:

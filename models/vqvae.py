@@ -19,7 +19,7 @@ def get_vqvae(config: Config) -> keras.Model:
     encoder = get_encoder(config)
     decoder = get_decoder(config)
 
-    img_cfg = config['images']
+    img_cfg = config['data']['images']
     inputs = keras.Input(shape=(img_cfg['height'], img_cfg['width'], img_cfg['channels']))
     encoder_outputs = encoder(inputs)
 

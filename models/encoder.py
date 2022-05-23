@@ -13,9 +13,9 @@ def get_encoder(config: Config) -> keras.Model:
     :return: A Keras model instance as the encoder
     """
 
-    width = config['images']['width']
-    height = config['images']['height']
-    channels = config['images']['channels']
+    width = config['data']['images']['width']
+    height = config['data']['images']['height']
+    channels = config['data']['images']['channels']
 
     convs = config['models']['vqvae']['conv2d']
 

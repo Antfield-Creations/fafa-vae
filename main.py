@@ -23,11 +23,11 @@ if __name__ == '__main__':
     if args.mode == 'scrape':
         scrape(config)
     elif args.mode == 'index':
-        export_metadata(img_folder=config['images']['folder'])
+        export_metadata(img_folder=config['data']['images']['folder'])
         metadata = load_metadata(
-            img_folder=config['images']['folder'],
-            exclude_tags=config['images']['filter']['exclude'],
-            include_tags=config['images']['filter']['include'],
+            img_folder=config['data']['images']['folder'],
+            exclude_tags=config['data']['images']['filter']['exclude'],
+            include_tags=config['data']['images']['filter']['include'],
         )
         logging.info(f'{len(metadata)} images to train on')
     elif args.mode == 'train':

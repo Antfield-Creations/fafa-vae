@@ -18,7 +18,7 @@ def get_decoder(config: Config) -> keras.Model:
     convs = config['models']['vqvae']['conv2d']
     # The conv2d layers in reverse:
     convs = list(reversed(convs))
-    img_channels = config['images']['channels']
+    img_channels = config['data']['images']['channels']
 
     decoder_layers = keras.layers.Conv2DTranspose(
         filters=convs[0]['filters'],

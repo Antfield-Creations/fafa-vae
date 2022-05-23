@@ -13,9 +13,9 @@ class ScraperTestCase(unittest.TestCase):
             set_no = 5159
 
             config = load_config()
-            config['images']['folder'] = temp_dir
-            config['images']['scraper']['first_set'] = set_no
-            config['images']['scraper']['last_set'] = set_no
+            config['data']['images']['folder'] = temp_dir
+            config['data']['images']['scraper']['first_set'] = set_no
+            config['data']['images']['scraper']['last_set'] = set_no
 
             with self.subTest(f'It harvests set number {set_no}'):
                 scraper.scrape(config)

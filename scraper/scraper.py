@@ -26,9 +26,9 @@ session = requests.session()
 
 
 def scrape(config: Config) -> None:
-    download_folder = str(config['images']['folder'])
-    first_set = int(config['images']['scraper']['first_set'])
-    last_set = int(config['images']['scraper']['last_set'])
+    download_folder = str(config['data']['images']['folder'])
+    first_set = int(config['data']['images']['scraper']['first_set'])
+    last_set = int(config['data']['images']['scraper']['last_set'])
 
     with tqdm(total=last_set) as pbar:
         # Skip over the part that is already done

@@ -17,14 +17,14 @@ class VAEModelTestCase(unittest.TestCase):
             artifact_folder = config['models']['vqvae']['artifacts']['folder']
 
             # Override image location and filter settings
-            config['images']['folder'] = os.path.join(tempdir, 'img')
-            config['images']['filter']['include'] = None
-            config['images']['filter']['exclude'] = []
-            config['images']['filter']['orientation'] = 'any'
+            config['data']['images']['folder'] = os.path.join(tempdir, 'img')
+            config['data']['images']['filter']['include'] = None
+            config['data']['images']['filter']['exclude'] = []
+            config['data']['images']['filter']['orientation'] = 'any'
 
             set_no = 5159
-            config['images']['scraper']['first_set'] = set_no
-            config['images']['scraper']['last_set'] = set_no
+            config['data']['images']['scraper']['first_set'] = set_no
+            config['data']['images']['scraper']['last_set'] = set_no
 
             with self.subTest(f'It harvests set number {set_no}'):
                 scraper.scrape(config)

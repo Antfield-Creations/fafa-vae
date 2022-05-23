@@ -46,4 +46,13 @@ spec:
                   properties:
                     json:
                       x-kubernetes-preserve-unknown-fields: true
-                      description: Model hyperparameters can be anything, as long as the application can interpret them
+                      description: Model hyperparameters can be anything, it's up to the application can interpret them
+
+                data:
+                  type: object
+                  description: Settings for data loading and transformation
+                  x-kubernetes-preserve-unknown-fields: true
+                  properties:
+                    json:
+                      x-kubernetes-preserve-unknown-fields: true
+                      description: Data settings can be anything, it's up to the application can interpret them

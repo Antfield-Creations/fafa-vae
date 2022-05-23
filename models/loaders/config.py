@@ -57,8 +57,8 @@ def load_config(
 
     os.makedirs(config['models']['vqvae']['artifacts']['folder'], exist_ok=True)
 
-    config['images']['folder'] = os.path.expanduser(config['images']['folder'])
-    config['images']['folder'] = config['images']['folder'].replace('{run_id}', config['run_id'])
+    config['data']['images']['folder'] = os.path.expanduser(config['data']['images']['folder'])
+    config['data']['images']['folder'] = config['data']['images']['folder'].replace('{run_id}', config['run_id'])
 
     # Configure logging
     logger = logging.getLogger()

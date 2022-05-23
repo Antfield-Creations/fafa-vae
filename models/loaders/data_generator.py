@@ -42,16 +42,16 @@ class PaddingGenerator(Sequence):
         :return: An infinite generator over batches of image tensors
         """
 
-        self.img_folder = config['images']['folder']
-        self.img_cfg = config['images']
+        self.img_folder = config['data']['images']['folder']
+        self.img_cfg = config['data']['images']
         self.batch_size = config['models']['vqvae']['batch_size']
         self.num_processes = config['models']['vqvae']['data_generator']['num_workers']
 
         self.img_metadata = load_metadata(
             img_folder=self.img_folder,
-            orientation=config['images']['filter']['orientation'],
-            include_tags=config['images']['filter']['include'],
-            exclude_tags=config['images']['filter']['exclude'],
+            orientation=config['data']['images']['filter']['orientation'],
+            include_tags=config['data']['images']['filter']['include'],
+            exclude_tags=config['data']['images']['filter']['exclude'],
         )
         if len(self.img_metadata) == 0:
             raise ValueError('Combination of orientation, include and exclude filters resulted in empty list')
