@@ -14,7 +14,7 @@ spec:
       namespace: {{ $namespace }}
       group: {{ $.Values.customResourceDefinition.apiGroup }}
       version: v1alpha1
-      resource: $.Values.customResourceDefinition.kind
+      resource: {{ $.Values.customResourceDefinition.kind }}
       eventTypes:
         - ADD
         - UPDATE
