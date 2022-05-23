@@ -1,3 +1,5 @@
+NAMESPACE ?= data
+
 .PHONY: tests
 
 check:
@@ -8,3 +10,6 @@ check:
 
 tests:
 	pipenv run python -m unittest discover .
+
+workflow:
+	kubectl -n ${NAMESPACE} apply -f config.yaml
