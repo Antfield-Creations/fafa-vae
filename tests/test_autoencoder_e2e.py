@@ -72,5 +72,5 @@ class VAEModelTestCase(unittest.TestCase):
                 self.assertIn('vq_vae', contents)
 
             samples = listdir(os.path.join(artifact_folder, 'reconstructions'))
-            with self.subTest(f"It generates at least one image sample for each epoch"):
+            with self.subTest("It generates at least one image sample for each epoch"):
                 self.assertIn(f'epoch-{num_epochs}-1.png', samples)
