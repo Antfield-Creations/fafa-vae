@@ -16,7 +16,7 @@ spec:
       eventName: {{ $.Values.customResourceDefinition.kind | lower }}
   triggers:
     - template:
-        name: argo-workflow-trigger
+        name: argo-mlops-trigger
         argoWorkflow:
           operation: submit
           source:
