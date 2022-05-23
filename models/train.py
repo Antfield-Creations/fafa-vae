@@ -11,7 +11,7 @@ from models.decoder import get_decoder
 from models.encoder import get_encoder
 from models.loaders.callbacks import CustomImageSamplerCallback, CustomModelCheckpointSaver, tensorboard_callback
 from models.loaders.config import Config
-from models.loaders.data_generator import padding_generator
+from models.loaders.data_generator import PaddingGenerator
 from models.vqvae import VQVAETrainer
 
 
@@ -35,7 +35,7 @@ def train(config: Config) -> Optional[History]:
     decoder.compile(optimizer=optimizer)
     decoder.summary()
 
-    data_generator = padding_generator(config)
+    data_generator = PaddingGenerator(config)
 
     variance_sample: List[ndarray] = []
     while len(variance_sample) < config['models']['vqvae']['data_generator']['fit_samples']:
@@ -67,6 +67,8 @@ def train(config: Config) -> Optional[History]:
         verbose=1,
         epochs=epochs,
         use_multiprocessing=True,
+        workers=8,
+        max_queue_size=config['models']['vqvae']['batch_size'] * 2,
         steps_per_epoch=steps,
         callbacks=[tensorboard_cb, image_sampler, checkpoint_saver],
     )

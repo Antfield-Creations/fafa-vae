@@ -1,0 +1,16 @@
+{{- range $namespace := .Values.customResourceDefinition.namespaces }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: {{ template "argo-mlops-operator.fullname" $ }}-{{ $.Values.customResourceDefinition.kind | lower }}
+  namespace: {{ $namespace }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: {{ template "argo-mlops-operator.fullname" $ }}-{{ $.Values.customResourceDefinition.kind | lower }}
+subjects:
+  - kind: ServiceAccount
+    name: {{ $.Values.customResourceDefinition.serviceAccount.name }}
+    namespace: {{ $namespace }}
+{{- end }}

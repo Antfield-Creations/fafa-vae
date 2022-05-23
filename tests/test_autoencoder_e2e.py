@@ -49,7 +49,6 @@ class VAEModelTestCase(unittest.TestCase):
 
             # Dummy-train
             history = train(config)
-
             epoch_2_folder = os.path.join(artifact_folder, 'checkpoints', 'epoch-2')
 
             with self.subTest('The loss is a valid float'):
@@ -73,6 +72,5 @@ class VAEModelTestCase(unittest.TestCase):
                 self.assertIn('vq_vae', contents)
 
             samples = listdir(os.path.join(artifact_folder, 'reconstructions'))
-            for img_idx in range(batch_size):
-                with self.subTest(f"It generates the image {img_idx + 1} sample"):
-                    self.assertIn(f'epoch-{num_epochs}-{img_idx + 1}.png', samples)
+            with self.subTest("It generates at least one image sample for each epoch"):
+                self.assertIn(f'epoch-{num_epochs}-1.png', samples)

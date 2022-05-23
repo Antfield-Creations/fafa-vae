@@ -14,15 +14,71 @@ Things to try next:
 
 VQ-VAE
 - [X] Use simpler feature scaling to floats in range [0..1] to aid in reconstruction simplification (is fine)
-- [X] Implement vector-quantized VAE
+- [X] Implement vector-quantized VAE (excellent, huge improvement)
+- [X] Tweak learning rate (no significant improvement, more erratic learning curve)
+- [X] Drop the 'standing' filter
 - [ ] Implement the pixelCNN
 - [ ] Resume training on a saved model
+- [ ] Implement the vqvae model training as an Argo Workflow 
 - [ ] Refactor reconstruction callback so that it can write directly to the data bucket
 - [ ] Refactor checkpoint callback so that it can write directly to the data bucket
-- [ ] Tweak learning rate
 - [ ] Tweak the latent size, how does it affect the two loss components?
 - [ ] Use kernel size of 3 or 5 on conv layers (some promising preliminary results, needs better checking)
 - [ ] Linear activation on decoder output layer
+
+## 2022-05-10
+I suspended work on FAFA-VAE of a moment to take some days off and to work on things that actually get the bills paid.
+Also, I started investigating some more into the VQVAE architecture and on why it is a two-stage process. There was an
+existing stackoverflow question on this: 
+
+## 2022-04-21
+From the increased learning rate of 2e-4 I can conclude that it did not really help. The initial curve angle is steeper,
+but the learning process appears to be more erratic. Intermittent spikes in loss increase (once from 0.015 to 0.8) in
+the reconstruction loss occur, after which the model tries to settle back to loss values that match the slightly lower
+learning rate of 1e-4. I'm not sure what the model does here, but when I inspect the images at this point, the model
+clearly suffered some kind of collapse because it appears as though all it has learned is lost: it produces stick
+figures again.
+
+Looks as though I'm burning through my starting freebie credits as well. I'm losing about € 10 a day on a single
+experiment of about 12 hours of training, and that's the minimum I can do to get a somewhat clear picture of what the
+model learning accomplishes. This means I'll be out of budget by the end of this month and I'll either have to switch to
+training on my good old mobile GTX 1060 or decide to spend some of my own budget on a T4 again. I'll certainly want to 
+keep the storage bucket I think, it's a very useful way of storing the training artifacts. Training sessions now cost
+about €0,40 for a T4 on an n2-4 machine, with sessions lasting for ~12hrs is about €5 a day without vm disk and bucket
+usage. It's certainly worth looking into pre-emptible machines, but I want to set up a machine learning Kubernetes
+environment for that first, I think, to automatically reschedule failed training jobs.
+
+Today I'm going to drop the learning rate back to 1e-4 and also I'm going to drop the 'standing' filter on the images. I
+want to see how the model does on the much more complete image collection. I think it should do fine, and if it does I
+can start re-training sessions instead of learning from scratch every time. Started run 
+gs://antfield/FAFA/artifacts/2022-04-22_09h33m57s/ in order to follow this plan.
+
+Also changed the call to `model.fit`, to set the number of workers to 8 and the max queue size to twice that of a batch
+size. Maybe this will speed up the learning process and get rid of the 'on batch end is slow compared to batch training'
+kind messages.
+
+## 2022-04-21
+I spent about two days refactoring code to end up basically exactly where I was three days ago. I spent time redesigning
+the data loader, creating an implementation that used queues from the multiprocessing standard library, only to find out
+that Keras already implements data loaders that way under the hood, if you fit your training data with 
+`use_multiprocessing=True`. So that was helpful ... in the learning process at least.
+
+So in the end the only functional change I made was to implement the loader as a `keras.utils.data_utils.Sequence` which
+is for the best I guess, although it is decidely more complex than the simple generator function I implemented earlier.
+But whatever. At least I got a new run started today, with a slightly higher learning rate, to see how it fares.
+
+Couple of hours later it is already apparent that the higher learning rate works quite well, the model does benefit from
+it so it appears. Let's see where the model performance ends up after 128 epochs.
+
+## 2022-04-15
+After try 1 the VQVAE already shows much, much better reconstructions than the standard VAE. The 256 epochs I train for,
+show much clearer figures. Interestingly, the model focuses much more on the general picture than on trivial things,
+such as logos and watermarks. It shows decent quality images and it can certainly improve with a bit more training, for
+sure. This is all on a 4-layer conv mirrored to deconv on the decoder, with the largest layer having 64 filters. It'd
+definitely be worth adding another 64 filter, or even a 128 filter layer.
+
+Thing is, though, that I'm still pretty clueless on the role of the pixelCNN. Until I know what it does, I'm not sure if
+it's worth training deeper VAE nets. 
 
 ## 2022-04-14
 I've successfully refactored the autoencoder model to a vector-quantized VAE but it took me about a day to structure it

@@ -2,13 +2,14 @@ import logging
 import os.path
 import random
 from math import floor, ceil
-from typing import Generator, Dict, List
+from typing import Dict, List, Optional
 
-from tensorflow import keras
 import numpy as np
 from PIL.Image import Image
-from numpy import ndarray
+from keras.utils.data_utils import Sequence
 from keras_preprocessing.image import ImageDataGenerator, img_to_array, load_img
+from numpy import ndarray
+from tensorflow import keras
 
 from models.loaders.config import Config
 from models.loaders.metadata import load_metadata
@@ -24,55 +25,73 @@ class FAFADataGenerator(ImageDataGenerator):
         )
 
 
-def padding_generator(config: Config) -> Generator:
+class PaddingGenerator(Sequence):
     """
     Conventional Keras loaders use some kind of interpolation method to rescale images to a target size. This one,
     however, adds padding instead of stretching the image. In this way, the network does not need to learn stretched
     representations of the domain, instead it can learn the representations directly.
 
     Hopefully, this will not only help the network learn, but it also drops the requirement of re-scaling reconstructed
-    images to their original, unstretched size.
-
-    :param config: The VAE config
-
-    :return: An infinite generator over batches of image tensors
+    images to their original orientation.
     """
 
-    img_folder = config['images']['folder']
-    img_cfg = config['images']
-    batch_size = config['models']['vqvae']['batch_size']
+    def __init__(self, config: Config):
+        """
+        :param config: The VAE config
 
-    img_metadata = load_metadata(
-        img_folder=img_folder,
-        orientation=config['images']['filter']['orientation'],
-        include_tags=config['images']['filter']['include'],
-        exclude_tags=config['images']['filter']['exclude'],
-    )
-    logging.info(f'Set contains {len(img_metadata)} images to train on.')
+        :return: An infinite generator over batches of image tensors
+        """
 
-    if len(img_metadata) == 0:
-        raise ValueError('Combination of orientation, include and exclude filters resulted in empty list')
+        self.img_folder = config['images']['folder']
+        self.img_cfg = config['images']
+        self.batch_size = config['models']['vqvae']['batch_size']
+        self.num_processes = config['models']['vqvae']['data_generator']['num_workers']
 
-    record_indices: List[int] = []
-    while True:
-        # Keep adding items to the record indices until we have a large enough list to sample a batch
-        while len(record_indices) < batch_size:
-            record_indices.extend(list(range(len(img_metadata))))
-            random.shuffle(record_indices)
+        self.img_metadata = load_metadata(
+            img_folder=self.img_folder,
+            orientation=config['images']['filter']['orientation'],
+            include_tags=config['images']['filter']['include'],
+            exclude_tags=config['images']['filter']['exclude'],
+        )
+        if len(self.img_metadata) == 0:
+            raise ValueError('Combination of orientation, include and exclude filters resulted in empty list')
 
-        batch_indices = [record_indices.pop() for _ in range(batch_size)]
-        batch_meta = img_metadata.iloc[batch_indices]
+        logging.info(f'Set contains {len(self.img_metadata)} images to train on.')
+        self.record_indices = list(range(len(self.img_metadata)))
+        random.shuffle(self.record_indices)
 
-        img_data = []
-        for record in batch_meta.itertuples():
-            img = load_img(path=os.path.join(img_folder, record.filename))
-            # img_to_array will result in an ndarray of size (height, width, channels)
-            img_values = pad_image(img, img_cfg)
-            img_values = scale(img_values)
-            img_data.append(img_values)
+    def __len__(self) -> int:
+        return floor(len(self.img_metadata)/self.batch_size)
+
+    def __next__(self) -> ndarray:
+        return self.__getitem__()
+
+    def __getitem__(self, index: Optional[int] = None) -> ndarray:
+        if index is None:
+            start_index = random.choice(self.record_indices)
+        else:
+            start_index = index * self.batch_size
+
+        img_data: List[ndarray] = []
+
+        for idx in self.record_indices[start_index:start_index + self.batch_size]:
+            src = dict(self.img_metadata.iloc[idx])
+            src['img_folder'] = self.img_folder
+            src['img_cfg'] = self.img_cfg
+            img_data.append(load_image_data(src))
 
         batch = np.array(img_data)
-        yield batch
+        return batch
+
+    def on_epoch_end(self) -> None:
+        random.shuffle(self.record_indices)
+
+
+def load_image_data(src: dict) -> ndarray:
+    img = load_img(path=os.path.join(src['img_folder'], src['filename']))
+    img_values = pad_image(img, src['img_cfg'])
+    img_values = scale(img_values)
+    return img_values
 
 
 def scale(img_values: ndarray) -> ndarray:
@@ -103,6 +122,7 @@ def pad_image(img: Image, img_cfg: Dict[str, int]) -> ndarray:
 
     :return:
     """
+    # img_to_array will result in an ndarray of size (height, width, channels)
     img_values = img_to_array(img)
 
     height_padding = img_cfg['height'] - img.height
