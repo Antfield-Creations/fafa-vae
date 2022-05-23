@@ -13,3 +13,6 @@ tests:
 
 workflow:
 	kubectl -n ${NAMESPACE} apply -f config.yaml
+
+delete-workflow:
+	kubectl -n ${NAMESPACE} delete -f config.yaml
