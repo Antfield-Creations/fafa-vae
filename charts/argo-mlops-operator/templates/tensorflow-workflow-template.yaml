@@ -39,5 +39,5 @@ spec:
             # Clone into current directory
             git clone $(jq .spec.repository config.json) .
             pipenv install --deploy
-            {{`{{inputs.parameters.cmd}}`}}
+            eval $(jq .spec.command config.json)
 {{- end }}
