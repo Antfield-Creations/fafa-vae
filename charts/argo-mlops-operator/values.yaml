@@ -20,5 +20,5 @@ eventBus:
   name: argomlops-default
 
 templateRef:
-  name: tensorflow-gke-workflow
+  name: tensorflow-workflow-template
   entrypoint: main
