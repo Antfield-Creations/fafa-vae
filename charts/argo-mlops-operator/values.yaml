@@ -3,7 +3,7 @@ customResourceDefinition:
   # The kind or name to give to your own custom resource
   kind: ArgoMLOps
   # The crd "shortname"
-  abbreviation: mlops
+  abbreviation: argomlops
   # The API group name to attach your custom resource definition to
   apiGroup: api.antfield.nl
 
