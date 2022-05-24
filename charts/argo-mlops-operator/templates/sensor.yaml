@@ -38,10 +38,10 @@ spec:
                   - name: deploy
                     steps:
                       - - name: validate-gpu
-                          script:
+                          container:
                             image: tensorflow/tensorflow:2.7.1-gpu
-                            command: [ python ]
-                            source: |
+                            command: [python, -c]
+                            args: |
                               import tensorflow as tf
                               devices = tf.config.list_physical_devices('GPU')
 
