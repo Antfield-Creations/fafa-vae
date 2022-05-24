@@ -6,6 +6,7 @@ metadata:
   name: {{ $.Values.customResourceDefinition.kind | lower }}-source
   namespace: {{ $namespace }}
 spec:
+  eventBusName: {{ $.Values.eventBus.name }}
   template:
     # assign a service account with `get`, `list` and `watch` permissions on the resource being watched.
     serviceAccountName: {{ $.Values.customResourceDefinition.serviceAccount.name }}

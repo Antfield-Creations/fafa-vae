@@ -6,6 +6,7 @@ metadata:
   name: {{ $.Values.customResourceDefinition.kind | lower }}-sensor
   namespace: {{ $namespace }}
 spec:
+  eventBusName: {{ $.Values.eventBus.name }}
   template:
     serviceAccountName: {{ $.Values.customResourceDefinition.serviceAccount.name }}
   dependencies:
