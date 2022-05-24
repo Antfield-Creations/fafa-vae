@@ -1,7 +1,10 @@
 ---
 name: Test
 
-on: push  # yamllint disable-line
+on:   # yamllint disable-line
+#  - push
+  - workflow_dispatch
+
 jobs:
   test:
     runs-on: ubuntu-latest
