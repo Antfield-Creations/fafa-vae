@@ -10,7 +10,7 @@ spec:
     # assign a service account with `get`, `list` and `watch` permissions on the resource being watched.
     serviceAccountName: {{ $.Values.customResourceDefinition.serviceAccount.name }}
   resource:
-    mlops:
+    {{ $.Values.customResourceDefinition.kind | lower }}:
       namespace: {{ $namespace }}
       group: {{ $.Values.customResourceDefinition.apiGroup }}
       version: v1alpha1
