@@ -40,7 +40,7 @@ spec:
                       - - name: call-gpu-validate-template
                           templateRef:
                             name: validate-gpu-workflow-template
-                            entrypoint: validate-gpu
+                            template: validate-gpu
                       - - name: call-tensorflow-template
                           templateRef:
                             {{- $.Values.templateRef | toYaml | nindent 28 }}

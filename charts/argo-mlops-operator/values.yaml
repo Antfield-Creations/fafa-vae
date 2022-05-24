@@ -21,4 +21,4 @@ eventBus:
 
 templateRef:
   name: tensorflow-workflow-template
-  entrypoint: main
+  template: main
