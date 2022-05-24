@@ -7,9 +7,10 @@ metadata:
   namespace: {{ $namespace }}
 rules:
   - apiGroups:
-      - api.antfield.nl
+      - {{ $.Values.customResourceDefinition.apiGroup }}
     resources:
       - {{ $.Values.customResourceDefinition.kind | lower }}
+      - {{ $.Values.customResourceDefinition.kind }}
     verbs:
       - get
       - list
