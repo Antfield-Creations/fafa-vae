@@ -17,11 +17,22 @@ spec:
 
   entrypoint: main
 
+  arguments:
+    parameters:
+      # Injected by Sensor workflow
+      - name: mlops-manifest
+        # Sets a compact default which we can test-run in Argo UI
+        default: |
+          { "apiVersion": "api.antfield.nl/v1alpha1", "kind": "ArgoMLOps",
+            "metadata": { "name": "mlops-test", "namespace": "data" },
+            "spec": {
+              "image": "python3.10:minimal",
+              "repository": "https://github.com/Antfield-Creations/fafa-vae",
+              "command": "python3 --version"
+          } }
+
   templates:
     - name: main
-      inputs:
-        parameters:
-          - name: mlops-manifest
       container:
         image: tensorflow/tensorflow:2.7.1-gpu
         command:
@@ -35,7 +46,7 @@ spec:
             chmod +x /usr/bin/jq
             mkdir script
             cd script
-            echo {{`{{inputs.parameters.mlops-manifest}}`}} > config.json
+            echo {{`{{workflow.parameters.mlops-manifest}}`}} > config.json
             # Clone into current directory
             git clone $(jq .spec.repository config.json) .
             pipenv install --deploy
