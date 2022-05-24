@@ -37,21 +37,11 @@ spec:
                 templates:
                   - name: deploy
                     steps:
-                      - - name: validate-gpu
-                          container:
-                            image: tensorflow/tensorflow:2.7.1-gpu
-                            command: [python, -c]
-                            args: |
-                              import tensorflow as tf
-                              devices = tf.config.list_physical_devices('GPU')
-
-                              if len(devices) == 0:
-                                raise RuntimeError('No GPUs found')
-
-                              for device in devices:
-                                print(device)
-
-                      - - name: call-template
+                      - - name: call-gpu-validate-template
+                          templateRef:
+                            name: validate-gpu-workflow-template
+                            entrypoint: validate-gpu
+                      - - name: call-tensorflow-template
                           templateRef:
                             {{- $.Values.templateRef | toYaml | nindent 28 }}
 

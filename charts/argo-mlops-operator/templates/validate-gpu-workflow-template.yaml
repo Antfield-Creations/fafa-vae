@@ -1,0 +1,27 @@
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+  name: validate-gpu-workflow-template
+spec:
+  serviceAccountName: argo-workflow
+  tolerations:
+    - key: nvidia.com/gpu
+      value: present
+      effect: NoSchedule
+  nodeSelector:
+    cloud.google.com/gke-nodepool: gpu-pool
+  entrypoint: validate-gpu
+  templates:
+    - name: validate-gpu
+      script:
+        image: tensorflow/tensorflow:2.7.1-gpu
+        command: [python, -c]
+        source: |
+          import tensorflow as tf
+          devices = tf.config.list_physical_devices('GPU')
+
+          if len(devices) == 0:
+            raise RuntimeError('No GPUs found')
+
+          for device in devices:
+            print(device)
