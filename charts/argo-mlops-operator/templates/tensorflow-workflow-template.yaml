@@ -37,7 +37,7 @@ spec:
         resources:
           limits:
             nvidia.com/gpu: "1"
-        image: tensorflow/tensorflow:2.7.1-gpu
+        image: tensorflow/tensorflow:2.8.0-gpu
         command:
           - bash
           - -c

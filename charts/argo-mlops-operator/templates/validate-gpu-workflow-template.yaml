@@ -14,7 +14,7 @@ spec:
   templates:
     - name: validate-gpu
       container:
-        image: tensorflow/tensorflow:2.7.1-gpu
+        image: tensorflow/tensorflow:2.8.0-gpu
         command: [python, -c]
         resources:
           limits:
