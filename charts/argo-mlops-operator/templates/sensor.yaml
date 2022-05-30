@@ -69,5 +69,6 @@ spec:
                         metadata:
                           name: argo-mlops-manifest
                         data:
-                          config: {{`{{inputs.parameters.mlops-manifest}}`}}
+                          config: |
+                            {{`{{inputs.parameters.mlops-manifest}}`}}
 {{- end }}
