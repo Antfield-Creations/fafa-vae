@@ -12,6 +12,9 @@ customResourceDefinition:
     # This must reference the service account name that allows to run Argo Workflows
     workflowServiceAccountName: argo-workflow
 
+  manifestConfigMap:
+    name: mlops-manifest
+
   namespaces:
     - operators
     - data

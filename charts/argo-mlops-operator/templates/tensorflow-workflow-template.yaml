@@ -36,7 +36,7 @@ spec:
       volumes:
         - name: config
           configMap:
-            name: argo-mlops-configmap
+            name: {{ .Values.customResourceDefinition.manifestConfigMap.name }}
             items:
               - key: config
                 path: config.yaml
