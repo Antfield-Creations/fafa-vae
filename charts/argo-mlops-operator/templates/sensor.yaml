@@ -69,6 +69,6 @@ spec:
                         metadata:
                           name: {{ $.Values.customResourceDefinition.manifestConfigMap.name }}
                         data:
-                          config: |
+                          config.json: |
                             {{`{{inputs.parameters.mlops-manifest}}`}}
 {{- end }}

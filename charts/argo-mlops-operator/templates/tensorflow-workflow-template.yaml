@@ -34,20 +34,20 @@ spec:
   templates:
     - name: main
       volumes:
-        - name: config
+        - name: manifest
           configMap:
             name: "{{ $.Values.customResourceDefinition.manifestConfigMap.name }}"
             items:
-              - key: config
-                path: config.yaml
+              - key: config.json
+                path: config.json
       container:
         resources:
           limits:
             nvidia.com/gpu: "1"
         image: tensorflow/tensorflow:2.8.0-gpu
         volumeMounts:
-          - mountPath: /config.yaml
-            name: config
+          - name: manifest
+            mountPath: /opt/manifest
         command:
           - bash
           - -c
@@ -65,8 +65,8 @@ spec:
             cd script
 
             # write script config overrides to config.yaml
-            cp /config.yaml ./config.yaml
-            echo config.yaml
+            cp /opt/manifest/config.json ./config.json
+            echo config.json
 
             # Install Git
             rm /etc/apt/sources.list.d/cuda.list
