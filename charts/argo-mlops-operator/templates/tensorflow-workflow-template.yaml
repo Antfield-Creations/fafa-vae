@@ -59,7 +59,7 @@ spec:
             echo config.yaml
 
             # Clone into current directory
-            apt-get install git
+            apt-get install -y git
             git clone $(yq .spec.repository config.yaml) .
 
             # install and run main script
