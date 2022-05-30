@@ -41,12 +41,10 @@ spec:
         command:
           - bash
           - -eux
+          - pipefail
           - -c
         args:
           - |
-            # Detect sub-command errors
-            pipefail
-
             # install json cli parser
             curl -fsSL https://github.com/stedolan/jq/releases/download/jq-1.5/jq-linux64 -o /usr/bin/jq
             chmod +x /usr/bin/jq
