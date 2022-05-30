@@ -40,11 +40,11 @@ spec:
         image: tensorflow/tensorflow:2.7.1-gpu
         command:
           - bash
-          - -eux
-          - pipefail
           - -c
         args:
           - |
+            set -eux pipefail
+
             # install json cli parser
             curl -fsSL https://github.com/stedolan/jq/releases/download/jq-1.5/jq-linux64 -o /usr/bin/jq
             chmod +x /usr/bin/jq
