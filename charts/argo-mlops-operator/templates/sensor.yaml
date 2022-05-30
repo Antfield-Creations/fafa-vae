@@ -17,6 +17,25 @@ spec:
       eventName: {{ $.Values.customResourceDefinition.kind | lower }}
   triggers:
     - template:
+        name: argo-mlops-manifest
+        k8s:
+          operation: apply
+          source:
+            resource:
+              apiVersion: v1
+              kind: ConfigMap
+              metadata:
+                name: argo-mlops-configmap
+              spec:
+                data:
+                  config: ""
+          parameters:
+            - src:
+                dependencyName: source-dependency
+                dataKey: body
+              dest: spec.data.config
+
+    - template:
         name: argo-mlops-trigger
         argoWorkflow:
           operation: submit
@@ -44,10 +63,4 @@ spec:
                       - - name: call-tensorflow-template
                           templateRef:
                             {{- $.Values.templateRef | toYaml | nindent 28 }}
-
-          parameters:
-            - src:
-                dependencyName: source-dependency
-                dataKey: body
-              dest: spec.arguments.parameters.0.value
 {{- end }}

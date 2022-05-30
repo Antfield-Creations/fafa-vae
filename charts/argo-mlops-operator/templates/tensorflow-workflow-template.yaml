@@ -33,11 +33,21 @@ spec:
 
   templates:
     - name: main
+      volumes:
+        - name: config
+          configMap:
+            name: argo-mlops-configmap
+            items:
+              - key: config
+                path: /config.yaml
       container:
         resources:
           limits:
             nvidia.com/gpu: "1"
         image: tensorflow/tensorflow:2.8.0-gpu
+        volumeMounts:
+          - mountPath: /config.yaml
+            name: config
         command:
           - bash
           - -c
@@ -55,7 +65,7 @@ spec:
             cd script
 
             # write script config overrides to config.yaml
-            echo "{{`{{workflow.parameters.mlops-manifest}}`}}" > config.yaml
+            cp /config.yaml ./config.yaml
             echo config.yaml
 
             # Install Git
