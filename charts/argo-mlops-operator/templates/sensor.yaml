@@ -44,6 +44,10 @@ spec:
                     steps:
                       - - name: apply-configmap-step
                           template: create-update-configmap
+                          arguments:
+                            parameters:
+                              - name: mlops-manifest
+                                value: "{{`{{workflow.parameters.mlops-manifest}}`}}"
                       - - name: call-gpu-validate-template
                           templateRef:
                             name: validate-gpu-workflow-template
