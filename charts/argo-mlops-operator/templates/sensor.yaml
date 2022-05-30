@@ -53,6 +53,10 @@ spec:
                             {{- $.Values.templateRef | toYaml | nindent 28 }}
 
                   - name: create-update-configmap
+                    inputs:
+                      parameters:
+                        - name: mlops-manifest
+                          value: ""
                     resource:
                       action: apply
                       manifest: |
@@ -61,5 +65,5 @@ spec:
                         metadata:
                           name: argo-mlops-manifest
                         data:
-                          config: {{`{{workflow.arguments.parameters.mlops-manifest}}`}}
+                          config: {{`{{inputs.parameters.mlops-manifest}}`}}
 {{- end }}
