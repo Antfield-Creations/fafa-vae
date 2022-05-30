@@ -56,6 +56,7 @@ spec:
                     inputs:
                       parameters:
                         - name: mlops-manifest
+                          value: ""
                     resource:
                       action: apply
                       manifest: |
