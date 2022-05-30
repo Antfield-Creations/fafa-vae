@@ -60,7 +60,7 @@ spec:
                     resource:
                       action: apply
                       manifest: |
-                        apiversion: v1
+                        apiVersion: v1
                         kind: ConfigMap
                         metadata:
                           name: argo-mlops-manifest
