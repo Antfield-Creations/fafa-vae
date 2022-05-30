@@ -39,7 +39,7 @@ spec:
             name: argo-mlops-configmap
             items:
               - key: config
-                path: /config.yaml
+                path: config.yaml
       container:
         resources:
           limits:
