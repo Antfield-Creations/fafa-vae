@@ -16,6 +16,9 @@ spec:
       container:
         image: tensorflow/tensorflow:2.7.1-gpu
         command: [python, -c]
+        resources:
+          limits:
+            nvidia.com/gpu: "1"
         args:
           - |
             import tensorflow as tf
