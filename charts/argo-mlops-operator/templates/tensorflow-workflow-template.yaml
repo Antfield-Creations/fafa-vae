@@ -45,7 +45,7 @@ spec:
         args:
           - |
             python -m pip install pipenv
-            curl -fsSLO https://github.com/stedolan/jq/releases/download/jq-1.5/jq-linux64 -o /usr/bin/jq
+            curl -fsSL https://github.com/stedolan/jq/releases/download/jq-1.5/jq-linux64 -o /usr/bin/jq
             chmod +x /usr/bin/jq
             mkdir script
             cd script
