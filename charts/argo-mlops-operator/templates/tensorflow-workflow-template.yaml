@@ -53,7 +53,7 @@ spec:
             cd script
             echo {{`{{workflow.parameters.mlops-manifest}}`}} > config.yaml
             # Clone into current directory
-            apt-get update && apt-get install git
+            apt-get install git
             git clone $(yq .spec.repository config.yaml) .
             pipenv install --deploy
             eval $(yq .spec.command config.yaml)
