@@ -67,7 +67,7 @@ spec:
                         apiVersion: v1
                         kind: ConfigMap
                         metadata:
-                          name: {{ .Values.customResourceDefinition.manifestConfigMap.name }}
+                          name: {{ $.Values.customResourceDefinition.manifestConfigMap.name }}
                         data:
                           config: |
                             {{`{{inputs.parameters.mlops-manifest}}`}}
