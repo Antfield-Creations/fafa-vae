@@ -58,12 +58,16 @@ spec:
             echo "{{`{{workflow.parameters.mlops-manifest}}`}}" > config.yaml
             echo config.yaml
 
-            # Clone into current directory
-            apt-key del 7fa2af80 || echo "No stale key found"
+            # Install Git
+            rm /etc/apt/sources.list.d/cuda.list
+            rm /etc/apt/sources.list.d/nvidia-ml.list
+            apt-key del 7fa2af80
             curl -fsSLO https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2004/x86_64/cuda-keyring_1.0-1_all.deb
             dpkg -i cuda-keyring_1.0-1_all.deb
             apt-get update
             apt-get install -y git
+
+            # Clone into current directory
             git clone $(yq .spec.repository config.yaml) .
 
             # install and run main script
