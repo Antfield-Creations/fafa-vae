@@ -55,10 +55,11 @@ spec:
             cd script
 
             # write script config overrides to config.yaml
-            echo {{`{{workflow.parameters.mlops-manifest}}`}} > config.yaml
+            echo "{{`{{workflow.parameters.mlops-manifest}}`}}" > config.yaml
             echo config.yaml
 
             # Clone into current directory
+            apt-get update
             apt-get install -y git
             git clone $(yq .spec.repository config.yaml) .
 
