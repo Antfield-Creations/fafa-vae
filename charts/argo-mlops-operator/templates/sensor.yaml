@@ -17,26 +17,12 @@ spec:
       eventName: {{ $.Values.customResourceDefinition.kind | lower }}
   triggers:
     - template:
-        name: argo-mlops-manifest
-        k8s:
-          operation: create
-          source:
-            resource:
-              apiVersion: v1
-              kind: ConfigMap
-              metadata:
-                name: argo-mlops-configmap
-              spec:
-                data:
-                  config: ""
-          parameters:
-            - src:
-                dependencyName: source-dependency
-                dataKey: body
-              dest: spec.data.config
-
-    - template:
         name: argo-mlops-trigger
+        parameters:
+          - src:
+              dependencyName: source-dependency
+              dataKey: body
+            dest: spec.arguments.parameters.0.value
         argoWorkflow:
           operation: submit
           source:
@@ -56,6 +42,8 @@ spec:
                 templates:
                   - name: deploy
                     steps:
+                      - - name: apply-configmap-step
+                          template: create-update-configmap
                       - - name: call-gpu-validate-template
                           templateRef:
                             name: validate-gpu-workflow-template
@@ -63,4 +51,19 @@ spec:
                       - - name: call-tensorflow-template
                           templateRef:
                             {{- $.Values.templateRef | toYaml | nindent 28 }}
+
+                  - name: create-update-configmap
+                    inputs:
+                      parameters:
+                        - name: mlops-manifest
+                    resource:
+                      action: apply
+                      manifest: |
+                        apiversion: v1
+                        kind: ConfigMap
+                        metadata:
+                          name: argo-mlops-manifest
+                        spec:
+                          data:
+                            config: {{`{{inputs.parameters.mlops-manifest}}`}}
 {{- end }}
