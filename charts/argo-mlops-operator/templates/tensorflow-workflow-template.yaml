@@ -44,17 +44,27 @@ spec:
           - -c
         args:
           - |
+            # Detect sub-command errors
+            pipefail
+
             # install json cli parser
             curl -fsSL https://github.com/stedolan/jq/releases/download/jq-1.5/jq-linux64 -o /usr/bin/jq
             chmod +x /usr/bin/jq
+
             # install python dependency manager and yaml cli parser
             python -m pip install pipenv yq
             mkdir script
             cd script
+
+            # write script config overrides to config.yaml
             echo {{`{{workflow.parameters.mlops-manifest}}`}} > config.yaml
+            echo config.yaml
+
             # Clone into current directory
             apt-get install git
             git clone $(yq .spec.repository config.yaml) .
+
+            # install and run main script
             pipenv install --deploy
             eval $(yq .spec.command config.yaml)
 {{- end }}
