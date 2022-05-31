@@ -71,7 +71,7 @@ spec:
             # Clone into current directory
             mkdir script
             cd script
-            git clone $(jq .spec.repository /opt/manifest/config.json) .
+            git clone $(jq -r .spec.repository /opt/manifest/config.json) .
 
             # Write script config overrides to config.yaml
             cp /opt/manifest/config.json ./config.json
