@@ -78,7 +78,7 @@ spec:
             echo config.json
 
             # install and run main script
-            pip3 install pipenv
+            pip3 install pipenv pyenv
             pipenv install --deploy
             eval $(jq .spec.command config.json)
 {{- end }}
