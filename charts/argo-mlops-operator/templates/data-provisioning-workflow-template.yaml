@@ -1,0 +1,26 @@
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+  name: data-provisioning
+spec:
+  entrypoint: main
+
+  templates:
+    - name: main
+      steps:
+        - - name: execute-provisioning
+            template: provisioning
+            arguments:
+              parameters:
+                - name: source
+                  value: ""
+                - name: destination
+                  value: ""
+
+    - name: provisioning
+      inputs:
+        parameters:
+          - name: source
+          - name: destination
+      container:
+        image: gcr.io/google.com/cloudsdktool/google-cloud-cli:latest
