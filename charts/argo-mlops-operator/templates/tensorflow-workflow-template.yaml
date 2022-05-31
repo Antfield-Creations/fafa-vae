@@ -83,6 +83,6 @@ spec:
             curl https://pyenv.run | bash
             command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"
             eval "$(pyenv init -)"
-            pipenv install --deploy
+            pipenv --python 3.9 install --deploy
             eval $(jq .spec.command config.json)
 {{- end }}
