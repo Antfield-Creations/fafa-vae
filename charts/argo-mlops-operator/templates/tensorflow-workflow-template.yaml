@@ -68,14 +68,14 @@ spec:
             apt-get update
             apt-get install -y git
 
-            # Write script config overrides to config.yaml
+            # Clone into current directory
             mkdir script
             cd script
+            git clone $(jq .spec.repository config.json) .
+
+            # Write script config overrides to config.yaml
             cp /opt/manifest/config.json ./config.json
             echo config.json
-
-            # Clone into current directory
-            git clone $(jq .spec.repository config.json) .
 
             # install and run main script
             pipenv install --deploy
