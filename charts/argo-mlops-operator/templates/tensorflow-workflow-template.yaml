@@ -85,5 +85,5 @@ spec:
             eval "$(pyenv init -)"
             pyenv install 3.9.13
             pipenv --python 3.9 install --deploy
-            eval $(jq .spec.command config.json)
+            eval $(jq -r .spec.command config.json)
 {{- end }}
