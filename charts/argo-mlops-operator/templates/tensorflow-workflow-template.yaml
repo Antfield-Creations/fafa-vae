@@ -56,7 +56,7 @@ spec:
             value: /mnt/gcsSecret/{{ $.Values.customResourceDefinition.gcsSecret.key }}
         volumeMounts:
           - name: manifest
-            mountPath: /opt/manifest
+            mountPath: /mnt/manifest
           - name: gcsSecret
             mountPath: /mnt/gcsSecret
         command:
@@ -83,10 +83,10 @@ spec:
             # Clone into current directory
             mkdir script
             cd script
-            git clone $(jq -r .spec.repository /opt/manifest/config.json) .
+            git clone $(jq -r .spec.repository /mnt/manifest/config.json) .
 
             # Write script config overrides to config.yaml
-            cp /opt/manifest/config.json ./config.json
+            cp /mnt/manifest/config.json ./config.json
             echo config.json
 
             # install and run main script
