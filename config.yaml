@@ -5,7 +5,7 @@ kind: ArgoMLOps
 metadata:
   name: fafa-mlops
 spec:
-  repository: https://github.com/reinvantveer/fafa-vae
+  repository: https://github.com/Antfield-Creations/fafa-vae
   command: pipenv install && pipenv run python --mode=train --config=config.json
   run_id:  # Keep empty to let the config function create one by itself
 
