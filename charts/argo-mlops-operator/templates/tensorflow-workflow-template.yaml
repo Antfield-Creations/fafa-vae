@@ -79,8 +79,8 @@ spec:
 
             # install and run main script
             pip3 install pipenv
+            export PYENV_ROOT="$HOME/.pyenv"
             curl https://pyenv.run | bash
-            source ~/.bashrc
             pipenv install --deploy
             eval $(jq .spec.command config.json)
 {{- end }}
