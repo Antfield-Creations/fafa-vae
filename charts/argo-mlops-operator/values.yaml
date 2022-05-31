@@ -12,6 +12,10 @@ customResourceDefinition:
     # This must reference the service account name that allows to run Argo Workflows
     workflowServiceAccountName: argo-workflow
 
+  gcsSecret:
+    name: gcs-secret
+    key: serviceAccountKey
+
   manifestConfigMap:
     name: mlops-manifest
 

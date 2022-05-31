@@ -40,14 +40,25 @@ spec:
             items:
               - key: config.json
                 path: config.json
+        - name: gcsSecret
+          secret:
+            secretName: {{ $.Values.customResourceDefinition.gcsSecret.name }}
+            items:
+              - key: {{ $.Values.customResourceDefinition.gcsSecret.key }}
+                path: {{ $.Values.customResourceDefinition.gcsSecret.key }}
       container:
         resources:
           limits:
             nvidia.com/gpu: "1"
         image: tensorflow/tensorflow:2.8.0-gpu
+        env:
+          - name: GOOGLE_APPLICATION_CREDENTIALS
+            value: /mnt/gcsSecret/{{ $.Values.customResourceDefinition.gcsSecret.key }}
         volumeMounts:
           - name: manifest
             mountPath: /opt/manifest
+          - name: gcsSecret
+            mountPath: /mnt/gcsSecret
         command:
           - bash
           - -c
