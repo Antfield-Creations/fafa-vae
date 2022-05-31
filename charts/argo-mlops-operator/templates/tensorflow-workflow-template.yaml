@@ -59,14 +59,15 @@ spec:
             curl -fsSL https://github.com/stedolan/jq/releases/download/jq-1.5/jq-linux64 -o /usr/bin/jq
             chmod +x /usr/bin/jq
 
-            # Install Git and Pyenv dependencies
+            # Install Git and basic dependencies
             rm /etc/apt/sources.list.d/cuda.list
             rm /etc/apt/sources.list.d/nvidia-ml.list
             apt-key del 7fa2af80
             curl -fsSLO https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/cuda-keyring_1.0-1_all.deb
             dpkg -i cuda-keyring_1.0-1_all.deb
+            add-apt-repository ppa:deadsnakes/ppa
             apt-get update
-            apt-get install -y git libedit-dev libssl-dev bzip2
+            apt-get install -y git python3.9
 
             # Clone into current directory
             mkdir script
@@ -79,11 +80,6 @@ spec:
 
             # install and run main script
             pip3 install pipenv
-            export PYENV_ROOT="$HOME/.pyenv"
-            curl https://pyenv.run | bash
-            command -v pyenv >/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"
-            eval "$(pyenv init -)"
-            pyenv install 3.9.13
             pipenv --python 3.9 install --deploy
             eval $(jq -r .spec.command config.json)
 {{- end }}
