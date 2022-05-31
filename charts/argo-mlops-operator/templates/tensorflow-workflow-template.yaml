@@ -55,18 +55,9 @@ spec:
           - |
             set -eux pipefail
 
-            # install json cli parser
+            # Install json cli parser
             curl -fsSL https://github.com/stedolan/jq/releases/download/jq-1.5/jq-linux64 -o /usr/bin/jq
             chmod +x /usr/bin/jq
-
-            # install python dependency manager and yaml cli parser
-            python -m pip install pipenv yq
-            mkdir script
-            cd script
-
-            # write script config overrides to config.yaml
-            cp /opt/manifest/config.json ./config.json
-            echo config.json
 
             # Install Git
             rm /etc/apt/sources.list.d/cuda.list
@@ -77,10 +68,16 @@ spec:
             apt-get update
             apt-get install -y git
 
+            # Write script config overrides to config.yaml
+            mkdir script
+            cd script
+            cp /opt/manifest/config.json ./config.json
+            echo config.json
+
             # Clone into current directory
-            git clone $(yq .spec.repository config.yaml) .
+            git clone $(jq .spec.repository config.json) .
 
             # install and run main script
             pipenv install --deploy
-            eval $(yq .spec.command config.yaml)
+            eval $(jq .spec.command config.json)
 {{- end }}
