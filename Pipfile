@@ -31,6 +31,8 @@ tensorboard = "*"
 numpy = "*"
 # For sampling from the latent distribution
 tensorflow-probability = "*"
+# Storage bucket interaction, data volume provisioning
+google-cloud-storage = "*"
 
 [dev-packages]
 # Style checker
