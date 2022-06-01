@@ -46,6 +46,11 @@ spec:
             items:
               - key: {{ $.Values.customResourceDefinition.gcsSecret.key }}
                 path: {{ $.Values.customResourceDefinition.gcsSecret.key }}
+  {{- range $volume := $.Values.customResourceDefinition.dataVolumes }}
+        - name: {{ $volume.name }}
+          persistentVolumeClaim:
+            claimName: {{ $volume.name }}-claim
+  {{- end }}
       container:
         resources:
           limits:
@@ -59,6 +64,10 @@ spec:
             mountPath: /mnt/manifest
           - name: gcsSecret
             mountPath: /mnt/gcsSecret
+  {{- range $volume := $.Values.customResourceDefinition.dataVolumes }}
+          - name: {{ $volume.name }}
+            mountPath: /mnt/{{ $volume.name }}
+  {{- end }}
         command:
           - bash
           - -c

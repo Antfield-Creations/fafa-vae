@@ -1,0 +1,14 @@
+{{- range $volume := $.Values.customResourceDefinition.dataVolumes }}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ $volume.name }}-claim
+spec:
+  resources:
+    requests:
+      capacity: {{ $volume.capacity }}
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: {{ $volume.storageClass }}
+{{- end }}

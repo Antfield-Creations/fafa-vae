@@ -23,6 +23,12 @@ customResourceDefinition:
     - operators
     - data
 
+  dataVolumes:
+    - name: mlops-data-volume
+      storageClass: standard
+      reclaimPolicy: Retain
+      capacity: 15 Gib
+
 eventBus:
   name: argomlops-default
 
