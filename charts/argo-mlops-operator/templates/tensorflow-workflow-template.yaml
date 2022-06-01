@@ -40,7 +40,7 @@ spec:
             items:
               - key: config.json
                 path: config.json
-        - name: gcs-secret
+        - name: gcs
           secret:
             secretName: {{ $.Values.customResourceDefinition.gcsSecret.name }}
             items:
@@ -62,7 +62,7 @@ spec:
         volumeMounts:
           - name: manifest
             mountPath: /mnt/manifest
-          - name: gcs-secret
+          - name: gcs
             mountPath: /mnt/gcsSecret
   {{- range $volume := $.Values.customResourceDefinition.dataVolumes }}
           - name: {{ $volume.name }}
