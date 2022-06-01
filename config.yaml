@@ -67,7 +67,8 @@ spec:
       width: 640
       height: 640
       channels: 3
-      folder: ~/Downloads/FAFA/img
+      cloud_storage_folder: gs://antfield/FAFA/img
+      folder: /mnt/mlops-data-volume/FAFA/img
       # Scraper resume settings
       scraper:
         first_set: 1
