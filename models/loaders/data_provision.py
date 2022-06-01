@@ -23,8 +23,12 @@ def provision(config: Config) -> int:
     source_path = source_location.path.lstrip('/')
 
     for blob in bucket.list_blobs(prefix=source_path):
+        # Skip if the blob is a "directory"
+        if blob.name.endswith('/'):
+            continue
+
         # Strip matching parts of source from target
-        if blob.name.endswith(source_path):
+        if blob.name.startswith(source_path):
             target_subpath = blob.name.removeprefix(source_path)
         else:
             target_subpath = blob.name
