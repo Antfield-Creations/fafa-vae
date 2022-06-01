@@ -40,6 +40,7 @@ def provision(config: Config) -> int:
 
         # Assemble the target download path
         download_path = os.path.join(target_folder, target_subpath)
+        os.makedirs(os.path.dirname(download_path), exist_ok=True)
         blob.download_to_filename(download_path)
 
     return 0

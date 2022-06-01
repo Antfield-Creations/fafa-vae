@@ -13,7 +13,6 @@ class DataProvisionerTestCase(unittest.TestCase):
 
         with TemporaryDirectory() as tempdir:
             same_extension_as_storage_folder = os.path.join(tempdir, 'test')
-            os.makedirs(same_extension_as_storage_folder)
             config['data']['images']['folder'] = same_extension_as_storage_folder
             provision(config)
 
