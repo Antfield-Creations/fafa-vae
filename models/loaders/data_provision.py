@@ -4,10 +4,10 @@ from urllib.parse import urlparse
 
 from models.loaders.config import Config, load_config
 
-from google.cloud import storage
+from google.cloud import storage  # noqa
 
 
-def main(config: Config) -> int:
+def provision(config: Config) -> int:
     storage_client = storage.Client()
 
     source_location = urlparse(str(config['data']['images']['cloud_storage_folder']))
@@ -41,4 +41,4 @@ def main(config: Config) -> int:
 
 if __name__ == '__main__':
     config = load_config()
-    raise SystemExit(main(config))
+    raise SystemExit(provision(config))

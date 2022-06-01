@@ -5,24 +5,19 @@ You will need to run the scraper script first if you want to use the FAFA images
 import logging
 from argparse import ArgumentParser
 
-from models.loaders.config import load_config
+from models.loaders.config import load_config, Config
+from models.loaders.data_provision import provision
 from models.loaders.metadata import export_metadata, load_metadata
 from models.train import train
 from scraper.scraper import scrape
 
-if __name__ == '__main__':
-    known_modes = ['scrape', 'index', 'train', 'encode', 'decode']
 
-    argparser = ArgumentParser(description='Training script for FAFA variational autoencoder')
-    argparser.add_argument('-c', '--config', help='Path to the config.yaml file', default='config.yaml')
-    argparser.add_argument('-m', '--mode', help=f'Mode, one of "{known_modes}"', required=True)
-    args = argparser.parse_args()
-
-    config = load_config()
-
-    if args.mode == 'scrape':
+def main(config: Config, mode: str) -> int:
+    if mode == 'scrape':
         scrape(config)
-    elif args.mode == 'index':
+    elif mode == 'provision':
+        provision(config)
+    elif mode == 'index':
         export_metadata(img_folder=config['data']['images']['folder'])
         metadata = load_metadata(
             img_folder=config['data']['images']['folder'],
@@ -30,7 +25,24 @@ if __name__ == '__main__':
             include_tags=config['data']['images']['filter']['include'],
         )
         logging.info(f'{len(metadata)} images to train on')
-    elif args.mode == 'train':
+    elif mode == 'train':
         train(config)
-    else:
+
+    print("Done!")
+    return 0
+
+
+if __name__ == '__main__':
+    known_modes = ['scrape', 'provision', 'index', 'train', 'encode', 'decode']
+
+    argparser = ArgumentParser(description='Training script for FAFA variational autoencoder')
+    argparser.add_argument('-c', '--config', help='Path to the config.yaml file', default='config.yaml')
+    argparser.add_argument('-m', '--mode', help=f'Mode, one of "{known_modes}"', required=True)
+    args = argparser.parse_args()
+
+    if args.mode not in known_modes:
         raise NotImplementedError("This mode isn't implemented (yet)")
+
+    config = load_config(args.config)
+
+    raise SystemExit(main(config, args.mode))
