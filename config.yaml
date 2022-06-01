@@ -64,6 +64,7 @@ spec:
 
   data:
     images:
+      file_count: 311410
       width: 640
       height: 640
       channels: 3

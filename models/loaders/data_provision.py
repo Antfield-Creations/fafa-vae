@@ -2,6 +2,8 @@ import logging
 import os.path
 from urllib.parse import urlparse
 
+from tqdm import tqdm
+
 from models.loaders.config import Config, load_config
 
 from google.cloud import storage  # noqa
@@ -22,7 +24,7 @@ def provision(config: Config) -> int:
     bucket = storage_client.get_bucket(source_location.netloc)
     source_path = source_location.path.lstrip('/')
 
-    for blob in bucket.list_blobs(prefix=source_path):
+    for blob in tqdm(bucket.list_blobs(prefix=source_path), total=config['data']['images']['file_count']):
         # Skip if the blob is a "directory"
         if blob.name.endswith('/'):
             continue
