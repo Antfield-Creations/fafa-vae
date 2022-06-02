@@ -15,6 +15,7 @@ class VAEModelTestCase(unittest.TestCase):
         with TemporaryDirectory() as tempdir:
             config = load_config(run_id='dummy', artifact_folder=os.path.join(tempdir, 'dummy'))
             artifact_folder = config['models']['vqvae']['artifacts']['folder']
+            config['models']['vqvae']['artifacts']['resume_model'] = None
 
             # Override image location and filter settings
             config['data']['images']['folder'] = os.path.join(tempdir, 'img')
