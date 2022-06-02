@@ -99,7 +99,7 @@ class VectorQuantizer(layers.Layer):
 class VQVAETrainer(keras.models.Model):
     def __init__(self, config: Config, **kwargs: dict) -> None:
         super(VQVAETrainer, self).__init__(**kwargs)
-        if 'train_variance'not in config['models']['vqvae']:
+        if 'train_variance' not in config['models']['vqvae']:
             raise ValueError('Vector-quantized variational auto-encoders require a variance setting.\n'
                              'Please pass a config dict having `models.vqvae.train_variance.')
         self.train_variance = config['models']['vqvae']['train_variance']
