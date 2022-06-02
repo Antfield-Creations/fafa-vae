@@ -8,11 +8,13 @@ spec:
     - key: nvidia.com/gpu
       value: present
       effect: NoSchedule
-  nodeSelector:
-    cloud.google.com/gke-nodepool: gpu-pool-2
   entrypoint: validate-gpu
   templates:
     - name: validate-gpu
+      nodeSelector:
+        cloud.google.com/gke-nodepool: gpu-pool-2
+        cloud.google.com/gke-preemptible: "true"
+
       container:
         image: tensorflow/tensorflow:2.8.0-gpu
         command: [python, -c]

@@ -12,8 +12,6 @@ spec:
     - key: nvidia.com/gpu
       value: present
       effect: NoSchedule
-  nodeSelector:
-    cloud.google.com/gke-nodepool: gpu-pool-2
 
   entrypoint: main
 
@@ -33,6 +31,10 @@ spec:
 
   templates:
     - name: main
+      nodeSelector:
+        cloud.google.com/gke-nodepool: gpu-pool-2
+        cloud.google.com/gke-preemptible: "true"
+
       volumes:
         - name: manifest
           configMap:
@@ -51,6 +53,7 @@ spec:
           persistentVolumeClaim:
             claimName: {{ $volume.name }}-claim
   {{- end }}
+
       container:
         resources:
           limits:
