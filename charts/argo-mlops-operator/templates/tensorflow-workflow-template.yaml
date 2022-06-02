@@ -33,7 +33,6 @@ spec:
     - name: main
       nodeSelector:
         cloud.google.com/gke-nodepool: gpu-pool-2
-        cloud.google.com/gke-preemptible: "true"
 
       volumes:
         - name: manifest
