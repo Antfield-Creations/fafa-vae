@@ -17,7 +17,7 @@ spec:
         folder: gs://antfield/FAFA/artifacts/{run_id}
         # Set to empty if you need to train from scratch:
         # resume_model:
-        resume_model: |
+        resume_model:
           gs://antfield/FAFA/artifacts/2022-04-21_10h10m14s/checkpoints/epoch-128/vq_vae/
         reconstructions:
           save_every_epoch: 1
