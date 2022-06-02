@@ -13,7 +13,7 @@ spec:
       value: present
       effect: NoSchedule
   nodeSelector:
-    cloud.google.com/gke-nodepool: gpu-pool
+    cloud.google.com/gke-nodepool: gpu-pool-2
 
   entrypoint: main
 
