@@ -31,8 +31,6 @@ spec:
 
   templates:
     - name: main
-      nodeSelector:
-        cloud.google.com/gke-nodepool: gpu-pool-2
 
       volumes:
         - name: manifest
@@ -56,6 +54,7 @@ spec:
       container:
         resources:
           limits:
+            memory: 14Gi
             nvidia.com/gpu: "1"
         image: tensorflow/tensorflow:2.8.0-gpu
         env:
