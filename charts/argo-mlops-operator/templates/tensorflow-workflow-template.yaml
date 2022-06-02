@@ -54,7 +54,6 @@ spec:
       container:
         resources:
           limits:
-            memory: 14Gi
             nvidia.com/gpu: "1"
         image: tensorflow/tensorflow:2.8.0-gpu
         env:

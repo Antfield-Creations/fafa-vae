@@ -17,7 +17,6 @@ spec:
         command: [python, -c]
         resources:
           limits:
-            memory: 14Gi
             nvidia.com/gpu: "1"
         args:
           - |
