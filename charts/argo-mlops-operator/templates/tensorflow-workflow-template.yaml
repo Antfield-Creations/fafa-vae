@@ -98,8 +98,7 @@ spec:
             cp /mnt/manifest/config.json ./config.json
             echo config.json
 
-            # install and run main script
+            # install dependency manager and run main script
             pip3 install pipenv
-            pipenv --python 3.9 install --deploy
             eval $(jq -r .spec.command config.json)
 {{- end }}
