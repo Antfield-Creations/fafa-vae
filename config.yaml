@@ -20,9 +20,9 @@ spec:
         resume_model:
           gs://antfield/FAFA/artifacts/2022-04-21_10h10m14s/checkpoints/epoch-128/vq_vae/
         reconstructions:
-          save_every_epoch: 1
+          save_every_epoch: 16
         checkpoints:
-          save_every_epoch: 1
+          save_every_epoch: 16
         logs:
           folder: gs://antfield/FAFA/artifacts/{run_id}
 
