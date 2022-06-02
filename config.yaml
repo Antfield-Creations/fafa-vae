@@ -7,7 +7,7 @@ metadata:
 spec:
   repository: https://github.com/Antfield-Creations/fafa-vae
   command: |
-    pipenv install;
+    pipenv install --deploy --python 3.9 --site-packages
     pipenv run python main.py --mode=train --config=config.json
   run_id:  # Keep empty to let the config function create one by itself
 
