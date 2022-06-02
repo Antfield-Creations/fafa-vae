@@ -17,7 +17,10 @@ spec:
         image: tensorflow/tensorflow:2.8.0-gpu
         command: [python, -c]
         resources:
+          requests:
+            memory: 12Gi
           limits:
+            memory: 15Gi
             nvidia.com/gpu: "1"
         args:
           - |
