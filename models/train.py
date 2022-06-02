@@ -1,5 +1,3 @@
-import os.path
-import shutil
 from typing import Optional, List
 
 import numpy as np
@@ -12,6 +10,7 @@ from models.encoder import get_encoder
 from models.loaders.callbacks import CustomImageSamplerCallback, CustomModelCheckpointSaver, tensorboard_callback
 from models.loaders.config import Config
 from models.loaders.data_generator import PaddingGenerator
+from models.loaders.script_archive import archive_scripts
 from models.vqvae import VQVAETrainer
 
 
@@ -23,6 +22,7 @@ def train(config: Config) -> Optional[History]:
 
     :return: None
     """
+    archive_scripts(config)
 
     # Compile the encoder and decoder separately to get rid of "uncompiled metrics" warnings
     # See also: https://stackoverflow.com/questions/67970389
@@ -44,12 +44,7 @@ def train(config: Config) -> Optional[History]:
     config['models']['vqvae']['train_variance'] = np.var(variance_sample)
     vqvae_trainer = VQVAETrainer(config)
     vqvae_trainer.compile(optimizer=optimizer)
-
-    # Archive all config and modules to artifacts folder
-    artifact_folder = config['models']['vqvae']['artifacts']['folder']
     logs_folder = config['models']['vqvae']['artifacts']['logs']['folder']
-    models_src = os.path.dirname(os.path.realpath(__file__))
-    shutil.copytree(os.path.join(models_src, '..'), artifact_folder)
 
     epochs = config['models']['vqvae']['epochs']
     steps = config['models']['vqvae']['batches_per_epoch']
