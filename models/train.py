@@ -45,15 +45,11 @@ def train(config: Config) -> Optional[History]:
     vqvae_trainer = VQVAETrainer(config)
     vqvae_trainer.compile(optimizer=optimizer)
 
-    # Checkpoints, sample reconstructions and metric artifact folders
+    # Archive all config and modules to artifacts folder
     artifact_folder = config['models']['vqvae']['artifacts']['folder']
     logs_folder = config['models']['vqvae']['artifacts']['logs']['folder']
-    models_folder = os.path.join(artifact_folder, 'models')
-
-    # Copy model modules to artifacts for archiving
     models_src = os.path.dirname(os.path.realpath(__file__))
-    shutil.copytree(models_src, models_folder)
-    shutil.copy(os.path.join(models_src, '..', 'config.yaml'), os.path.join(models_folder, 'config.yaml'))
+    shutil.copytree(os.path.join(models_src, '..'), artifact_folder)
 
     epochs = config['models']['vqvae']['epochs']
     steps = config['models']['vqvae']['batches_per_epoch']
