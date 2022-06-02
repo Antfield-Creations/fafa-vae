@@ -45,7 +45,6 @@ class PaddingGenerator(Sequence):
         self.img_folder = config['data']['images']['folder']
         self.img_cfg = config['data']['images']
         self.batch_size = config['models']['vqvae']['batch_size']
-        self.num_processes = config['models']['vqvae']['data_generator']['num_workers']
 
         self.img_metadata = load_metadata(
             img_folder=self.img_folder,
