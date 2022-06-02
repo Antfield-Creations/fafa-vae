@@ -13,6 +13,9 @@ from models.loaders.config import Config
 
 
 def get_vqvae(config: Config) -> keras.Model:
+    if config['models']['vqvae']['artifacts']['resume_model'] is not None:
+        return keras.models.load_model(config['models']['vqvae']['artifacts']['resume_model'])
+
     vq_layer = VectorQuantizer(
         num_embeddings=config['models']['vqvae']['num_embeddings'],
         embedding_dim=config['models']['vqvae']['latent_size'])
