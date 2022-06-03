@@ -17,14 +17,39 @@ VQ-VAE
 - [X] Implement vector-quantized VAE (excellent, huge improvement)
 - [X] Tweak learning rate (no significant improvement, more erratic learning curve)
 - [X] Drop the 'standing' filter
+- [X] Resume training on a saved model
+- [X] Implement the vqvae model training as an Argo Workflow
+- [X] Refactor checkpoint callback so that it can write directly to the data bucket
 - [ ] Implement the pixelCNN
-- [ ] Resume training on a saved model
-- [ ] Implement the vqvae model training as an Argo Workflow 
 - [ ] Refactor reconstruction callback so that it can write directly to the data bucket
-- [ ] Refactor checkpoint callback so that it can write directly to the data bucket
 - [ ] Tweak the latent size, how does it affect the two loss components?
 - [ ] Use kernel size of 3 or 5 on conv layers (some promising preliminary results, needs better checking)
 - [ ] Linear activation on decoder output layer
+
+## 2022-06-03
+It worked! I re-implemented my ML project in Argo and it worked out very nicely. The workflow uses a spot image to save
+consts and it saved checkpoints directly to my artifacts bucket.
+
+I also implemented some other useful stuff: re-training an existing model checkpoint. Loading it from the bucket goes
+perfectly fine, and the checkpoints are also
+saved in the correct location. Re-training did not result in a significant drop in loss, but at least now I know that
+the model is about as well-trained under the current hyperparameter settings as can be. I think I'm going to do some
+tuning before starting the pixelCNN part of the project.
+
+## 2022-06-02
+Oh yeah I had this journal. Been busy doing things that actually pay the bills. A good project, but whatever. I spent
+quite a few days implementing the Argo part for this endeavour. The main takeaway is that it is very complex, highly
+time-consuming and very satisfying. Now my ML setup includes its own operator that I can re-use for other projects. I
+may consider moving it into its own repository. There are still a few things to iron out, but the basic mechanism is
+very good. I'm far enough that I can
+- Execute arbitrary code from public git repos. This allows me to swap one project for another easily
+- All kubernetes stuff is separated from the script part. The stuff in the config manifest intended for the script is
+  mostly in `models` and `data`, since the script should only/mostly be involved in handling models and data.
+- All k8s stuff is in the rest of the manifest. The metadata, the image to use, etc.
+- All infrastructure requirements are handled by the operator. It's a simple enough Helm chart that manages configmaps,
+  storage, machine access (GPU resources etc). Argo handles the administration: event handling, logging and archiving of
+  artifacts not handled by the ML script
+So, now I have a proper MLOps setup that I can re-use for basically any ML project I undertake, which is pretty nice.
 
 ## 2022-05-10
 I suspended work on FAFA-VAE of a moment to take some days off and to work on things that actually get the bills paid.
