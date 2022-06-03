@@ -41,6 +41,8 @@ def archive_scripts(config: Config) -> None:
         files = glob.glob(pathname=f'{root_dir}/**', recursive=True)
         # The artifact location is a bucket url so we need to extract the subpath from it
         bucket = get_bucket(artifact_folder)
+        gs_url = urlparse(artifact_folder)
+        bucket_subpath = gs_url.path.removeprefix('/')
 
         for file in files:
             if os.path.isfile(file):
