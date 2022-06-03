@@ -1,15 +1,20 @@
 import logging
 import os
 import os.path
-from typing import Union
+from typing import Union, Optional
 
 import tensorflow as tf
+from google.cloud.storage.blob import Blob  # noqa
+from google.cloud.storage.bucket import Bucket  # noqa
 from keras_preprocessing.image import save_img
+from tempfile import TemporaryDirectory
 from tensorflow import keras
 from tensorflow.keras.callbacks import TensorBoard  # noqa
+from urllib.parse import urlparse
 
 from models.loaders.config import Config
 from models.loaders.data_generator import PaddingGenerator
+from models.loaders.script_archive import get_bucket
 
 
 def tensorboard_callback(artifacts_folder: str, update_freq: Union[int, str] = 'epoch') -> TensorBoard:
@@ -47,7 +52,12 @@ class CustomImageSamplerCallback(keras.callbacks.Callback):
         self.run_id = config['run_id']
         self.artifact_folder = config['models']['vqvae']['artifacts']['folder']
         self.reconstructions_folder = os.path.join(self.artifact_folder, 'reconstructions')
-        os.makedirs(self.reconstructions_folder, exist_ok=True)
+        self.bucket: Optional[Bucket] = None
+
+        if self.reconstructions_folder.startswith('gs://') or self.reconstructions_folder.startswith('gcs://'):
+            self.bucket = get_bucket(self.reconstructions_folder)
+        else:
+            os.makedirs(self.reconstructions_folder, exist_ok=True)
 
     def on_epoch_end(self, epoch: int, logs: dict = None) -> None:
         if (epoch + 1) % self.epoch_interval == 0:
@@ -55,12 +65,27 @@ class CustomImageSamplerCallback(keras.callbacks.Callback):
             reconstructions = self.model(sample_inputs)
 
             for img_idx in range(reconstructions.shape[0]):
-                self.save_reconstruction(reconstructions, epoch, img_idx)
+                if self.bucket is not None:
+                    self.save_reconstruction_bucket(reconstructions, epoch, img_idx)
+                else:
+                    self.save_reconstruction_local(reconstructions, epoch, img_idx)
 
-    def save_reconstruction(self, reconstructions: tf.Tensor, epoch: int, img_idx: int) -> None:
+    def save_reconstruction_local(self, reconstructions: tf.Tensor, epoch: int, img_idx: int) -> None:
         output_path = os.path.join(self.reconstructions_folder, f'epoch-{epoch + 1}-{img_idx + 1}.png')
         sample = reconstructions[img_idx]
         save_img(path=output_path, x=sample, scale=True)
+
+    def save_reconstruction_bucket(self, reconstructions: tf.Tensor, epoch: int, img_idx: int) -> None:
+        sample = reconstructions[img_idx]
+        gs_url = urlparse(self.artifact_folder)
+        bucket_subpath = gs_url.path.removeprefix('/')
+
+        with TemporaryDirectory() as tempdir:
+            filename = f'epoch-{epoch + 1}-{img_idx + 1}.png'
+            temp_filename = os.path.join(tempdir, filename)
+            save_img(path=temp_filename, x=sample, scale=True)
+            blob = Blob(name=os.path.join(bucket_subpath, filename), bucket=self.bucket)
+            blob.upload_from_filename(filename=temp_filename)
 
 
 class CustomModelCheckpointSaver(keras.callbacks.Callback):
