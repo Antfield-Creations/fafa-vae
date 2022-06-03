@@ -6,7 +6,7 @@ from tempfile import TemporaryDirectory
 import numpy as np
 
 from models.loaders.config import load_config
-from models.train import train
+from models.train_vqvae import train
 from scraper import scraper
 
 
