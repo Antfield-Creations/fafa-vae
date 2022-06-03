@@ -8,7 +8,7 @@ spec:
   repository: https://github.com/Antfield-Creations/fafa-vae
   command: |
     pipenv install --deploy --python 3.9 --site-packages;
-    pipenv run python main.py --mode=train --config=config.json
+    pipenv run python main.py --mode=train-vqvae --config=config.json
   run_id:  # Keep empty to let the config function create one by itself
 
   models:
@@ -20,7 +20,7 @@ spec:
         resume_model:
           gs://antfield/FAFA/artifacts/2022-06-02_16h44m41s/checkpoints/epoch-128/vq_vae/
         reconstructions:
-          save_every_epoch: 16
+          save_every_epoch: 2
         checkpoints:
           save_every_epoch: 16
         logs:
