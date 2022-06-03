@@ -10,6 +10,25 @@ from PIL import Image
 from pandas import DataFrame
 from tqdm import tqdm
 
+from models.loaders.config import Config
+
+
+def index(config: Config) -> None:
+    """
+    Builds a json file index of images, sizes and tags from a scraper.scraper.scrape() harvested set of images.
+
+    :param config: a models.loaders.config.load_config() returned Config object
+
+    :return: None
+    """
+    export_metadata(img_folder=config['data']['images']['folder'])
+    metadata = load_metadata(
+        img_folder=config['data']['images']['folder'],
+        exclude_tags=config['data']['images']['filter']['exclude'],
+        include_tags=config['data']['images']['filter']['include'],
+    )
+    logging.info(f'{len(metadata)} images to train on')
+
 
 def load_metadata(
         img_folder: str,
