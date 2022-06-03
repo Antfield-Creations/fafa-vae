@@ -18,7 +18,7 @@ spec:
         # Set to empty if you need to train from scratch:
         # resume_model:
         resume_model:
-          gs://antfield/FAFA/artifacts/2022-04-21_10h10m14s/checkpoints/epoch-128/vq_vae/
+          gs://antfield/FAFA/artifacts/2022-06-02_16h44m41s/checkpoints/epoch-128/vq_vae/
         reconstructions:
           save_every_epoch: 16
         checkpoints:
@@ -32,11 +32,11 @@ spec:
         fit_samples: 256
 
       batch_size: 16
-      learning_rate: 0.0001
+      learning_rate: 4e-05
       # Fewer batches per epoch allows for epochs of no more than a few minutes
       # on older GPU hardware. This can probably be cranked up on newer hardware
       batches_per_epoch: 256
-      epochs: 128
+      epochs: 64
 
       # code book settings
       latent_size: 128
