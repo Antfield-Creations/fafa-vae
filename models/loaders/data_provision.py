@@ -2,20 +2,19 @@ import logging
 import os.path
 from urllib.parse import urlparse
 
+from google.cloud import storage  # noqa
 from tqdm import tqdm
 
-from models.loaders.config import Config, load_config
-
-from google.cloud import storage  # noqa
+from models.loaders.config import Config
 
 
-def provision(config: Config) -> int:
+def provision(config: Config) -> None:
     storage_client = storage.Client()
 
     source_location = urlparse(str(config['data']['images']['cloud_storage_folder']))
     if source_location.scheme != 'gs' and source_location.scheme != 'gcs':
         logging.warning('Source location is not a google storage type, exiting.')
-        return 1
+        return
 
     target_folder = str(config['data']['images']['folder'])
     # if not os.path.isdir(target_folder):
@@ -43,9 +42,4 @@ def provision(config: Config) -> int:
         os.makedirs(os.path.dirname(download_path), exist_ok=True)
         blob.download_to_filename(download_path)
 
-    return 0
-
-
-if __name__ == '__main__':
-    config = load_config()
-    raise SystemExit(provision(config))
+    return
