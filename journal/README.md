@@ -31,10 +31,12 @@ It worked! I re-implemented my ML project in Argo and it worked out very nicely.
 consts and it saved checkpoints directly to my artifacts bucket.
 
 I also implemented some other useful stuff: re-training an existing model checkpoint. Loading it from the bucket goes
-perfectly fine, and the checkpoints are also
-saved in the correct location. Re-training did not result in a significant drop in loss, but at least now I know that
-the model is about as well-trained under the current hyperparameter settings as can be. I think I'm going to do some
-tuning before starting the pixelCNN part of the project.
+perfectly fine, and the checkpoints are also saved in the correct location. Re-training did not result in a significant
+drop in overall loss, but at least now I know that the model is about as well-trained under the current hyperparameter
+settings as can be. I think I'm going to do some tuning before starting the pixelCNN part of the project. The part of 
+the model that _did_ show significant improvement, was the reconstruction loss, which is great. It dropped from 5.2e-3
+to 3.08e-3, so it nearly halved. That was well worth investigating. I'm going to see if I can get it down a little bit
+more using a lower learning rate.
 
 ## 2022-06-02
 Oh yeah I had this journal. Been busy doing things that actually pay the bills. A good project, but whatever. I spent
