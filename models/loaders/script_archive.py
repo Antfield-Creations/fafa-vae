@@ -3,10 +3,26 @@ import os
 import shutil
 from urllib.parse import urlparse
 
-from google.cloud.storage.blob import Blob
+from google.cloud.storage.blob import Blob  # noqa
+from google.cloud.storage.bucket import Bucket  # noqa
 from google.cloud.storage.client import Client  # noqa
 
 from models.loaders.config import Config
+
+
+def get_bucket(blob_url: str) -> Bucket:
+    """
+    Extracts a bucket name from a blob url and returns the bucket as a google storage object
+
+    :param blob_url: URL of a blob in a bucket, or just a gs://{bucket_name} or gcs://{bucket_name} url string
+
+    :return: a Bucket instance
+    """
+    gs_url = urlparse(blob_url)
+    storage_client = Client()
+    bucket = storage_client.bucket(gs_url.netloc)
+
+    return bucket
 
 
 def archive_scripts(config: Config) -> None:
@@ -24,10 +40,7 @@ def archive_scripts(config: Config) -> None:
     if artifact_folder.startswith('gs://') or artifact_folder.startswith('gcs://'):
         files = glob.glob(pathname=f'{root_dir}/**', recursive=True)
         # The artifact location is a bucket url so we need to extract the subpath from it
-        gs_url = urlparse(artifact_folder)
-        bucket_subpath = gs_url.path.removeprefix('/')
-        storage_client = Client()
-        bucket = storage_client.bucket(gs_url.netloc)
+        bucket = get_bucket(artifact_folder)
 
         for file in files:
             if os.path.isfile(file):
