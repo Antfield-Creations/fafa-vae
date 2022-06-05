@@ -18,7 +18,7 @@ keras = "*"
 "ruamel.yaml" = "*"
 # ML model backend
 # Due to bug https://github.com/tensorflow/tensorflow/issues/39906 other versions may not work
-tensorflow = "==2.8.0"
+tensorflow = "==2.8.1"
 # Image metadata
 pandas = "*"
 # Run-time image loading
