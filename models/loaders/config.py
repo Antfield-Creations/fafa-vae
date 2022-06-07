@@ -62,8 +62,18 @@ def load_config(
 
     # Configure logging
     logger = logging.getLogger()
+
+    # Write to default 'logs' dir if no artifact folder was passed
+    if artifact_folder is None:
+        log_path = os.path.join('logs', 'logfile.txt')
+    # Write to local folder if artifact path is in a bucket: FileHandler can't write directly to bucket
+    elif artifact_folder.startswith('gs://') or artifact_folder.startswith('gcs://'):
+        log_path = os.path.join('logs', 'logfile.txt')
+    else:
+        log_path = os.path.join(artifact_folder, 'logfile.txt')
+
     file_handler = logging.FileHandler(
-        filename=os.path.join(config['models']['vqvae']['artifacts']['folder'], 'logfile.txt'),
+        filename=log_path,
         mode='a',
     )
     logger.addHandler(file_handler)
