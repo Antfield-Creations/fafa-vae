@@ -26,6 +26,17 @@ VQ-VAE
 - [ ] Use kernel size of 3 or 5 on conv layers (some promising preliminary results, needs better checking)
 - [ ] Linear activation on decoder output layer
 
+# 2022-06-07
+Re-training models works, but now I have to keep track of some provenance. I trained session 2022-06-03_09h39m59s on
+2022-06-02_16h44m41s (which comes from 2022-04-21_10h10m14s) and it improved a little on the reconstruction loss, from
+~3.12e-3 to 2.77e-3. So this is a 0.35e-3 improvement, or 11% improvement, over the course of a 5.5 hrs and 64 epochs of
+256 batches each. I think I'm going to stop here for now, there's enough detail in the reconstructions to clearly
+discern human figures but not enough to make realistic faces. I'm still clear of 
+['uncanny valley'](https://en.wikipedia.org/wiki/Uncanny_valley) I hope. The figures aren't ghostly in any sense anymore
+and the reconstruction loss is going down, while the vqvae-loss is steadily increasing now. It might signify some sense
+of overfitting (?) but I think it's alright to stop here and move to the pixelCNN part of the pipeline, I can always go
+back and do some more training but I'll have to re-do the entire pixelCNN part if I do.
+
 ## 2022-06-03
 It worked! I re-implemented my ML project in Argo and it worked out very nicely. The workflow uses a spot image to save
 consts and it saved checkpoints directly to my artifacts bucket.
