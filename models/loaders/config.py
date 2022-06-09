@@ -68,6 +68,7 @@ def load_config(
         log_path = os.path.join('logs', 'logfile.txt')
     # Write to local folder if artifact path is in a bucket: FileHandler can't write directly to bucket
     elif artifact_folder.startswith('gs://') or artifact_folder.startswith('gcs://'):
+        os.makedirs('logs', exist_ok=True)
         log_path = os.path.join('logs', 'logfile.txt')
     else:
         log_path = os.path.join(artifact_folder, 'logfile.txt')
