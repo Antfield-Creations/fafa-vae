@@ -12,7 +12,8 @@ from models.pixelcnn import get_pixelcnn
 
 def train(config: Config) -> History:
     # Load from saved model
-    vqvae = keras.models.load_model(config['models']['pixelcnn']['input_vqvae']).vqvae
+    pxl_conf = config['models']['pixelcnn']
+    vqvae = keras.models.load_model(pxl_conf['input_vqvae']).vqvae
 
     encoder = vqvae.vqvae.get_layer('encoder')
     quantizer = vqvae.vqvae.get_layer("vector_quantizer")
@@ -29,15 +30,18 @@ def train(config: Config) -> History:
     pixel_cnn = get_pixelcnn(config)
 
     pixel_cnn.compile(
-        optimizer=keras.optimizers.Adam(3e-4),
+        optimizer=keras.optimizers.Adam(learning_rate=pxl_conf['learning_rate']),
         loss=keras.losses.SparseCategoricalCrossentropy(from_logits=True),
         metrics=["accuracy"],
     )
+
     pixel_cnn.fit(
         x=codebook_indices,
         y=codebook_indices,
-        batch_size=128,
-        epochs=30,
+        verbose=1,
+        batch_size=pxl_conf['batch_size'],
+        steps_per_epoch=pxl_conf['batches_per_epoch'],
+        epochs=pxl_conf['epochs'],
         validation_split=0.1,
     )
 
