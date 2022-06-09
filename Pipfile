@@ -18,7 +18,7 @@ keras = "*"
 "ruamel.yaml" = "*"
 # ML model backend
 # Due to bug https://github.com/tensorflow/tensorflow/issues/39906 other versions may not work
-tensorflow = "==2.8.1"
+tensorflow = "*"
 # Image metadata
 pandas = "*"
 # Run-time image loading
@@ -30,7 +30,7 @@ tensorboard = "*"
 # For padding images
 numpy = "*"
 # For sampling from the latent distribution
-tensorflow-probability = "*"
+tensorflow-probability = "==0.13.0"
 # Storage bucket interaction, data volume provisioning
 google-cloud-storage = "*"
 
