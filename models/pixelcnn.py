@@ -66,7 +66,7 @@ def get_pixelcnn(config: Config) -> keras.Model:
     pixelcnn_input_shape = encoder.output_shape[1:-1]
 
     pixelcnn_inputs = keras.Input(shape=pixelcnn_input_shape, dtype=tf.int32)
-    ohe = tf.one_hot(pixelcnn_inputs, vqvae_trainer.num_embeddings)
+    ohe = tf.one_hot(pixelcnn_inputs, config['models']['vqvae']['num_embeddings'])
     x = PixelConvLayer(
         mask_type="A", filters=128, kernel_size=7, activation="relu", padding="same"  # type: ignore
     )(ohe)
