@@ -89,7 +89,10 @@ def get_pixelcnn(config: Config) -> keras.Model:
         )(x)
 
     out = keras.layers.Conv2D(
-        filters=vqvae_trainer.num_embeddings, kernel_size=1, strides=1, padding="valid"
+        filters=config['models']['vqvae']['num_embeddings'],
+        kernel_size=1,
+        strides=1,
+        padding="valid"
     )(x)
 
     pixel_cnn = keras.Model(pixelcnn_inputs, out, name="pixel_cnn")
