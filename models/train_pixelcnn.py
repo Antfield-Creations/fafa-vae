@@ -38,7 +38,7 @@ def train(config: Config) -> History:
         metrics=["accuracy"],
     )
 
-    pixel_cnn.fit(
+    history = pixel_cnn.fit(
         x=codebook_indices,
         y=codebook_indices,
         verbose=1,
@@ -59,3 +59,5 @@ def train(config: Config) -> History:
 
     # Archive current scripts and config used for the session
     archive_scripts(config)
+
+    return history
