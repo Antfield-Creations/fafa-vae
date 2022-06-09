@@ -51,7 +51,7 @@ def train(config: Config) -> History:
     inputs = layers.Input(shape=pixel_cnn.input_shape[1:])
     x = pixel_cnn(inputs, training=False)
     dist = tfp.distributions.Categorical(logits=x)
-    sampled = dist.sample()
+    sampled = tf.py_function(func=dist.sample, inp=[x], Tout=float32)
     sampler = keras.Model(inputs, sampled)
     # TODO: do something useful with the sampler
     logging.info(sampler)
