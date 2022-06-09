@@ -9,21 +9,22 @@ from models.loaders.config import Config
 from models.loaders.data_generator import PaddingGenerator
 from models.loaders.script_archive import archive_scripts
 from models.pixelcnn import get_pixelcnn
+from models.vqvae import get_code_indices
 
 
 def train(config: Config) -> History:
     # Load from saved model
     pxl_conf = config['models']['pixelcnn']
-    vqvae = keras.models.load_model(pxl_conf['input_vqvae']).vqvae
+    vqvae = keras.models.load_model(pxl_conf['input_vqvae'])
 
-    encoder = vqvae.vqvae.get_layer('encoder')
-    quantizer = vqvae.vqvae.get_layer("vector_quantizer")
     data_generator = PaddingGenerator(config)
 
     # Generate the codebook indices.
+    encoder = vqvae.get_layer('encoder')
     encoded_outputs = encoder.predict(next(data_generator))
     flat_enc_outputs = encoded_outputs.reshape(-1, encoded_outputs.shape[-1])
-    codebook_indices = quantizer.get_code_indices(flat_enc_outputs)
+    quantizer = vqvae.get_layer("vector_quantizer")
+    codebook_indices = get_code_indices(quantizer, flat_enc_outputs)
 
     codebook_indices = codebook_indices.numpy().reshape(encoded_outputs.shape[:-1])
     print(f"Shape of the training data for PixelCNN: {codebook_indices.shape}")
