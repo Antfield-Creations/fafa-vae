@@ -1,8 +1,9 @@
+from typing import Optional
+
 import numpy as np
 import tensorflow as tf
-from tensorflow import keras
+from tensorflow import keras, float32, Tensor
 from tensorflow.keras import layers  # type: ignore
-
 
 # The first layer is the PixelCNN layer. This layer simply
 # builds on the 2D convolutional layer, but includes masking.
@@ -15,19 +16,22 @@ class PixelConvLayer(layers.Layer):
         super(PixelConvLayer, self).__init__()
         self.mask_type = mask_type
         self.conv = layers.Conv2D(**kwargs)
-        self.kernel_shape = self.conv.kernel.get_shape()
-        self.mask = np.zeros(shape=self.kernel_shape)
+        self.mask: Optional[Tensor] = None
 
     def build(self, input_shape: tuple) -> None:
         # Build the conv2d layer to initialize kernel variables
         self.conv.build(input_shape)
+        kernel_shape = self.conv.kernel.shape
+        mask = np.zeros(shape=kernel_shape)
 
         # Use the initialized kernel to create the mask
-        self.mask[: self.kernel_shape[0] // 2, ...] = 1.0
-        self.mask[self.kernel_shape[0] // 2, : self.kernel_shape[1] // 2, ...] = 1.0
+        mask[: kernel_shape[0] // 2, ...] = 1.0
+        mask[kernel_shape[0] // 2, : kernel_shape[1] // 2, ...] = 1.0
 
         if self.mask_type == "B":
-            self.mask[self.kernel_shape[0] // 2, self.kernel_shape[1] // 2, ...] = 1.0
+            mask[kernel_shape[0] // 2, kernel_shape[1] // 2, ...] = 1.0
+
+        self.mask = tf.convert_to_tensor(mask, dtype=float32)
 
     def call(self, inputs: tf.Tensor) -> tf.Tensor:
         self.conv.kernel.assign(self.conv.kernel * self.mask)
