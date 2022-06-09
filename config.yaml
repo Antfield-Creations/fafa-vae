@@ -64,9 +64,17 @@ spec:
 
     pixelcnn:
       input_vqvae:
-        gs://antfield/FAFA/artifacts/2022-04-21_10h10m14s/checkpoints/epoch-128/
+        gs://antfield/FAFA/artifacts/2022-06-03_09h39m59s/checkpoints/epoch-64/vq_vae/
       num_residual_blocks: 2
       num_pixelcnn_layers: 2
+
+      batch_size: 16
+      learning_rate: 3e-04
+      # Fewer batches per epoch allows for epochs of no more than a few minutes
+      # on older GPU hardware. This can probably be cranked up on newer hardware
+      batches_per_epoch: 256
+      epochs: 64
+
 
   data:
     images:
