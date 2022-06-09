@@ -22,8 +22,6 @@ def train(config: Config) -> Optional[History]:
 
     :return: None
     """
-    archive_scripts(config)
-
     # Compile the encoder and decoder separately to get rid of "uncompiled metrics" warnings
     # See also: https://stackoverflow.com/questions/67970389
     optimizer = keras.optimizers.Adam(learning_rate=config['models']['vqvae']['learning_rate'])
@@ -64,4 +62,5 @@ def train(config: Config) -> Optional[History]:
         callbacks=[tensorboard_cb, image_sampler, checkpoint_saver],
     )
 
+    archive_scripts(config)
     return history
