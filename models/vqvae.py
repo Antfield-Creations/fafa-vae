@@ -42,9 +42,8 @@ class VectorQuantizer(layers.Layer):
         super().__init__(name=name, **kwargs)
         self.embedding_dim = embedding_dim
         self.num_embeddings = num_embeddings
-        self.beta = (
-            beta  # This parameter is best kept between [0.25, 2] as per the paper.
-        )
+        # This parameter is best kept between [0.25, 2] as per the paper.
+        self.beta = beta
 
         # Initialize the embeddings which we will quantize.
         w_init = tf.random_uniform_initializer()
