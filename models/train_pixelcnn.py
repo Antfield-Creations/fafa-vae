@@ -1,8 +1,6 @@
-import logging
-
-import tensorflow as tf
+import numpy as np
 import tensorflow_probability as tfp
-from tensorflow import keras, float32
+from tensorflow import keras
 from tensorflow.keras import layers  # noqa
 from tensorflow.keras.callbacks import History  # noqa
 
@@ -52,10 +50,20 @@ def train(config: Config) -> History:
     inputs = layers.Input(shape=pixel_cnn.input_shape[1:])
     x = pixel_cnn(inputs, training=False)
     dist = tfp.distributions.Categorical(logits=x)
-    sampled = tf.py_function(func=dist.sample, inp=[x], Tout=float32)
+    sampled = dist.sample()
     sampler = keras.Model(inputs, sampled)
-    # TODO: do something useful with the sampler
-    logging.info(sampler)
+
+    priors = np.zeros(shape=(pxl_conf['batch_size'],) + (pixel_cnn.input_shape)[1:])
+    batch, rows, cols = priors.shape
+
+    # Iterate over the priors because generation has to be done sequentially pixel by pixel.
+    for row in range(rows):
+        for col in range(cols):
+            # Feed the whole array and retrieving the pixel value probabilities for the next
+            # pixel.
+            probs = sampler.predict(priors)
+            # Use the probabilities to pick pixel values and append the values to the priors.
+            priors[:, row, col] = probs[:, row, col]
 
     # Archive current scripts and config used for the session
     archive_scripts(config)
