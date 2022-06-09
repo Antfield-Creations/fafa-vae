@@ -82,17 +82,32 @@ class VectorQuantizer(layers.Layer):
         return quantized
 
     def get_code_indices(self, flattened_inputs: tf.Tensor) -> tf.Tensor:
-        # Calculate L2-normalized distance between the inputs and the codes.
-        similarity = tf.matmul(flattened_inputs, self.embeddings)
-        distances = (
-                tf.reduce_sum(flattened_inputs ** 2, axis=1, keepdims=True)
-                + tf.reduce_sum(self.embeddings ** 2, axis=0)
-                - 2 * similarity
-        )
+        return get_code_indices(self, flattened_inputs)
 
-        # Derive the indices for minimum distances.
-        encoding_indices = tf.argmin(distances, axis=1)
-        return encoding_indices
+
+def get_code_indices(vector_quantizer: VectorQuantizer, flattened_inputs: tf.Tensor) -> tf.Tensor:
+    """
+    This basically extracts the `get_code_indices` method on the VectorQuantizer class itself, so that you can
+    use this in a much more simple way from a tf.keras.load_model(path) and not have to deal with all the "custom
+    layers" issues that arise from this.
+
+    :param vector_quantizer: A trained VectorQuantizer layer
+    :param flattened_inputs: A sample set of images, flattened into shape (batch, pixels, channels)
+
+    :return: A vector of indices from the code book
+    """
+
+    # Calculate L2-normalized distance between the inputs and the codes.
+    similarity = tf.matmul(flattened_inputs, vector_quantizer.embeddings)
+    distances = (
+            tf.reduce_sum(flattened_inputs ** 2, axis=1, keepdims=True)
+            + tf.reduce_sum(vector_quantizer.embeddings ** 2, axis=0)
+            - 2 * similarity
+    )
+
+    # Derive the indices for minimum distances.
+    encoding_indices = tf.argmin(distances, axis=1)
+    return encoding_indices
 
 
 class VQVAETrainer(keras.models.Model):
