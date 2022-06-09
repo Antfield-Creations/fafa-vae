@@ -1,7 +1,8 @@
 import logging
 
+import tensorflow as tf
 import tensorflow_probability as tfp
-from tensorflow import keras
+from tensorflow import keras, float32
 from tensorflow.keras import layers  # noqa
 from tensorflow.keras.callbacks import History  # noqa
 
