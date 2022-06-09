@@ -7,6 +7,7 @@ from tensorflow.keras.callbacks import History  # noqa
 
 from models.loaders.config import Config
 from models.loaders.data_generator import PaddingGenerator
+from models.loaders.script_archive import archive_scripts
 from models.pixelcnn import get_pixelcnn
 
 
@@ -53,3 +54,6 @@ def train(config: Config) -> History:
     sampler = keras.Model(inputs, sampled)
     # TODO: do something useful with the sampler
     logging.info(sampler)
+
+    # Archive current scripts and config used for the session
+    archive_scripts(config)
