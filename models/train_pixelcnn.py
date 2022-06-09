@@ -3,6 +3,7 @@ import tensorflow_probability as tfp
 from tensorflow import keras
 from tensorflow.keras import layers  # noqa
 from tensorflow.keras.callbacks import History  # noqa
+from tqdm import tqdm
 
 from models.loaders.config import Config
 from models.loaders.data_generator import PaddingGenerator
@@ -57,11 +58,11 @@ def train(config: Config) -> History:
     batch, rows, cols = priors.shape
 
     # Iterate over the priors because generation has to be done sequentially pixel by pixel.
-    for row in range(rows):
+    for row in tqdm(range(rows)):
         for col in range(cols):
             # Feed the whole array and retrieving the pixel value probabilities for the next
             # pixel.
-            probs = sampler.predict(priors)
+            probs = sampler.predict(priors, verbose=0)
             # Use the probabilities to pick pixel values and append the values to the priors.
             priors[:, row, col] = probs[:, row, col]
 
