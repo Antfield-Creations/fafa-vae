@@ -11,4 +11,4 @@ class VQVAETestCase(unittest.TestCase):
         config = load_config()
         config['models']['vqvae']['artifacts']['resume_model'] = 'gs://antfield/test/artifacts/checkpoints/vq_vae/'
         vqvae = get_vqvae(config)
-        self.assertIsInstance(vqvae, keras.Model)  # add assertion here
+        self.assertIsInstance(vqvae, keras.Model)
