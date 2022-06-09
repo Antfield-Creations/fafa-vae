@@ -17,9 +17,6 @@ def provision(config: Config) -> None:
         return
 
     target_folder = str(config['data']['images']['folder'])
-    # if not os.path.isdir(target_folder):
-    #     raise NotADirectoryError(f'Target download directory {target_folder} does not exist')
-
     bucket = storage_client.get_bucket(source_location.netloc)
     source_path = source_location.path.lstrip('/')
 
