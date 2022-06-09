@@ -62,8 +62,8 @@ class ResidualBlock(keras.layers.Layer):
 
 def get_pixelcnn(config: Config) -> keras.Model:
     vqvae_trainer = get_vqvae(config)
-    encoder = vqvae_trainer.vqvae.get_layer('encoder')
-    pixelcnn_input_shape = encoder.shape[1:-1]
+    encoder = vqvae_trainer.get_layer('encoder')
+    pixelcnn_input_shape = encoder.output_shape[1:-1]
 
     pixelcnn_inputs = keras.Input(shape=pixelcnn_input_shape, dtype=tf.int32)
     ohe = tf.one_hot(pixelcnn_inputs, vqvae_trainer.num_embeddings)
