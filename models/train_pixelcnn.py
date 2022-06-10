@@ -60,7 +60,7 @@ def train(config: Config) -> History:
     sampled = dist.sample()
     sampler = keras.Model(inputs, sampled)
 
-    priors = np.zeros(shape=(pxl_conf['batch_size'], pixel_cnn.input_shape[1:]))
+    priors = np.zeros(shape=(pxl_conf['batch_size'],) + pixel_cnn.input_shape[1:])
     batch, rows, cols = priors.shape
 
     # Iterate over the priors because generation has to be done sequentially pixel by pixel.
