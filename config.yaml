@@ -67,8 +67,8 @@ spec:
         gs://antfield/FAFA/img/set-891
       input_vq_vae:
         gs://antfield/FAFA/artifacts/2022-06-03_09h39m59s/checkpoints/epoch-64/vq_vae/
-      num_residual_blocks: 2
-      num_pixelcnn_layers: 2
+      num_residual_blocks: 4
+      num_pixelcnn_layers: 4
 
       batch_size: 16
       learning_rate: 3e-04
