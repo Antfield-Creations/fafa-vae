@@ -45,6 +45,8 @@ def load_config(
     assert config['run_id'] is not None
     config['models']['vq_vae']['artifacts']['folder'] = \
         config['models']['vq_vae']['artifacts']['folder'].replace('{run_id}', config['run_id'])
+    config['models']['pixelcnn']['artifacts']['folder'] = \
+        config['models']['pixelcnn']['artifacts']['folder'].replace('{run_id}', config['run_id'])
 
     # You can use common home-folder tildes '~' in folder specs
     config['models']['vq_vae']['artifacts']['folder'] = \
@@ -52,6 +54,8 @@ def load_config(
 
     config['models']['vq_vae']['artifacts']['logs']['folder'] = \
         config['models']['vq_vae']['artifacts']['logs']['folder'].replace('{run_id}', config['run_id'])
+    config['models']['pixelcnn']['artifacts']['logs']['folder'] = \
+        config['models']['pixelcnn']['artifacts']['logs']['folder'].replace('{run_id}', config['run_id'])
     config['models']['vq_vae']['artifacts']['logs']['folder'] = \
         os.path.expanduser(config['models']['vq_vae']['artifacts']['logs']['folder'])
 

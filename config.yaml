@@ -76,6 +76,7 @@ spec:
       epochs: 128
 
       artifacts:
+        folder: gs://antfield/FAFA/artifacts/{run_id}
         checkpoints:
           save_every_epoch: 16
 
