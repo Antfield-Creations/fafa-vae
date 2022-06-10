@@ -33,7 +33,7 @@ def archive_scripts(config: Config) -> None:
 
     :return: None
     """
-    artifact_folder = str(config['models']['vqvae']['artifacts']['folder'])
+    artifact_folder = str(config['models']['vq_vae']['artifacts']['folder'])
     models_src = os.path.dirname(os.path.realpath(__file__))
     root_dir = os.path.join(models_src, '..', '..')
 
