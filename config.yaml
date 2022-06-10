@@ -75,6 +75,10 @@ spec:
       batches_per_epoch: 256
       epochs: 128
 
+      artifacts:
+        checkpoints:
+          save_every_epoch: 16
+
   data:
     images:
       file_count: 311410
