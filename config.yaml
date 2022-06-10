@@ -8,7 +8,7 @@ spec:
   repository: https://github.com/Antfield-Creations/fafa-vae
   command: |
     pipenv install --deploy --python 3.9 --site-packages;
-    pipenv run python main.py --mode=train-vqvae --config=config.json
+    pipenv run python main.py --mode=train-pixelcnn --config=config.json
   run_id:  # Keep empty to let the config function create one by itself
 
   models:
@@ -72,11 +72,8 @@ spec:
 
       batch_size: 16
       learning_rate: 3e-04
-      # Fewer batches per epoch allows for epochs of no more than a few minutes
-      # on older GPU hardware. This can probably be cranked up on newer hardware
       batches_per_epoch: 256
-      epochs: 64
-
+      epochs: 128
 
   data:
     images:
