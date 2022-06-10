@@ -12,7 +12,7 @@ spec:
   run_id:  # Keep empty to let the config function create one by itself
 
   models:
-    vqvae:
+    vq_vae:
       artifacts:
         folder: gs://antfield/FAFA/artifacts/{run_id}
         # Set to empty if you need to train from scratch:
@@ -65,7 +65,7 @@ spec:
     pixelcnn:
       image_test_folder:
         gs://antfield/FAFA/img/set-891
-      input_vqvae:
+      input_vq_vae:
         gs://antfield/FAFA/artifacts/2022-06-03_09h39m59s/checkpoints/epoch-64/vq_vae/
       num_residual_blocks: 2
       num_pixelcnn_layers: 2

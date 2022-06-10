@@ -17,7 +17,7 @@ def get_encoder(config: Config) -> keras.Model:
     height = config['data']['images']['height']
     channels = config['data']['images']['channels']
 
-    convs = config['models']['vqvae']['conv2d']
+    convs = config['models']['vq_vae']['conv2d']
 
     inputs = keras.Input(shape=(width, height, channels))
 

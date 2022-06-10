@@ -19,7 +19,7 @@ class CallbacksTestCase(unittest.TestCase):
             shutil.copytree('tests/data', img_root_dir + '/set-1/')
 
             config = load_config(run_id='dummy', artifact_folder=tempdir)
-            artifacts_folder = config['models']['vqvae']['artifacts']['folder']
+            artifacts_folder = config['models']['vq_vae']['artifacts']['folder']
             config['data']['images']['folder'] = img_root_dir
             config['data']['images']['filter']['include'] = None
             config['data']['images']['filter']['exclude'] = []

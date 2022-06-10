@@ -47,10 +47,10 @@ class CustomImageSamplerCallback(keras.callbacks.Callback):
     Saves image reconstructions sampled from the input dataset at the end of each epoch
     """
     def __init__(self, config: Config) -> None:
-        self.epoch_interval = config['models']['vqvae']['artifacts']['reconstructions']['save_every_epoch']
+        self.epoch_interval = config['models']['vq_vae']['artifacts']['reconstructions']['save_every_epoch']
         self.data_generator = PaddingGenerator(config)
         self.run_id = config['run_id']
-        self.artifact_folder = config['models']['vqvae']['artifacts']['folder']
+        self.artifact_folder = config['models']['vq_vae']['artifacts']['folder']
         self.reconstructions_folder = os.path.join(self.artifact_folder, 'reconstructions')
         self.bucket: Optional[Bucket] = None
 
@@ -93,9 +93,10 @@ class CustomModelCheckpointSaver(keras.callbacks.Callback):
     Saves encoder and decoder checkpoints at a given epoch interval
     """
 
-    def __init__(self, config: Config) -> None:
-        self.epoch_interval = config['models']['vqvae']['artifacts']['checkpoints']['save_every_epoch']
-        artifact_folder = config['models']['vqvae']['artifacts']['folder']
+    def __init__(self, config: Config, model_name: str) -> None:
+        self.model_name = model_name
+        self.epoch_interval = config['models'][model_name]['artifacts']['checkpoints']['save_every_epoch']
+        artifact_folder = config['models'][model_name]['artifacts']['folder']
         self.checkpoint_folder = os.path.join(artifact_folder, 'checkpoints')
 
     def on_epoch_end(self, epoch: int, logs: dict = None) -> None:
@@ -109,4 +110,4 @@ class CustomModelCheckpointSaver(keras.callbacks.Callback):
         """
         if (epoch + 1) % self.epoch_interval == 0:
             epoch_folder = os.path.join(self.checkpoint_folder, f'epoch-{epoch + 1}')
-            self.model.get_layer('vq_vae').save(filepath=os.path.join(epoch_folder, 'vq_vae'))
+            self.model.get_layer(self.model_name).save(filepath=os.path.join(epoch_folder, self.model_name))

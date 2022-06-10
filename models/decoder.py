@@ -15,7 +15,7 @@ def get_decoder(config: Config) -> keras.Model:
 
     latent_inputs = keras.Input(shape=get_encoder(config).output.shape[1:])
 
-    convs = config['models']['vqvae']['conv2d']
+    convs = config['models']['vq_vae']['conv2d']
     # The conv2d layers in reverse:
     convs = list(reversed(convs))
     img_channels = config['data']['images']['channels']

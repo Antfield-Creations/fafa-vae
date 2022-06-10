@@ -8,7 +8,7 @@ from tensorflow.keras import layers  # type: ignore
 # The first layer is the PixelCNN layer. This layer simply
 # builds on the 2D convolutional layer, but includes masking.
 from models.loaders.config import Config
-from models.vqvae import get_vqvae
+from models.vq_vae import get_vq_vae
 
 
 class PixelConvLayer(layers.Layer):
@@ -65,12 +65,12 @@ class ResidualBlock(keras.layers.Layer):
 
 
 def get_pixelcnn(config: Config) -> keras.Model:
-    vqvae_trainer = get_vqvae(config)
-    encoder = vqvae_trainer.get_layer('encoder')
+    vq_vae_trainer = get_vq_vae(config)
+    encoder = vq_vae_trainer.get_layer('encoder')
     pixelcnn_input_shape = encoder.output_shape[1:-1]
 
     pixelcnn_inputs = keras.Input(shape=pixelcnn_input_shape, dtype=tf.int32)
-    ohe = tf.one_hot(pixelcnn_inputs, config['models']['vqvae']['num_embeddings'])
+    ohe = tf.one_hot(pixelcnn_inputs, config['models']['vq_vae']['num_embeddings'])
     x = PixelConvLayer(
         mask_type="A", filters=128, kernel_size=7, activation="relu", padding="same"  # type: ignore
     )(ohe)
@@ -89,7 +89,7 @@ def get_pixelcnn(config: Config) -> keras.Model:
         )(x)
 
     out = keras.layers.Conv2D(
-        filters=config['models']['vqvae']['num_embeddings'],
+        filters=config['models']['vq_vae']['num_embeddings'],
         kernel_size=1,
         strides=1,
         padding="valid"

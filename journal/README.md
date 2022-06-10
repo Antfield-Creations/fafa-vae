@@ -18,7 +18,7 @@ VQ-VAE
 - [X] Tweak learning rate (no significant improvement, more erratic learning curve)
 - [X] Drop the 'standing' filter
 - [X] Resume training on a saved model
-- [X] Implement the vqvae model training as an Argo Workflow
+- [X] Implement the vq-vae model training as an Argo Workflow
 - [X] Refactor checkpoint callback so that it can write directly to the data bucket
 - [ ] Implement the pixelCNN
 - [ ] Refactor reconstruction callback so that it can write directly to the data bucket
@@ -33,7 +33,7 @@ Re-training models works, but now I have to keep track of some provenance. I tra
 256 batches each. I think I'm going to stop here for now, there's enough detail in the reconstructions to clearly
 discern human figures but not enough to make realistic faces. I'm still clear of 
 ['uncanny valley'](https://en.wikipedia.org/wiki/Uncanny_valley) I hope. The figures aren't ghostly in any sense anymore
-and the reconstruction loss is going down, while the vqvae-loss is steadily increasing now. It might signify some sense
+and the reconstruction loss is going down, while the vq-vae-loss is steadily increasing now. It might signify some sense
 of overfitting (?) but I think it's alright to stop here and move to the pixelCNN part of the pipeline, I can always go
 back and do some more training but I'll have to re-do the entire pixelCNN part if I do.
 
@@ -66,7 +66,7 @@ So, now I have a proper MLOps setup that I can re-use for basically any ML proje
 
 ## 2022-05-10
 I suspended work on FAFA-VAE of a moment to take some days off and to work on things that actually get the bills paid.
-Also, I started investigating some more into the VQVAE architecture and on why it is a two-stage process. There was an
+Also, I started investigating some more into the VQ-VAE architecture and on why it is a two-stage process. There was an
 existing stackoverflow question on this: 
 
 ## 2022-04-21
@@ -109,7 +109,7 @@ Couple of hours later it is already apparent that the higher learning rate works
 it so it appears. Let's see where the model performance ends up after 128 epochs.
 
 ## 2022-04-15
-After try 1 the VQVAE already shows much, much better reconstructions than the standard VAE. The 256 epochs I train for,
+After try 1 the VQ-VAE already shows much, much better reconstructions than the standard VAE. The 256 epochs I train for,
 show much clearer figures. Interestingly, the model focuses much more on the general picture than on trivial things,
 such as logos and watermarks. It shows decent quality images and it can certainly improve with a bit more training, for
 sure. This is all on a 4-layer conv mirrored to deconv on the decoder, with the largest layer having 64 filters. It'd
@@ -121,7 +121,7 @@ it's worth training deeper VAE nets.
 ## 2022-04-14
 I've successfully refactored the autoencoder model to a vector-quantized VAE but it took me about a day to structure it
 to my implementation. The changes are very, very complex, and that is saying something when starting out from a VAE to
-begin with. The concept of the VQVAE 'codebook' in itself is very complex, although it is maybe best described as an
+begin with. The concept of the VQ-VAE 'codebook' in itself is very complex, although it is maybe best described as an
 one-hot embedding space (hence the 'quantized' predicate) that encodes the input feature space in a lower-dimensional
 latent space. 
 
@@ -130,7 +130,7 @@ reconstructed images to see how it fares. One interesting thing is that the numb
 much lower than on the vanilla VAE. The VAE uses a flattening operation and a subsequent fully connected layer close to
 the latent, as the latent is a simple vector. The fully connected layer, however, was absolutely humongous, given the
 size of the images on the one hand, and the size of the latent vector on the other. At least that is solved in the
-VQVAE implementation, but I may have to add in some conv/deconv layers to give the model enough weights to learn a good
+VQ-VAE implementation, but I may have to add in some conv/deconv layers to give the model enough weights to learn a good
 reconstruction.
 
 I haven't implemented the pixelCNN yet, however, and I'm still not exactly clear on its purpose. I suspect it has to do

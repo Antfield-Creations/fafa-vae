@@ -5,7 +5,7 @@ You will need to run the scraper script first if you want to use the FAFA images
 from argparse import ArgumentParser
 from typing import Dict, Callable
 
-from models import train_vqvae, train_pixelcnn
+from models import train_vq_vae, train_pixelcnn
 from models.loaders.config import load_config, Config
 from models.loaders.data_provision import provision
 from models.loaders.metadata import index
@@ -15,7 +15,7 @@ MODES: Dict[str, Callable[[Config], None]] = {
     'scrape': scrape,
     'provision': provision,
     'index': index,
-    'train-vqvae': train_vqvae.train,
+    'train-vq-vae': train_vq_vae.train,
     'train-pixelcnn': train_pixelcnn.train
 }
 

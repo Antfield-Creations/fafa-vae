@@ -6,7 +6,7 @@ from tempfile import TemporaryDirectory
 import numpy as np
 
 from models.loaders.config import load_config
-from models.train_vqvae import train
+from models.train_vq_vae import train
 from scraper import scraper
 
 
@@ -14,8 +14,8 @@ class VAEModelTestCase(unittest.TestCase):
     def test_training(self) -> None:
         with TemporaryDirectory() as tempdir:
             config = load_config(run_id='dummy', artifact_folder=os.path.join(tempdir, 'dummy'))
-            artifact_folder = config['models']['vqvae']['artifacts']['folder']
-            config['models']['vqvae']['artifacts']['resume_model'] = None
+            artifact_folder = config['models']['vq_vae']['artifacts']['folder']
+            config['models']['vq_vae']['artifacts']['resume_model'] = None
 
             # Override image location and filter settings
             config['data']['images']['folder'] = os.path.join(tempdir, 'img')
@@ -30,23 +30,23 @@ class VAEModelTestCase(unittest.TestCase):
             with self.subTest(f'It harvests set number {set_no}'):
                 scraper.scrape(config)
 
-            config['models']['vqvae']['artifacts']['logs']['folder'] = artifact_folder
+            config['models']['vq_vae']['artifacts']['logs']['folder'] = artifact_folder
 
             # Simplify training
-            config['models']['vqvae']['data_generator']['fit_samples'] = 10
+            config['models']['vq_vae']['data_generator']['fit_samples'] = 10
 
             num_epochs = 2
-            config['models']['vqvae']['epochs'] = num_epochs
+            config['models']['vq_vae']['epochs'] = num_epochs
 
             checkpoint_interval = num_epochs
-            config['models']['vqvae']['artifacts']['checkpoints']['save_every_epoch'] = checkpoint_interval
-            config['models']['vqvae']['artifacts']['reconstructions']['save_every_epoch'] = checkpoint_interval
+            config['models']['vq_vae']['artifacts']['checkpoints']['save_every_epoch'] = checkpoint_interval
+            config['models']['vq_vae']['artifacts']['reconstructions']['save_every_epoch'] = checkpoint_interval
 
             batches_per_epoch = 16
-            config['models']['vqvae']['batches_per_epoch'] = batches_per_epoch
+            config['models']['vq_vae']['batches_per_epoch'] = batches_per_epoch
 
             batch_size = 2
-            config['models']['vqvae']['batch_size'] = batch_size
+            config['models']['vq_vae']['batch_size'] = batch_size
 
             # Dummy-train
             history = train(config)

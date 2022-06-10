@@ -39,23 +39,23 @@ def load_config(
         config['run_id'] = time.strftime('%Y-%m-%d_%Hh%Mm%Ss')
 
     if artifact_folder is not None:
-        config['models']['vqvae']['artifacts']['folder'] = artifact_folder
+        config['models']['vq_vae']['artifacts']['folder'] = artifact_folder
 
     # Replace run id template with actual run id value
     assert config['run_id'] is not None
-    config['models']['vqvae']['artifacts']['folder'] = \
-        config['models']['vqvae']['artifacts']['folder'].replace('{run_id}', config['run_id'])
+    config['models']['vq_vae']['artifacts']['folder'] = \
+        config['models']['vq_vae']['artifacts']['folder'].replace('{run_id}', config['run_id'])
 
     # You can use common home-folder tildes '~' in folder specs
-    config['models']['vqvae']['artifacts']['folder'] = \
-        os.path.expanduser(config['models']['vqvae']['artifacts']['folder'])
+    config['models']['vq_vae']['artifacts']['folder'] = \
+        os.path.expanduser(config['models']['vq_vae']['artifacts']['folder'])
 
-    config['models']['vqvae']['artifacts']['logs']['folder'] = \
-        config['models']['vqvae']['artifacts']['logs']['folder'].replace('{run_id}', config['run_id'])
-    config['models']['vqvae']['artifacts']['logs']['folder'] = \
-        os.path.expanduser(config['models']['vqvae']['artifacts']['logs']['folder'])
+    config['models']['vq_vae']['artifacts']['logs']['folder'] = \
+        config['models']['vq_vae']['artifacts']['logs']['folder'].replace('{run_id}', config['run_id'])
+    config['models']['vq_vae']['artifacts']['logs']['folder'] = \
+        os.path.expanduser(config['models']['vq_vae']['artifacts']['logs']['folder'])
 
-    os.makedirs(config['models']['vqvae']['artifacts']['folder'], exist_ok=True)
+    os.makedirs(config['models']['vq_vae']['artifacts']['folder'], exist_ok=True)
 
     config['data']['images']['folder'] = os.path.expanduser(config['data']['images']['folder'])
     config['data']['images']['folder'] = config['data']['images']['folder'].replace('{run_id}', config['run_id'])

@@ -12,13 +12,14 @@ from models.encoder import get_encoder
 from models.loaders.config import Config
 
 
-def get_vqvae(config: Config) -> keras.Model:
-    if config['models']['vqvae']['artifacts']['resume_model'] is not None:
-        return keras.models.load_model(config['models']['vqvae']['artifacts']['resume_model'])
+def get_vq_vae(config: Config) -> keras.Model:
+    vq_vae_conf = config['models']['vq_vae']
+    if vq_vae_conf['artifacts']['resume_model'] is not None:
+        return keras.models.load_model(vq_vae_conf['artifacts']['resume_model'])
 
     vq_layer = VectorQuantizer(
-        num_embeddings=config['models']['vqvae']['num_embeddings'],
-        embedding_dim=config['models']['vqvae']['latent_size'])
+        num_embeddings=vq_vae_conf['num_embeddings'],
+        embedding_dim=vq_vae_conf['latent_size'])
     encoder = get_encoder(config)
     decoder = get_decoder(config)
 
@@ -52,7 +53,7 @@ class VectorQuantizer(layers.Layer):
                 shape=(self.embedding_dim, self.num_embeddings), dtype="float32"
             ),
             trainable=True,
-            name="embeddings_vqvae",
+            name="embeddings_vq_vae",
         )
 
     def call(self, x: tf.Tensor) -> tf.Tensor:
@@ -113,14 +114,14 @@ def get_code_indices(vector_quantizer: VectorQuantizer, flattened_inputs: tf.Ten
 class VQVAETrainer(keras.models.Model):
     def __init__(self, config: Config, **kwargs: dict) -> None:
         super(VQVAETrainer, self).__init__(**kwargs)
-        if 'train_variance' not in config['models']['vqvae']:
+        if 'train_variance' not in config['models']['vq_vae']:
             raise ValueError('Vector-quantized variational auto-encoders require a variance setting.\n'
-                             'Please pass a config dict having `models.vqvae.train_variance.')
-        self.train_variance = config['models']['vqvae']['train_variance']
-        self.latent_dim = config['models']['vqvae']['latent_size']
-        self.num_embeddings = config['models']['vqvae']['num_embeddings']
+                             'Please pass a config dict having `models.vq_vae.train_variance.')
+        self.train_variance = config['models']['vq_vae']['train_variance']
+        self.latent_dim = config['models']['vq_vae']['latent_size']
+        self.num_embeddings = config['models']['vq_vae']['num_embeddings']
 
-        self.vqvae = get_vqvae(config)
+        self.vq_vae = get_vq_vae(config)
 
         self.total_loss_tracker = keras.metrics.Mean(name="total_loss")
         self.reconstruction_loss_tracker = keras.metrics.Mean(
@@ -139,28 +140,28 @@ class VQVAETrainer(keras.models.Model):
     def train_step(self, x: tf.Tensor) -> dict:
         with tf.GradientTape() as tape:
             # Outputs from the VQ-VAE.
-            reconstructions = self.vqvae(x)
+            reconstructions = self.vq_vae(x)
 
             # Calculate the losses.
             reconstruction_loss = (
                     tf.reduce_mean((x - reconstructions) ** 2) / self.train_variance
             )
-            total_loss = reconstruction_loss + sum(self.vqvae.losses)
+            total_loss = reconstruction_loss + sum(self.vq_vae.losses)
 
         # Backpropagation.
-        grads = tape.gradient(total_loss, self.vqvae.trainable_variables)
-        self.optimizer.apply_gradients(zip(grads, self.vqvae.trainable_variables))
+        grads = tape.gradient(total_loss, self.vq_vae.trainable_variables)
+        self.optimizer.apply_gradients(zip(grads, self.vq_vae.trainable_variables))
 
         # Loss tracking.
         self.total_loss_tracker.update_state(total_loss)
         self.reconstruction_loss_tracker.update_state(reconstruction_loss)
-        self.vq_loss_tracker.update_state(sum(self.vqvae.losses))
+        self.vq_loss_tracker.update_state(sum(self.vq_vae.losses))
 
         # Log results.
         return {
             "loss": self.total_loss_tracker.result(),
             "reconstruction_loss": self.reconstruction_loss_tracker.result(),
-            "vqvae_loss": self.vq_loss_tracker.result(),
+            "vq_vae_loss": self.vq_loss_tracker.result(),
         }
 
     def __call__(self, inputs: tf.Tensor, **kwargs: dict) -> tf.Tensor:
@@ -172,4 +173,4 @@ class VQVAETrainer(keras.models.Model):
         :return: a batch of the reconstructions as a tensor
         """
 
-        return self.vqvae(inputs)
+        return self.vq_vae(inputs)
