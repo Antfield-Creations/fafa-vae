@@ -42,8 +42,7 @@ class VAEModelTestCase(unittest.TestCase):
             config['models']['vq_vae']['artifacts']['checkpoints']['save_every_epoch'] = checkpoint_interval
             config['models']['vq_vae']['artifacts']['reconstructions']['save_every_epoch'] = checkpoint_interval
 
-            batches_per_epoch = 16
-            config['models']['vq_vae']['batches_per_epoch'] = batches_per_epoch
+            config['models']['vq_vae']['batches_per_epoch'] = 2
 
             batch_size = 2
             config['models']['vq_vae']['batch_size'] = batch_size
