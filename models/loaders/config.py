@@ -54,8 +54,6 @@ def load_config(
 
     config['models']['vq_vae']['artifacts']['logs']['folder'] = \
         config['models']['vq_vae']['artifacts']['logs']['folder'].replace('{run_id}', config['run_id'])
-    config['models']['pixelcnn']['artifacts']['logs']['folder'] = \
-        config['models']['pixelcnn']['artifacts']['logs']['folder'].replace('{run_id}', config['run_id'])
     config['models']['vq_vae']['artifacts']['logs']['folder'] = \
         os.path.expanduser(config['models']['vq_vae']['artifacts']['logs']['folder'])
 
