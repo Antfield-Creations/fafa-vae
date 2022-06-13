@@ -80,6 +80,8 @@ spec:
         folder: gs://antfield/FAFA/artifacts/{run_id}
         checkpoints:
           save_every_epoch: 16
+        reconstructions:
+          enabled: true
 
   data:
     images:

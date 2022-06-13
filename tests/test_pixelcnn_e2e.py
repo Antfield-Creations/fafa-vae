@@ -29,6 +29,7 @@ class PixelCNNTestCase(unittest.TestCase):
 
             # use the model for training session
             img_conf['filter']['exclude'] = []
+            pxl_conf['artifacts']['reconstructions']['enabled'] = False
             history = train_pixelcnn.train(config)
 
             with self.subTest('The loss is a valid float'):
