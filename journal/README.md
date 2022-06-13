@@ -37,6 +37,8 @@ is far more constrained than generic DALL-E likes. So, it should work with 128 s
 embeddings. However, the details in the images could benefit from a larger number of embeddings, say 256. So, I'm going 
 to redo the vq-vae part with lower-dimensional but more embeddings.
 
+Run 2022-06-13_09h01m09s now uses 512 embeddings of size 64.
+
 ## 2022-06-07
 Re-training models works, but now I have to keep track of some provenance. I trained session 2022-06-03_09h39m59s on
 2022-06-02_16h44m41s (which comes from 2022-04-21_10h10m14s) and it improved a little on the reconstruction loss, from
