@@ -12,6 +12,11 @@ jobs:
       - name: git checkout
         uses: actions/checkout@v2
 
+      - id: auth
+        uses: google-github-actions/auth@v0
+        with:
+          credentials_json: '${{ secrets.GCP_SA }}'
+
       - name: set up python
         uses: actions/setup-python@v2
         with:
