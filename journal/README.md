@@ -22,6 +22,7 @@ VQ-VAE
 - [X] Refactor checkpoint callback so that it can write directly to the data bucket
 - [X] Implement the pixelCNN
 - [X] Refactor reconstruction callback so that it can write directly to the data bucket
+- [ ] Move pixelcnn sampler into separate callback and class
 - [ ] Implement `get_config` method for custom vq_vae and pixelcnn models
 - [ ] Pixelcnn reconstruction callback writing directly to the data bucket
 - [ ] Tweak the latent size, how does it affect the two loss components?
