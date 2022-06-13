@@ -51,4 +51,4 @@ def archive_scripts(config: Config) -> None:
                 blob = Blob(name=bucket_target, bucket=bucket)
                 blob.upload_from_filename(filename=file)
     else:
-        shutil.copytree(root_dir, artifact_folder)
+        shutil.copytree(src=root_dir, dst=artifact_folder, dirs_exist_ok=True)
