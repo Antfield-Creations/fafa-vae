@@ -21,7 +21,8 @@ VQ-VAE
 - [X] Implement the vq-vae model training as an Argo Workflow
 - [X] Refactor checkpoint callback so that it can write directly to the data bucket
 - [X] Implement the pixelCNN
-- [ ] Refactor reconstruction callback so that it can write directly to the data bucket
+- [X] Refactor reconstruction callback so that it can write directly to the data bucket
+- [ ] Pixelcnn reconstruction callback writing directly to the data bucket
 - [ ] Tweak the latent size, how does it affect the two loss components?
 - [ ] Use kernel size of 3 or 5 on conv layers (some promising preliminary results, needs better checking)
 - [ ] Linear activation on decoder output layer
