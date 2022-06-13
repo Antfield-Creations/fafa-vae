@@ -39,7 +39,7 @@ spec:
       # Fewer batches per epoch allows for epochs of no more than a few minutes
       # on older GPU hardware. This can probably be cranked up on newer hardware
       batches_per_epoch: 256
-      epochs: 64
+      epochs: 128
 
       # code book settings
       latent_size: 92
