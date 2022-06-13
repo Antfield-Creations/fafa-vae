@@ -20,13 +20,23 @@ VQ-VAE
 - [X] Resume training on a saved model
 - [X] Implement the vq-vae model training as an Argo Workflow
 - [X] Refactor checkpoint callback so that it can write directly to the data bucket
-- [ ] Implement the pixelCNN
+- [X] Implement the pixelCNN
 - [ ] Refactor reconstruction callback so that it can write directly to the data bucket
 - [ ] Tweak the latent size, how does it affect the two loss components?
 - [ ] Use kernel size of 3 or 5 on conv layers (some promising preliminary results, needs better checking)
 - [ ] Linear activation on decoder output layer
 
-# 2022-06-07
+## 2022-06-13
+
+Implemented the pixelcnn part so that it works with my config.yaml hyperparameters and deployment config file. I ran a
+short tryout with the model and I see now that I got a few things backwards. I'm using "only" 256 embeddings with a size
+each of 128 each. The number of embeddings should probably be larger. The input space is probably a lot smaller than can
+be expressed with size 128, that's about half a full DALL-E configuration with an enormous range of image subjects. FAFA
+is far more constrained than generic DALL-E likes. So, it should work with 128 sized, 92-sized or even 64-sized 
+embeddings. However, the details in the images could benefit from a larger number of embeddings, say 256. So, I'm going 
+to redo the vq-vae part with lower-dimensional but more embeddings.
+
+## 2022-06-07
 Re-training models works, but now I have to keep track of some provenance. I trained session 2022-06-03_09h39m59s on
 2022-06-02_16h44m41s (which comes from 2022-04-21_10h10m14s) and it improved a little on the reconstruction loss, from
 ~3.12e-3 to 2.77e-3. So this is a 0.35e-3 improvement, or 11% improvement, over the course of a 5.5 hrs and 64 epochs of
