@@ -41,6 +41,11 @@ I don't think I would like it to be even more realistic than this. It certainly 
 powerful enough that they settle for size-64 embeddings, while the number of 512 embeddings definitely helped in
 diversifying the output. Let's see if we can get the pixelCNN part of the pipeline working properly.
 
+However, I think I'm going to try another run with an extra conv layer to lower the dimensionality of the encoder 
+outputs. The encoder outputs is the reconstruction target of the pixelcnn. At the moment, with my 640x640 images, it
+outputs 80x80 encodings, but feeding these to the pixelcnn is too much time-consuming since it is autoregressive. 
+Halving this should help in making epoch callback reconstructions and generating new examples as well.
+
 ## 2022-06-13
 Implemented the pixelcnn part so that it works with my config.yaml hyperparameters and deployment config file. I ran a
 short tryout with the model and I see now that I got a few things backwards. I'm using "only" 256 embeddings with a size
