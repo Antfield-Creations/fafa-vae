@@ -13,7 +13,7 @@ from models.loaders.config import load_config
 
 
 class CallbacksTestCase(unittest.TestCase):
-    def test_reconstruction_save(self) -> None:
+    def test_vq_vae_reconstruction_save(self) -> None:
         with TemporaryDirectory() as tempdir:
             img_root_dir = tempdir + '/img'
             shutil.copytree('tests/data', img_root_dir + '/set-1/')
@@ -36,7 +36,7 @@ class CallbacksTestCase(unittest.TestCase):
                 first_pixel = saved_img[0, 0]  # type: ignore
                 self.assertEqual(first_pixel, expected_values)  # add assertion here
 
-    def test_bucket_reconstruction_save(self) -> None:
+    def test_vq_vae_bucket_reconstruction_save(self) -> None:
         with TemporaryDirectory() as tempdir:
             img_root_dir = tempdir + '/img'
             shutil.copytree('tests/data', img_root_dir + '/set-1/')
