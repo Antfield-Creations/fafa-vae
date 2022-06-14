@@ -8,8 +8,9 @@ from PIL import Image
 import tensorflow as tf
 from google.cloud.storage.blob import Blob  # noqa
 
-from models.loaders.callbacks import CustomImageSamplerCallback
+from models.loaders.callbacks import CustomImageSamplerCallback, PixelCNNReconstructionSaver
 from models.loaders.config import load_config
+from models.pixelcnn import get_pixelcnn
 
 
 class CallbacksTestCase(unittest.TestCase):
@@ -65,3 +66,16 @@ class CallbacksTestCase(unittest.TestCase):
                 self.assertTrue(blob.exists())
                 assert reconstructor.bucket is not None
                 reconstructor.bucket.delete_blob(target)
+
+    def test_pixelcnn_reconstruction_sampler(self) -> None:
+        with TemporaryDirectory() as tempdir:
+            config = load_config(run_id='dummy', artifact_folder=tempdir)
+            pxl_conf = config['models']['pixelcnn']
+            pxl_conf['artifacts']['reconstructions']['save_every_epoch'] = 1
+
+            pixelcnn = get_pixelcnn(config)
+            reconstructor = PixelCNNReconstructionSaver(config)
+            # Normally, the model is passed to the callback object using history.fit()
+            # but we'll inject it here directly to skip having to train
+            setattr(reconstructor, 'model', pixelcnn)
+            reconstructor.on_epoch_end(epoch=0, logs={})
