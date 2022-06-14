@@ -1,11 +1,8 @@
-import numpy as np
-import tensorflow_probability as tfp
 from tensorflow import keras
 from tensorflow.keras import layers  # noqa
 from tensorflow.keras.callbacks import History  # noqa
-from tqdm import tqdm
 
-from models.loaders.callbacks import tensorboard_callback, CustomModelCheckpointSaver
+from models.loaders.callbacks import tensorboard_callback, CustomModelCheckpointSaver, PixelCNNReconstructionSaver
 from models.loaders.config import Config
 from models.loaders.data_generator import PaddingGenerator
 from models.loaders.script_archive import archive_scripts
@@ -42,6 +39,11 @@ def train(config: Config) -> History:
     tensorboard_cb = tensorboard_callback(artifacts_folder=logs_folder)
     checkpoint_saver = CustomModelCheckpointSaver(config, 'pixelcnn')
 
+    callbacks = [tensorboard_cb, checkpoint_saver]
+    # Since generating pixelcnn embedding reconstructions is time-consuming, we only generate if requested
+    if pxl_conf['artifacts']['reconstructions']['enabled']:
+        callbacks.append(PixelCNNReconstructionSaver(config))
+
     history = pixel_cnn.fit(
         x=codebook_indices,
         y=codebook_indices,
@@ -50,28 +52,8 @@ def train(config: Config) -> History:
         steps_per_epoch=pxl_conf['batches_per_epoch'],
         epochs=pxl_conf['epochs'],
         validation_split=0.1,
-        callbacks=[tensorboard_cb, checkpoint_saver]
+        callbacks=callbacks
     )
-
-    if pxl_conf['artifacts']['reconstructions']['enabled']:
-        # Create a mini sampler model.
-        inputs = layers.Input(shape=pixel_cnn.input_shape[1:])
-        x = pixel_cnn(inputs, training=False)
-        dist = tfp.distributions.Categorical(logits=x)
-        sampled = dist.sample()
-        sampler = keras.Model(inputs, sampled)
-
-        priors = np.zeros(shape=(pxl_conf['batch_size'],) + pixel_cnn.input_shape[1:])
-        batch, rows, cols = priors.shape
-
-        # Iterate over the priors because generation has to be done sequentially pixel by pixel.
-        for row in tqdm(range(rows)):
-            for col in range(cols):
-                # Feed the whole array and retrieving the pixel value probabilities for the next
-                # pixel.
-                probs = sampler.predict(priors, verbose=0)
-                # Use the probabilities to pick pixel values and append the values to the priors.
-                priors[:, row, col] = probs[:, row, col]
 
     # Archive current scripts and config used for the session
     archive_scripts(config)
