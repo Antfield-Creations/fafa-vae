@@ -59,7 +59,7 @@ class ResidualBlock(keras.layers.Layer):
 
     def call(self, inputs: tf.Tensor) -> tf.Tensor:
         x = self.conv1(inputs)
-        x = self.pixel_conv(x)
+        x = self.pixel_conv(x)  # noqa
         x = self.conv2(x)
         return keras.layers.add([inputs, x])
 
@@ -72,15 +72,15 @@ def get_pixelcnn(config: Config) -> keras.Model:
 
     pixelcnn_inputs = keras.Input(shape=pixelcnn_input_shape, dtype=tf.int32)
     ohe = tf.one_hot(pixelcnn_inputs, config['models']['vq_vae']['num_embeddings'])
-    x = PixelConvLayer(
+    x = PixelConvLayer(  # noqa
         mask_type="A", filters=128, kernel_size=7, activation="relu", padding="same"  # type: ignore
     )(ohe)
 
     for _ in range(config['models']['pixelcnn']['num_residual_blocks']):
-        x = ResidualBlock(filters=128)(x)
+        x = ResidualBlock(filters=128)(x)  # noqa
 
     for _ in range(config['models']['pixelcnn']['num_pixelcnn_layers']):
-        x = PixelConvLayer(
+        x = PixelConvLayer(     # noqa
             mask_type="B",      # type: ignore
             filters=128,        # type: ignore
             kernel_size=1,      # type: ignore
