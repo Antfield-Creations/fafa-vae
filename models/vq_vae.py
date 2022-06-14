@@ -27,7 +27,7 @@ def get_vq_vae(config: Config) -> keras.Model:
     inputs = keras.Input(shape=(img_cfg['height'], img_cfg['width'], img_cfg['channels']))
     encoder_outputs = encoder(inputs)
 
-    quantized_latents = vq_layer(encoder_outputs)
+    quantized_latents = vq_layer(encoder_outputs)  # noqa
     reconstructions = decoder(quantized_latents)
 
     return keras.Model(inputs, reconstructions, name="vq_vae")
