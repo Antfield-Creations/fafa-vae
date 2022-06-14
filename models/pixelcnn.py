@@ -4,6 +4,7 @@ import numpy as np
 import tensorflow as tf
 from tensorflow import keras, float32, Tensor
 from tensorflow.keras import layers  # type: ignore
+import tensorflow_probability as tfp
 
 # The first layer is the PixelCNN layer. This layer simply
 # builds on the 2D convolutional layer, but includes masking.
@@ -97,3 +98,23 @@ def get_pixelcnn(config: Config) -> keras.Model:
 
     pixel_cnn = keras.Model(pixelcnn_inputs, out, name="pixel_cnn")
     return pixel_cnn
+
+
+def get_pixelcnn_sampler(pixelcnn: keras.Model) -> keras.Model:
+    """
+    Creates a mini sampler model. This samples from a categorical distribution given a sample set of sample embedding
+    imputs. From the sample embedding inputs, a single "block" of "candidate" embedding reconstructions is returned as
+    a categorical distribution from which the next autoregressive part of the embedding reconstructions can be
+    generated.
+
+    :param pixelcnn: A (partially) trained pixelCNN keras model
+
+    :return: the sampler model
+    """
+    inputs = layers.Input(shape=pixelcnn.input_shape[1:])
+    outputs = pixelcnn(inputs, training=False)
+    dist = tfp.distributions.Categorical(logits=outputs)
+    sampled = dist.sample()
+    sampler = keras.Model(inputs, sampled)
+
+    return sampler
