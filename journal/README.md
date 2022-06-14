@@ -22,15 +22,26 @@ VQ-VAE
 - [X] Refactor checkpoint callback so that it can write directly to the data bucket
 - [X] Implement the pixelCNN
 - [X] Refactor reconstruction callback so that it can write directly to the data bucket
+- [X] Tweak the latent size, how does it affect the two loss components?
 - [ ] Move pixelcnn sampler into separate callback and class
 - [ ] Implement `get_config` method for custom vq_vae and pixelcnn models
 - [ ] Pixelcnn reconstruction callback writing directly to the data bucket
-- [ ] Tweak the latent size, how does it affect the two loss components?
 - [ ] Use kernel size of 3 or 5 on conv layers (some promising preliminary results, needs better checking)
 - [ ] Linear activation on decoder output layer
 
-## 2022-06-13
+## 2022-06-14
+Run 2022-06-13_09h01m09s used 512 embeddings of size 64 instead of the previous 256 embeddings of size 128. It had little
+trouble making sense of the data, it trained a good looking curve for almost 12 hours to a reconstruction loss of 3.3e-3
+with a vq-vae loss of 4.2e-3. It still shows a nicely downward curve at the end so it isn't done training either, I'll
+give it another session of that size to see if the reconstructions improve further. This should set me up nicely for
+training a beter pixelcnn, one that has to deal with embeddings of only size 64 instead of the previous 256. 
 
+As for visual inspection of the results, they look almost photo-realistic. Now I may not even re-train the model again,
+I don't think I would like it to be even more realistic than this. It certainly looks like the encoder and decoder are
+powerful enough that they settle for size-64 embeddings, while the number of 512 embeddings definitely helped in
+diversifying the output. Let's see if we can get the pixelCNN part of the pipeline working properly.
+
+## 2022-06-13
 Implemented the pixelcnn part so that it works with my config.yaml hyperparameters and deployment config file. I ran a
 short tryout with the model and I see now that I got a few things backwards. I'm using "only" 256 embeddings with a size
 each of 128 each. The number of embeddings should probably be larger. The input space is probably a lot smaller than can
@@ -39,7 +50,6 @@ is far more constrained than generic DALL-E likes. So, it should work with 128 s
 embeddings. However, the details in the images could benefit from a larger number of embeddings, say 256. So, I'm going 
 to redo the vq-vae part with lower-dimensional but more embeddings.
 
-Run 2022-06-13_09h01m09s now uses 512 embeddings of size 64.
 
 ## 2022-06-07
 Re-training models works, but now I have to keep track of some provenance. I trained session 2022-06-03_09h39m59s on
