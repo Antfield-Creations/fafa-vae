@@ -101,8 +101,8 @@ def get_code_indices(vector_quantizer: VectorQuantizer, flattened_inputs: tf.Ten
     # Calculate L2-normalized distance between the inputs and the codes.
     similarity = tf.matmul(flattened_inputs, vector_quantizer.embeddings)
     distances = (
-            tf.reduce_sum(flattened_inputs ** 2, axis=1, keepdims=True)
-            + tf.reduce_sum(vector_quantizer.embeddings ** 2, axis=0)
+            tf.reduce_sum(flattened_inputs ** 2, axis=1, keepdims=True)  # noqa
+            + tf.reduce_sum(vector_quantizer.embeddings ** 2, axis=0)    # noqa
             - 2 * similarity
     )
 
