@@ -2,14 +2,13 @@ from typing import Optional
 
 import numpy as np
 import tensorflow as tf
+import tensorflow_probability as tfp
 from tensorflow import keras, float32, Tensor
 from tensorflow.keras import layers  # type: ignore
-import tensorflow_probability as tfp
 
 # The first layer is the PixelCNN layer. This layer simply
 # builds on the 2D convolutional layer, but includes masking.
 from models.loaders.config import Config
-from models.vq_vae import get_vq_vae
 
 
 class PixelConvLayer(layers.Layer):
@@ -66,8 +65,9 @@ class ResidualBlock(keras.layers.Layer):
 
 
 def get_pixelcnn(config: Config) -> keras.Model:
-    vq_vae_trainer = get_vq_vae(config)
-    encoder = vq_vae_trainer.get_layer('encoder')
+    pxl_conf = config['models']['pixelcnn']
+    vq_vae = keras.models.load_model(pxl_conf['input_vq_vae'])
+    encoder = vq_vae.get_layer('encoder')
     pixelcnn_input_shape = encoder.output_shape[1:-1]
 
     pixelcnn_inputs = keras.Input(shape=pixelcnn_input_shape, dtype=tf.int32)
