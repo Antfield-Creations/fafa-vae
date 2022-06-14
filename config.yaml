@@ -62,6 +62,9 @@ spec:
         - filters: 128
           kernel_size: 5
           strides: 2
+        - filters: 196
+          kernel_size: 5
+          strides: 2
 
     pixelcnn:
       image_test_folder:
