@@ -67,7 +67,7 @@ spec:
       image_test_folder:
         gs://antfield/FAFA/img/set-891
       input_vq_vae:
-        gs://antfield/FAFA/artifacts/2022-06-03_09h39m59s/checkpoints/epoch-64/vq_vae/
+        gs://antfield/FAFA/artifacts/2022-06-13_09h01m09s/checkpoints/epoch-64/vq_vae/
       num_residual_blocks: 4
       num_pixelcnn_layers: 4
 
