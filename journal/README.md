@@ -29,6 +29,17 @@ VQ-VAE
 - [ ] Use kernel size of 3 or 5 on conv layers (some promising preliminary results, needs better checking)
 - [ ] Linear activation on decoder output layer
 
+## 2022-06-15
+Run 2022-06-14_10h16m16s is the first try to lower the dimensionality of the encoder output. The output was compressed
+by adding an extra convolution layer in both encoder and decoder with stride 2, halving the output size from
+(batch, 80, 80) (2022-06-13_09h01m09s) to (batch, 40, 40), meaning that pixelcnn sampling will speed up fourfold. The
+reconstruction loss wasn't quite that of the 2022-06-13_09h01m09s run (3.3e-3 vs 5.5e-3 for 2022-06-13_09h01m09s) but it
+can't be ruled out that this was just a fluke. The "dark image spike" that always seems to occur during a 
+training-from-scratch session was rather late and the model was still recovering. The results, althoug visibly worse 
+than the "high quality" run 2022-06-13_09h01m09s are still "artistically sound" in the sense that I rather like the
+slight bluriness. I'm going to add another convolution layer to see if I can compress to encoder output size 
+(batch, 20, 20) and see if the results are still acceptable.
+
 ## 2022-06-14
 Run 2022-06-13_09h01m09s used 512 embeddings of size 64 instead of the previous 256 embeddings of size 128. It had little
 trouble making sense of the data, it trained a good looking curve for almost 12 hours to a reconstruction loss of 3.3e-3
