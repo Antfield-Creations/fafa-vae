@@ -57,7 +57,9 @@ def load_config(
     config['models']['vq_vae']['artifacts']['logs']['folder'] = \
         os.path.expanduser(config['models']['vq_vae']['artifacts']['logs']['folder'])
 
-    os.makedirs(config['models']['vq_vae']['artifacts']['folder'], exist_ok=True)
+    if not config['models']['vq_vae']['artifacts']['folder'].startswith('gs://') \
+            and not config['models']['vq_vae']['artifacts']['folder'].startswith('gcs://'):
+        os.makedirs(config['models']['vq_vae']['artifacts']['folder'], exist_ok=True)
 
     config['data']['images']['folder'] = os.path.expanduser(config['data']['images']['folder'])
     config['data']['images']['folder'] = config['data']['images']['folder'].replace('{run_id}', config['run_id'])
