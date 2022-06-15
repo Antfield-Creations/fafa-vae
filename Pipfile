@@ -47,6 +47,8 @@ types-retry = "*"
 types-beautifulsoup4 = "*"
 # Linter for yaml files
 yamllint = "*"
+# Test coverage lib
+coverage = "*"
 
 [requires]
 python_version = "3.9"
