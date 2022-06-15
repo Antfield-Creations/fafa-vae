@@ -73,14 +73,15 @@ class CustomImageSamplerCallback(keras.callbacks.Callback):
                     self.save_reconstruction_local(reconstructions, epoch, img_idx)
 
     def save_reconstruction_local(self, reconstructions: tf.Tensor, epoch: int, img_idx: int) -> None:
-        output_path = os.path.join(self.reconstructions_folder, f'epoch-{epoch + 1}-{img_idx + 1}.png')
+        output_path = os.path.join(
+            self.reconstructions_folder, 'reconstructions', f'epoch-{epoch + 1}-{img_idx + 1}.png')
         sample = reconstructions[img_idx]
         save_img(path=output_path, x=sample, scale=True)
 
     def save_reconstruction_bucket(self, reconstructions: tf.Tensor, epoch: int, img_idx: int) -> None:
         sample = reconstructions[img_idx]
         gs_url = urlparse(self.artifact_folder)
-        bucket_subpath = gs_url.path.removeprefix('/')
+        bucket_subpath = gs_url.path.removeprefix('/') + 'reconstructions'
 
         with TemporaryDirectory() as tempdir:
             filename = f'epoch-{epoch + 1}-{img_idx + 1}.png'
