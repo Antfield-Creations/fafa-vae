@@ -23,7 +23,7 @@ spec:
           # gs://antfield/FAFA/artifacts/2022-06-03_09h39m59s/checkpoints/epoch-64/vq_vae/
 
         reconstructions:
-          save_every_epoch: 2
+          save_every_epoch: 16
         checkpoints:
           save_every_epoch: 16
         logs:
