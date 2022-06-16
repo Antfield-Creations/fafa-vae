@@ -29,9 +29,21 @@ VQ-VAE
 - [ ] Use kernel size of 3 or 5 on conv layers (some promising preliminary results, needs better checking)
 - [ ] Linear activation on decoder output layer
 
+## 2022-06-16
+2022-06-15_09h09m47s (reconstruction loss: 8.4e-3 - vq_vae_loss: 2.9e-2) was the first attempt at producing a 
+(batch, 20, 20) sized quantized output. The reconstruction loss is again worse than the (batch, 40, 40) sized one, but at
+least the loss in reconstruction accuracy seems consistent and with 128 epochs of 256 batches of size 16 samples each,
+the model does show room for improvement on the tail end of the run. So, time to experiment some more and resume training
+on some models, I think (batch, 20, 20) is fine for an output size, even the mnist example of the VQVAE had (batch, 7, 7)
+which is rather large considering the inputs of (batch, 28, 28, 1). I also see that I have part of my network as stride
+1 layers but with more filters, so I think I'm going to try to reduce the number of parameters in the network a bit by
+cutting them out and seeing how the model fares. I might have to do a re-training though of the run mentioned above to
+make sure that any follow-up attempts are able to produce reconstructions that are still of artistic value. The 
+reconstructions now have a little bit too much vagueness to be still of use.
+
 ## 2022-06-15
 Run 2022-06-14_10h16m16s is the first try to lower the dimensionality of the encoder output. The output was compressed
-by adding an extra convolution layer in both encoder and decoder with stride 2, halving the output size from
+by adding an extra convolution layer in both encoder and decoder with stride 2, halving the quantized output size from
 (batch, 80, 80) (2022-06-13_09h01m09s) to (batch, 40, 40), meaning that pixelcnn sampling will speed up fourfold. The
 reconstruction loss wasn't quite that of the 2022-06-13_09h01m09s run (3.3e-3 vs 5.5e-3 for 2022-06-13_09h01m09s) but it
 can't be ruled out that this was just a fluke. The "dark image spike" that always seems to occur during a 
