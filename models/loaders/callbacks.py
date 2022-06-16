@@ -53,12 +53,13 @@ class CustomImageSamplerCallback(keras.callbacks.Callback):
         self.data_generator = PaddingGenerator(config)
         self.run_id = config['run_id']
         self.artifact_folder = config['models']['vq_vae']['artifacts']['folder']
-        self.reconstructions_folder = os.path.join(self.artifact_folder, 'reconstructions')
         self.bucket: Optional[Bucket] = None
 
         if self.reconstructions_folder.startswith('gs://') or self.reconstructions_folder.startswith('gcs://'):
             self.bucket = get_bucket(self.reconstructions_folder)
+            self.reconstructions_folder = self.artifact_folder + '/reconstructions/'
         else:
+            self.reconstructions_folder = os.path.join(self.artifact_folder, 'reconstructions')
             os.makedirs(self.reconstructions_folder, exist_ok=True)
 
     def on_epoch_end(self, epoch: int, logs: dict = None) -> None:
@@ -74,20 +75,20 @@ class CustomImageSamplerCallback(keras.callbacks.Callback):
 
     def save_reconstruction_local(self, reconstructions: tf.Tensor, epoch: int, img_idx: int) -> None:
         output_path = os.path.join(
-            self.reconstructions_folder, 'reconstructions', f'epoch-{epoch + 1}-{img_idx + 1}.png')
+            self.reconstructions_folder, f'epoch-{epoch + 1}-{img_idx + 1}.png')
         sample = reconstructions[img_idx]
         save_img(path=output_path, x=sample, scale=True)
 
     def save_reconstruction_bucket(self, reconstructions: tf.Tensor, epoch: int, img_idx: int) -> None:
         sample = reconstructions[img_idx]
         gs_url = urlparse(self.artifact_folder)
-        bucket_subpath = gs_url.path.removeprefix('/') + 'reconstructions'
+        bucket_subpath = gs_url.path.removeprefix('/')
 
         with TemporaryDirectory() as tempdir:
             filename = f'epoch-{epoch + 1}-{img_idx + 1}.png'
             temp_filename = os.path.join(tempdir, filename)
             save_img(path=temp_filename, x=sample, scale=True)
-            blob = Blob(name=os.path.join(bucket_subpath, filename), bucket=self.bucket)
+            blob = Blob(name=bucket_subpath + filename, bucket=self.bucket)
             blob.upload_from_filename(filename=temp_filename)
 
 
