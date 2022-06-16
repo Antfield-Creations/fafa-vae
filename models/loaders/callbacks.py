@@ -52,10 +52,11 @@ class CustomImageSamplerCallback(keras.callbacks.Callback):
         self.epoch_interval = config['models']['vq_vae']['artifacts']['reconstructions']['save_every_epoch']
         self.data_generator = PaddingGenerator(config)
         self.run_id = config['run_id']
-        self.artifact_folder = config['models']['vq_vae']['artifacts']['folder']
+        self.artifact_folder = str(config['models']['vq_vae']['artifacts']['folder'])
         self.bucket: Optional[Bucket] = None
+        self.reconstructions_folder:  str = ''
 
-        if self.reconstructions_folder.startswith('gs://') or self.reconstructions_folder.startswith('gcs://'):
+        if self.artifact_folder.startswith('gs://') or self.artifact_folder.startswith('gcs://'):
             self.bucket = get_bucket(self.reconstructions_folder)
             self.reconstructions_folder = self.artifact_folder + '/reconstructions/'
         else:
