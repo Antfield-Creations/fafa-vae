@@ -57,7 +57,7 @@ class CustomImageSamplerCallback(keras.callbacks.Callback):
         self.reconstructions_folder:  str = ''
 
         if self.artifact_folder.startswith('gs://') or self.artifact_folder.startswith('gcs://'):
-            self.bucket = get_bucket(self.reconstructions_folder)
+            self.bucket = get_bucket(self.artifact_folder)
             self.reconstructions_folder = self.artifact_folder + '/reconstructions/'
         else:
             self.reconstructions_folder = os.path.join(self.artifact_folder, 'reconstructions')
