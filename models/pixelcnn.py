@@ -113,8 +113,8 @@ def get_pixelcnn_sampler(pixelcnn: keras.Model) -> keras.Model:
     """
     inputs = layers.Input(shape=pixelcnn.input_shape[1:])
     outputs = pixelcnn(inputs, training=False)
-    dist = tfp.distributions.Categorical(logits=outputs)
-    sampled = dist.sample()
-    sampler = keras.Model(inputs, sampled)
+    categorical_layer = tfp.layers.DistributionLambda(tfp.distributions.Categorical)
+    outputs = categorical_layer(outputs)
+    sampler = keras.Model(inputs, outputs)
 
     return sampler
