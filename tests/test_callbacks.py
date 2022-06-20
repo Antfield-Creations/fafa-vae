@@ -71,6 +71,7 @@ class CallbacksTestCase(unittest.TestCase):
         with TemporaryDirectory() as tempdir:
             config = load_config(run_id='dummy', artifact_folder=tempdir)
             pxl_conf = config['models']['pixelcnn']
+            pxl_conf['input_vq_vae'] = 'gs://antfield/test/small_output_vq_vae/vq_vae/'
             pxl_conf['artifacts']['reconstructions']['save_every_epoch'] = 1
 
             pixelcnn = get_pixelcnn(config)
