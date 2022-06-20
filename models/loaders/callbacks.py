@@ -58,7 +58,7 @@ class CustomImageSamplerCallback(keras.callbacks.Callback):
 
         if self.artifact_folder.startswith('gs://') or self.artifact_folder.startswith('gcs://'):
             self.bucket = get_bucket(self.artifact_folder)
-            self.reconstructions_folder = self.artifact_folder + '/reconstructions/'
+            self.reconstructions_folder = self.artifact_folder.removesuffix('/') + '/reconstructions/'
         else:
             self.reconstructions_folder = os.path.join(self.artifact_folder, 'reconstructions')
             os.makedirs(self.reconstructions_folder, exist_ok=True)
@@ -82,13 +82,18 @@ class CustomImageSamplerCallback(keras.callbacks.Callback):
 
     def save_reconstruction_bucket(self, reconstructions: tf.Tensor, epoch: int, img_idx: int) -> None:
         sample = reconstructions[img_idx]
-        gs_url = urlparse(self.artifact_folder)
-        bucket_subpath = gs_url.path.removeprefix('/')
+
+        # Parse the subpath from the full bucket url
+        bucket_subpath = self.reconstructions_folder.removeprefix('/')
+        bucket_subpath = urlparse(bucket_subpath).path
 
         with TemporaryDirectory() as tempdir:
+            # Save to temporary file first
             filename = f'epoch-{epoch + 1}-{img_idx + 1}.png'
             temp_filename = os.path.join(tempdir, filename)
             save_img(path=temp_filename, x=sample, scale=True)
+
+            # Then upload from temp file
             blob = Blob(name=bucket_subpath + filename, bucket=self.bucket)
             blob.upload_from_filename(filename=temp_filename)
 
