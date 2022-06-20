@@ -29,6 +29,11 @@ VQ-VAE
 - [ ] Use kernel size of 3 or 5 on conv layers (some promising preliminary results, needs better checking)
 - [ ] Linear activation on decoder output layer
 
+## 2022-06-19
+I tried run 2022-06-18_15h24m12s as a follow-up of 2022-06-15_09h09m47s but it didn't quite work out so well. The model 
+has too much trouble making sense of (batch, 20, 20) sized quantized output, there's just not enough expressive power in
+output this size I guess. Instead, I'll try to tweak a (batch, 40, 40) model and see how far I can compress it.
+
 ## 2022-06-16
 2022-06-15_09h09m47s (reconstruction loss: 8.4e-3 - vq_vae_loss: 2.9e-2) was the first attempt at producing a 
 (batch, 20, 20) sized quantized output. The reconstruction loss is again worse than the (batch, 40, 40) sized one, but at
