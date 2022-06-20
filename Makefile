@@ -1,4 +1,5 @@
 NAMESPACE ?= data
+GOOGLE_APPLICATION_CREDENTIALS ?= ~/Nextcloud/Documents/fafa-vae-0102b4da1611.json
 
 .PHONY: tests
 
@@ -9,7 +10,7 @@ check:
 	helm lint charts/argo-mlops-operator
 
 tests:
-	pipenv run python -m unittest discover .
+	GOOGLE_APPLICATION_CREDENTIALS=${GOOGLE_APPLICATION_CREDENTIALS} pipenv run python -m unittest discover .
 
 workflow:
 	kubectl -n ${NAMESPACE} apply -f config.yaml
