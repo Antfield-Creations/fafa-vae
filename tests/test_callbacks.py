@@ -49,7 +49,7 @@ class CallbacksTestCase(unittest.TestCase):
             config['data']['images']['filter']['orientation'] = 'any'
 
             reconstructor = CustomImageSamplerCallback(config)
-            target = 'test/artifacts/epoch-1-1.png'
+            target = 'test/artifacts/reconstructions/epoch-1-1.png'
             blob = Blob(name=target, bucket=reconstructor.bucket)
 
             with self.subTest('It initializes the bucket because we passed a bucket url'):
