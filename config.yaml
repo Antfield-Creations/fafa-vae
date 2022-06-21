@@ -19,7 +19,8 @@ spec:
         # Set to empty if you need to train from scratch:
         # resume_model:
         resume_model:
-          gs://antfield/FAFA/artifacts/2022-06-20_08h02m53s/checkpoints/epoch-128/vq_vae/
+          gs://antfield/FAFA/artifacts/2022-06-20_14h43m28s/checkpoints/epoch-128/vq_vae/
+          # gs://antfield/FAFA/artifacts/2022-06-20_08h02m53s/checkpoints/epoch-128/vq_vae/
           # gs://antfield/FAFA/artifacts/2022-06-02_16h44m41s/checkpoints/epoch-128/vq_vae/
           # gs://antfield/FAFA/artifacts/2022-06-03_09h39m59s/checkpoints/epoch-64/vq_vae/
 
