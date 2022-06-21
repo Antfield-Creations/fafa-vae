@@ -35,16 +35,17 @@ class PaddingGenerator(Sequence):
     images to their original orientation.
     """
 
-    def __init__(self, config: Config):
+    def __init__(self, config: Config, model_name: str = 'vq_vae'):
         """
-        :param config: The VAE config
+        :param config:      The VAE config
+        :param model_name:  Name of the model config to use, for the batch size
 
         :return: An infinite generator over batches of image tensors
         """
 
         self.img_folder = config['data']['images']['folder']
         self.img_cfg = config['data']['images']
-        self.batch_size = config['models']['vq_vae']['batch_size']
+        self.batch_size = config['models'][model_name]['batch_size']
 
         self.img_metadata = load_metadata(
             img_folder=self.img_folder,
