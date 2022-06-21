@@ -1,3 +1,5 @@
+import numpy as np
+import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras import layers  # noqa
 from tensorflow.keras.callbacks import History  # noqa
@@ -11,24 +13,18 @@ from models.vq_vae import get_code_indices
 
 
 def train(config: Config) -> History:
-    # Load from saved model
+    # Load "submodels" from saved model
     pxl_conf = config['models']['pixelcnn']
     vq_vae = keras.models.load_model(pxl_conf['input_vq_vae'])
-
-    data_generator = PaddingGenerator(config)
-
-    # Generate the codebook indices.
     encoder = vq_vae.get_layer('encoder')
-    encoded_outputs = encoder.predict(next(data_generator))
-    flat_enc_outputs = encoded_outputs.reshape(-1, encoded_outputs.shape[-1])
     quantizer = vq_vae.get_layer("vector_quantizer")
-    codebook_indices = get_code_indices(quantizer, flat_enc_outputs)
 
-    codebook_indices = codebook_indices.numpy().reshape(encoded_outputs.shape[:-1])
+    # Generate the codebook indices
+    data_generator = PaddingGenerator(config, model_name='pixelcnn')
+    codebook_indices = np.array([generate_codes(batch, encoder, quantizer) for batch in data_generator])
     print(f"Shape of the training data for PixelCNN: {codebook_indices.shape}")
 
     pixel_cnn = get_pixelcnn(config)
-
     pixel_cnn.compile(
         optimizer=keras.optimizers.Adam(learning_rate=pxl_conf['learning_rate']),
         loss=keras.losses.SparseCategoricalCrossentropy(from_logits=True),
@@ -60,3 +56,22 @@ def train(config: Config) -> History:
     archive_scripts(config)
 
     return history
+
+
+def generate_codes(batch: tf.Tensor, encoder: keras.Model, quantizer: keras.Model) -> tf.Tensor:
+    """
+    Fetches codes as indices from the code book for a particular batch of input images.
+    These codebook codes act as both the input and reconstruction target for the pixelcnn.
+
+    :param batch:       A Tensor of size returned by the data generator
+    :param encoder:     The trained VQ-VAE encoder model
+    :param quantizer:   The trained VQ-VAE quantizer model
+
+    :return:            A tensor of size (batch, codebook_rows, codebook_cols)
+    """
+    encoded_outputs = encoder.predict(batch)
+    flat_enc_outputs = encoded_outputs.reshape(-1, encoded_outputs.shape[-1])
+    codebook_indices = get_code_indices(quantizer, flat_enc_outputs)
+    codebook_indices = codebook_indices.numpy().reshape(encoded_outputs.shape[:-1])
+
+    return codebook_indices
