@@ -84,8 +84,8 @@ class CustomImageSamplerCallback(keras.callbacks.Callback):
         sample = reconstructions[img_idx]
 
         # Parse the subpath from the full bucket url
-        bucket_subpath = self.reconstructions_folder.removeprefix('/')
-        bucket_subpath = urlparse(bucket_subpath).path
+        bucket_subpath = self.reconstructions_folder
+        bucket_subpath = urlparse(bucket_subpath).path.removeprefix('/')
 
         with TemporaryDirectory() as tempdir:
             # Save to temporary file first
