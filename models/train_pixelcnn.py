@@ -42,7 +42,8 @@ def train(config: Config) -> History:
     callbacks = [tensorboard_cb, checkpoint_saver]
     # Since generating pixelcnn embedding reconstructions is time-consuming, we only generate if requested
     if pxl_conf['artifacts']['reconstructions']['enabled']:
-        callbacks.append(PixelCNNReconstructionSaver(config))
+        decoder = vq_vae.get_layer('decoder')
+        callbacks.append(PixelCNNReconstructionSaver(config, decoder))
 
     history = pixel_cnn.fit(
         x=codebook_indices,
