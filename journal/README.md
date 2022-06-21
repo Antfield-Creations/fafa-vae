@@ -36,6 +36,14 @@ introduced a bug in the reconstruction image callback trying to fix an earlier b
 any images yet. Easiest solution is to both see if the model will learn anything useful in another 128 epochs and fix
 the bug so that it produces reconstructions to properly inspect the VQ-VAE output.
 
+Fixed the bug and inspected early re-training of 2022-06-20_14h43m28s in 2022-06-21_08h06m38s. The results are a little
+on the rough side. They don't compare favourably with 2022-06-21_08h06m38s but that one used two extra (de)conv layers
+in the auto-encoder architecture and took twice the time to plough through 128 epochs. So, 2022-06-21_08h06m38s is a lot
+faster to train with much fewer trainable weights, which I hope should be good enough to generate artful images and 
+video. I'd very much like the model to produce reconstructions in the loss-region of roughly 4e-3, which could be 
+possible using a simple three-layer decoder but it's far from guaranteed. Inserting one extra layer could do the trick
+as well, we'll see. 
+
 ## 2022-06-19
 I tried run 2022-06-18_15h24m12s as a follow-up of 2022-06-15_09h09m47s but it didn't quite work out so well. The model 
 has too much trouble making sense of (batch, 20, 20) sized quantized output, there's just not enough expressive power in
