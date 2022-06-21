@@ -29,6 +29,13 @@ VQ-VAE
 - [ ] Use kernel size of 3 or 5 on conv layers (some promising preliminary results, needs better checking)
 - [ ] Linear activation on decoder output layer
 
+## 2022-06-21
+From the looks of run 2022-06-20_08h02m53s and follow-up re-trained 2022-06-20_14h43m28s a quantized output of
+(batch, 40, 40) on only three layers of (de)convolution for the encoder and decoder is just about enough. However I
+introduced a bug in the reconstruction image callback trying to fix an earlier bug, so from the latest run I don't have
+any images yet. Easiest solution is to both see if the model will learn anything useful in another 128 epochs and fix
+the bug so that it produces reconstructions to properly inspect the VQ-VAE output.
+
 ## 2022-06-19
 I tried run 2022-06-18_15h24m12s as a follow-up of 2022-06-15_09h09m47s but it didn't quite work out so well. The model 
 has too much trouble making sense of (batch, 20, 20) sized quantized output, there's just not enough expressive power in
