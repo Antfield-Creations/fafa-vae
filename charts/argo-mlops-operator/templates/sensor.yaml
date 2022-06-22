@@ -42,14 +42,6 @@ spec:
                 templates:
                   - name: deploy
                     steps:
-                      - - name: delete-configmap-step
-                          template: configmap-operate
-                          arguments:
-                            parameters:
-                              - name: mlops-manifest
-                                value: "{{`{{workflow.parameters.mlops-manifest}}`}}"
-                              - name: action
-                                value: delete
                       - - name: apply-configmap-step
                           template: configmap-operate
                           arguments:
@@ -58,13 +50,24 @@ spec:
                                 value: "{{`{{workflow.parameters.mlops-manifest}}`}}"
                               - name: action
                                 value: apply
+
                       - - name: call-gpu-validate-template
                           templateRef:
                             name: validate-gpu-workflow-template
                             template: validate-gpu
+
                       - - name: call-script-template
                           templateRef:
                             {{- $.Values.templateRef | toYaml | nindent 28 }}
+
+                      - - name: delete-configmap-step
+                          template: configmap-operate
+                          arguments:
+                            parameters:
+                              - name: mlops-manifest
+                                value: "{{`{{workflow.parameters.mlops-manifest}}`}}"
+                              - name: action
+                                value: delete
 
                   - name: configmap-operate
                     inputs:

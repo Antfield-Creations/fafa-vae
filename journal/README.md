@@ -82,6 +82,17 @@ than the "high quality" run 2022-06-13_09h01m09s are still "artistically sound" 
 slight bluriness. I'm going to add another convolution layer to see if I can compress to encoder output size 
 (batch, 20, 20) and see if the results are still acceptable.
 
+Also, I started to fix a bug in my "argo operator" setup. I noticed that sometimes the new values in the configmap with
+the manifest MLOps settings weren't set properly. This only happens if the previous run re-trained a model using the
+`resume_model: gs://bucket/model/path` setting, and the next run trained from scratch, using `resume_model: null` or
+just an empty `resume_model:`. In those cases, the `resume_model` key is mysteriously dropped from the configmap, I 
+can't figure why this would be the case but that's Kubernetes for you, expect weird YAML errors and strange bugs from
+time to time. Instead of applying the new configuration to the existing configmap, the workflow starts by deleting the
+old configmap and then applying the new settings from scratch. This appears to resolve the issue. Another solution could
+be to delete the configmap after the workflow has run, but this hampers inspection and transparency of faild workflow
+runs. Although the contents of the manifest are also logged in the Argo UI and logs. Maybe it's not necessary to keep
+the configmap around after the workflow has run.
+
 ## 2022-06-14
 Run 2022-06-13_09h01m09s used 512 embeddings of size 64 instead of the previous 256 embeddings of size 128. It had little
 trouble making sense of the data, it trained a good looking curve for almost 12 hours to a reconstruction loss of 3.3e-3
