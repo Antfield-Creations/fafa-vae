@@ -1,6 +1,6 @@
 # FAFA-VAE
 This repository contains the following:
-- A Vector-quantized variational auto-encoder implementation
+- A Vector-quantized variational auto-encoder implementation, fully type-hinted, flake8-checked.
 - A [scraper module](scraper/scraper.py) to get images from FAFA
 - A [config file](config.yaml) being its own Kubernetes manifest
 - A [helm chart](charts) containing the Kubernetes operator for the VQ-VAE implementation 
