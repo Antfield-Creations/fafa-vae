@@ -29,6 +29,16 @@ VQ-VAE
 - [ ] Use kernel size of 3 or 5 on conv layers (some promising preliminary results, needs better checking)
 - [ ] Linear activation on decoder output layer
 
+## 2022-06-22
+Yesterday's run ended prematurely because of the spot instance being pre-empted, this is the first time I've actually
+encountered this. The workflow process-argomlops-7xwdh was marked as failed "in response to imminent node shutdown",
+which can mean a lot of things, but I presume this is because of spot instance mechanics. Due to the way I set up my
+workflows, this is totally fine. The only thing I don't have now is a script archive of the exact used configuration,
+but that's no big deal. The workflow ran 123 out of 128 epochs, which is fine. The results, however, are just not quite
+there. There's too much blur in the images to really make sense of it. So I'm going to experiment some more with a
+slightly larger network with an extra (de)conv layer. Run 2022-06-22_08h29m42s has this extra conv/deconv layer just
+before the largest layer with a stride of 1, just to increase the number of layers in the network.
+
 ## 2022-06-21
 From the looks of run 2022-06-20_08h02m53s and follow-up re-trained 2022-06-20_14h43m28s a quantized output of
 (batch, 40, 40) on only three layers of (de)convolution for the encoder and decoder is just about enough. However I
