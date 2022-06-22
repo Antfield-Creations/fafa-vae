@@ -93,6 +93,10 @@ be to delete the configmap after the workflow has run, but this hampers inspecti
 runs. Although the contents of the manifest are also logged in the Argo UI and logs. Maybe it's not necessary to keep
 the configmap around after the workflow has run.
 
+Best solution would be to create a per-run configmap and pass the name of the configmap to the workflow template call
+step, this would allow multiple MLOps workflows to run at the same time without incurring data races on a shared
+configmap.
+
 ## 2022-06-14
 Run 2022-06-13_09h01m09s used 512 embeddings of size 64 instead of the previous 256 embeddings of size 128. It had little
 trouble making sense of the data, it trained a good looking curve for almost 12 hours to a reconstruction loss of 3.3e-3
