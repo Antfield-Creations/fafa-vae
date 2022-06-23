@@ -19,7 +19,10 @@ spec:
         # Set to empty if you need to train from scratch:
         # resume_model:
         resume_model:
-          gs://antfield/FAFA/artifacts/2022-06-20_08h02m53s/checkpoints/epoch-128/vq_vae/
+          # gs://antfield/FAFA/artifacts/2022-06-20_14h43m28s/checkpoints/epoch-128/vq_vae/
+          # gs://antfield/FAFA/artifacts/2022-06-20_08h02m53s/checkpoints/epoch-128/vq_vae/
+          # Best result so far, but pretty large network
+          # gs://antfield/FAFA/artifacts/2022-06-13_09h01m09s/checkpoints/epoch-128/vq_vae/
           # gs://antfield/FAFA/artifacts/2022-06-02_16h44m41s/checkpoints/epoch-128/vq_vae/
           # gs://antfield/FAFA/artifacts/2022-06-03_09h39m59s/checkpoints/epoch-64/vq_vae/
 
@@ -43,7 +46,7 @@ spec:
       epochs: 128
 
       # code book settings
-      latent_size: 64
+      latent_size: &ref_latent_size 128
       num_embeddings: 512
 
       # encoder, mirrored decoder
@@ -54,10 +57,19 @@ spec:
         - filters: 32
           kernel_size: 5
           strides: 2
+        - filters: 48
+          kernel_size: 5
+          strides: 1
         - filters: 64
           kernel_size: 5
           strides: 2
-        - filters: 128
+        - filters: 96
+          kernel_size: 5
+          strides: 1
+        # The output size of the encoder must match the dimensionality of the
+        # latent size. This is important for when we get the L2 distances from
+        # the encoded outputs to the embeddings
+        - filters: *ref_latent_size
           kernel_size: 5
           strides: 2
 
@@ -65,7 +77,9 @@ spec:
       image_test_folder:
         gs://antfield/FAFA/img/set-891
       input_vq_vae:
-        gs://antfield/FAFA/artifacts/2022-06-13_09h01m09s/checkpoints/epoch-128/vq_vae/
+        # Fix: use 128-size encoder output model
+        # compatible with codebook listed above
+        gs://antfield/FAFA/artifacts/2022-06-22_14h53m09s/checkpoints/epoch-48/vq_vae/
       num_residual_blocks: 4
       num_pixelcnn_layers: 4
 

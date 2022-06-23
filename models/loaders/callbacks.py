@@ -1,21 +1,17 @@
 import logging
 import os
 import os.path
-from typing import Union, Optional
+from typing import Union
 
 import numpy as np
-import tensorflow as tf
 from google.cloud.storage.blob import Blob  # noqa
 from google.cloud.storage.bucket import Bucket  # noqa
-from keras_preprocessing.image import save_img
-from tempfile import TemporaryDirectory
 from tensorflow import keras
 from tensorflow.keras.callbacks import TensorBoard  # noqa
-from urllib.parse import urlparse
 
 from models.loaders.config import Config
-from models.loaders.data_generator import PaddingGenerator
-from models.loaders.script_archive import get_bucket
+from models.loaders.vae_data_generator import PaddingGenerator
+from models.loaders.image_saver import save_reconstructions
 from models.pixelcnn import get_pixelcnn_sampler
 
 
@@ -53,49 +49,20 @@ class CustomImageSamplerCallback(keras.callbacks.Callback):
         self.data_generator = PaddingGenerator(config)
         self.run_id = config['run_id']
         self.artifact_folder = str(config['models']['vq_vae']['artifacts']['folder'])
-        self.bucket: Optional[Bucket] = None
         self.reconstructions_folder:  str = ''
 
         if self.artifact_folder.startswith('gs://') or self.artifact_folder.startswith('gcs://'):
-            self.bucket = get_bucket(self.artifact_folder)
             self.reconstructions_folder = self.artifact_folder.removesuffix('/') + '/reconstructions/'
         else:
             self.reconstructions_folder = os.path.join(self.artifact_folder, 'reconstructions')
-            os.makedirs(self.reconstructions_folder, exist_ok=True)
 
     def on_epoch_end(self, epoch: int, logs: dict = None) -> None:
-        if (epoch + 1) % self.epoch_interval == 0:
-            sample_inputs = next(self.data_generator)
-            reconstructions = self.model(sample_inputs)
+        if (epoch + 1) % self.epoch_interval != 0:
+            return
 
-            for img_idx in range(reconstructions.shape[0]):
-                if self.bucket is not None:
-                    self.save_reconstruction_bucket(reconstructions, epoch, img_idx)
-                else:
-                    self.save_reconstruction_local(reconstructions, epoch, img_idx)
-
-    def save_reconstruction_local(self, reconstructions: tf.Tensor, epoch: int, img_idx: int) -> None:
-        output_path = os.path.join(
-            self.reconstructions_folder, f'epoch-{epoch + 1}-{img_idx + 1}.png')
-        sample = reconstructions[img_idx]
-        save_img(path=output_path, x=sample, scale=True)
-
-    def save_reconstruction_bucket(self, reconstructions: tf.Tensor, epoch: int, img_idx: int) -> None:
-        sample = reconstructions[img_idx]
-
-        # Parse the subpath from the full bucket url
-        bucket_subpath = self.reconstructions_folder.removeprefix('/')
-        bucket_subpath = urlparse(bucket_subpath).path
-
-        with TemporaryDirectory() as tempdir:
-            # Save to temporary file first
-            filename = f'epoch-{epoch + 1}-{img_idx + 1}.png'
-            temp_filename = os.path.join(tempdir, filename)
-            save_img(path=temp_filename, x=sample, scale=True)
-
-            # Then upload from temp file
-            blob = Blob(name=bucket_subpath + filename, bucket=self.bucket)
-            blob.upload_from_filename(filename=temp_filename)
+        sample_inputs = next(self.data_generator)
+        reconstructions = self.model(sample_inputs)
+        save_reconstructions(self.reconstructions_folder, reconstructions, epoch)
 
 
 class CustomModelCheckpointSaver(keras.callbacks.Callback):
@@ -118,37 +85,49 @@ class CustomModelCheckpointSaver(keras.callbacks.Callback):
 
         :return: None
         """
-        if (epoch + 1) % self.epoch_interval == 0:
-            epoch_folder = os.path.join(self.checkpoint_folder, f'epoch-{epoch + 1}')
-            self.model.get_layer(self.model_name).save(filepath=os.path.join(epoch_folder, self.model_name))
+        if (epoch + 1) % self.epoch_interval != 0:
+            return
+
+        epoch_folder = os.path.join(self.checkpoint_folder, f'epoch-{epoch + 1}')
+        self.model.get_layer(self.model_name).save(filepath=os.path.join(epoch_folder, self.model_name))
 
 
 class PixelCNNReconstructionSaver(keras.callbacks.Callback):
-    def __init__(self, config: Config):
+    def __init__(self, config: Config, decoder: keras.Model):
         self.pxl_conf = config['models']['pixelcnn']
         self.epoch_interval = self.pxl_conf['artifacts']['reconstructions']['save_every_epoch']
+
         artifact_folder = self.pxl_conf['artifacts']['folder']
         self.reconstructions_folder = os.path.join(artifact_folder, 'reconstructions')
-        self.bucket: Optional[Bucket] = None
 
-        if self.reconstructions_folder.startswith('gs://') or self.reconstructions_folder.startswith('gcs://'):
-            self.bucket = get_bucket(self.reconstructions_folder)
-        else:
-            os.makedirs(self.reconstructions_folder, exist_ok=True)
+        self.decoder = decoder
 
     def on_epoch_end(self, epoch: int, logs: dict = None) -> None:
-        if (epoch + 1) % self.epoch_interval == 0:
-            mini_sampler = get_pixelcnn_sampler(self.model)
-            priors = np.zeros(shape=(self.pxl_conf['batch_size'],) + self.model.input_shape[1:])
-            batch, rows, cols = priors.shape
+        """
+        Creates n reconstructions, where n is the batch size.
 
-            # Iterate over the priors because generation has to be done sequentially pixel by pixel.
-            for row in range(rows):
-                for col in range(cols):
-                    # Feed the whole array and retrieving the pixel value probabilities for the next
-                    # pixel.
-                    probs = mini_sampler.predict(priors, verbose=0)
-                    # Use the probabilities to pick pixel values and append the values to the priors.
-                    priors[:, row, col] = probs[:, row, col]
+        :param epoch:   The current batch size
+        :param logs:    The epoch details, unused but kept for keeping the superclass method signature
 
-                logging.info(f'Generated row {row + 1} of {rows}')
+        :return: None
+        """
+        if (epoch + 1) % self.epoch_interval != 0:
+            return
+
+        mini_sampler = get_pixelcnn_sampler(self.model)
+        priors = np.zeros(shape=(self.pxl_conf['batch_size'],) + self.model.input_shape[1:])
+        batch, rows, cols = priors.shape
+
+        # Iterate over the priors because generation has to be done sequentially pixel by pixel.
+        for row in range(rows):
+            for col in range(cols):
+                # Feed the whole array and retrieving the pixel value probabilities for the next
+                # pixel.
+                probs = mini_sampler.predict(priors, verbose=0)
+                # Use the probabilities to pick pixel values and append the values to the priors.
+                priors[:, row, col] = probs[:, row, col]
+
+            logging.info(f'Generated row {row + 1} of {rows}')
+
+        images = self.decoder(priors)
+        save_reconstructions(self.reconstructions_folder, images, epoch)

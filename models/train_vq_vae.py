@@ -9,7 +9,7 @@ from models.decoder import get_decoder
 from models.encoder import get_encoder
 from models.loaders.callbacks import CustomImageSamplerCallback, CustomModelCheckpointSaver, tensorboard_callback
 from models.loaders.config import Config
-from models.loaders.data_generator import PaddingGenerator
+from models.loaders.vae_data_generator import PaddingGenerator
 from models.loaders.script_archive import archive_scripts
 from models.vq_vae import VQVAETrainer
 

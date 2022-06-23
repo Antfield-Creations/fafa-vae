@@ -35,7 +35,7 @@ spec:
       volumes:
         - name: manifest
           configMap:
-            name: "{{ $.Values.customResourceDefinition.manifestConfigMap.name }}"
+            name: "{{`{{workflow.name}}`}}"
             items:
               - key: config.json
                 path: config.json

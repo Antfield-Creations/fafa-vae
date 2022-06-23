@@ -16,9 +16,6 @@ customResourceDefinition:
     name: gcs-secret
     key: serviceAccountKey
 
-  manifestConfigMap:
-    name: mlops-manifest
-
   namespaces:
     - operators
     - data

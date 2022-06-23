@@ -43,31 +43,46 @@ spec:
                   - name: deploy
                     steps:
                       - - name: apply-configmap-step
-                          template: create-update-configmap
+                          template: configmap-operate
                           arguments:
                             parameters:
                               - name: mlops-manifest
                                 value: "{{`{{workflow.parameters.mlops-manifest}}`}}"
+                              - name: action
+                                value: apply
+
                       - - name: call-gpu-validate-template
                           templateRef:
                             name: validate-gpu-workflow-template
                             template: validate-gpu
+
                       - - name: call-script-template
                           templateRef:
                             {{- $.Values.templateRef | toYaml | nindent 28 }}
 
-                  - name: create-update-configmap
+                      - - name: delete-configmap-step
+                          template: configmap-operate
+                          arguments:
+                            parameters:
+                              - name: mlops-manifest
+                                value: "{{`{{workflow.parameters.mlops-manifest}}`}}"
+                              - name: action
+                                value: delete
+
+                  - name: configmap-operate
                     inputs:
                       parameters:
                         - name: mlops-manifest
                           value: ""
+                        - name: action
+                          value: apply
                     resource:
-                      action: apply
+                      action: "{{`{{inputs.parameters.action}}`}}"
                       manifest: |
                         apiVersion: v1
                         kind: ConfigMap
                         metadata:
-                          name: {{ $.Values.customResourceDefinition.manifestConfigMap.name }}
+                          name: "{{`{{workflow.name}}`}}"
                         data:
                           config.json: |
                             {{`{{inputs.parameters.mlops-manifest}}`}}

@@ -1,28 +1,18 @@
 import logging
 import os.path
 import random
-from math import floor, ceil
 from typing import Dict, List, Optional
 
 import numpy as np
 from PIL.Image import Image
 from keras.utils.data_utils import Sequence
-from keras_preprocessing.image import ImageDataGenerator, img_to_array, load_img
+from keras_preprocessing.image import img_to_array, load_img
+from math import floor, ceil
 from numpy import ndarray
 from tensorflow import keras
 
 from models.loaders.config import Config
 from models.loaders.metadata import load_metadata
-
-
-class FAFADataGenerator(ImageDataGenerator):
-    def __init__(self) -> None:
-        super(FAFADataGenerator, self).__init__(
-            samplewise_center=True,
-            samplewise_std_normalization=True,
-            rotation_range=0,
-            validation_split=0.2,
-        )
 
 
 class PaddingGenerator(Sequence):
@@ -35,16 +25,17 @@ class PaddingGenerator(Sequence):
     images to their original orientation.
     """
 
-    def __init__(self, config: Config):
+    def __init__(self, config: Config, model_name: str = 'vq_vae'):
         """
-        :param config: The VAE config
+        :param config:      The VAE config
+        :param model_name:  Name of the model config to use, for the batch size
 
         :return: An infinite generator over batches of image tensors
         """
 
         self.img_folder = config['data']['images']['folder']
         self.img_cfg = config['data']['images']
-        self.batch_size = config['models']['vq_vae']['batch_size']
+        self.batch_size = config['models'][model_name]['batch_size']
 
         self.img_metadata = load_metadata(
             img_folder=self.img_folder,

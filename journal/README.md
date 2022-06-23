@@ -29,6 +29,43 @@ VQ-VAE
 - [ ] Use kernel size of 3 or 5 on conv layers (some promising preliminary results, needs better checking)
 - [ ] Linear activation on decoder output layer
 
+## 2022-06-23
+In an oversight I missed an important feature of the combined pipeline architecture. The encoder output channels size 
+must match the latent codebook size. This is because the pixelcnn does a linear-algebraic distance operation using the
+encoder outputs and the codebook, in order to 'fetch' the codebook sequences as a 'list' of pixels it autoregressively 
+iterates over. In my last attempts, I had codebook 'entries' of size 64, where my encoder output had 128 channels. How
+this trains at all, I'm not certain yet but at the very least it does not work on the second (pixelcnn) stage of the
+pipeline.
+
+So, I trained the same 128-channel encoder output on size-128 codebook entries, but it didn't fare so well. The images
+are blurry and the vq_vae loss fails to decrease over the last, bottoming out at about epoch 96 of 128. So, back to
+adding another stride-1 layer to the encoder and decoder to see if this improves matters.   
+
+## 2022-06-22
+Yesterday's run ended prematurely because of the spot instance being pre-empted, this is the first time I've actually
+encountered this. The workflow process-argomlops-7xwdh was marked as failed "in response to imminent node shutdown",
+which can mean a lot of things, but I presume this is because of spot instance mechanics. Due to the way I set up my
+workflows, this is totally fine. The only thing I don't have now is a script archive of the exact used configuration,
+but that's no big deal. The workflow ran 123 out of 128 epochs, which is fine. The results, however, are just not quite
+there. There's too much blur in the images to really make sense of it. So I'm going to experiment some more with a
+slightly larger network with an extra (de)conv layer. Run 2022-06-22_08h29m42s has this extra conv/deconv layer just
+before the largest layer with a stride of 1, just to increase the number of layers in the network.
+
+## 2022-06-21
+From the looks of run 2022-06-20_08h02m53s and follow-up re-trained 2022-06-20_14h43m28s a quantized output of
+(batch, 40, 40) on only three layers of (de)convolution for the encoder and decoder is just about enough. However I
+introduced a bug in the reconstruction image callback trying to fix an earlier bug, so from the latest run I don't have
+any images yet. Easiest solution is to both see if the model will learn anything useful in another 128 epochs and fix
+the bug so that it produces reconstructions to properly inspect the VQ-VAE output.
+
+Fixed the bug and inspected early re-training of 2022-06-20_14h43m28s in 2022-06-21_08h06m38s. The results are a little
+on the rough side. They don't compare favourably with 2022-06-21_08h06m38s but that one used two extra (de)conv layers
+in the auto-encoder architecture and took twice the time to plough through 128 epochs. So, 2022-06-21_08h06m38s is a lot
+faster to train with much fewer trainable weights, which I hope should be good enough to generate artful images and 
+video. I'd very much like the model to produce reconstructions in the loss-region of roughly 4e-3, which could be 
+possible using a simple three-layer decoder but it's far from guaranteed. Inserting one extra layer could do the trick
+as well, we'll see. 
+
 ## 2022-06-19
 I tried run 2022-06-18_15h24m12s as a follow-up of 2022-06-15_09h09m47s but it didn't quite work out so well. The model 
 has too much trouble making sense of (batch, 20, 20) sized quantized output, there's just not enough expressive power in
@@ -56,6 +93,21 @@ training-from-scratch session was rather late and the model was still recovering
 than the "high quality" run 2022-06-13_09h01m09s are still "artistically sound" in the sense that I rather like the
 slight bluriness. I'm going to add another convolution layer to see if I can compress to encoder output size 
 (batch, 20, 20) and see if the results are still acceptable.
+
+Also, I started to fix a bug in my "argo operator" setup. I noticed that sometimes the new values in the configmap with
+the manifest MLOps settings weren't set properly. This only happens if the previous run re-trained a model using the
+`resume_model: gs://bucket/model/path` setting, and the next run trained from scratch, using `resume_model: null` or
+just an empty `resume_model:`. In those cases, the `resume_model` key is mysteriously dropped from the configmap, I 
+can't figure why this would be the case but that's Kubernetes for you, expect weird YAML errors and strange bugs from
+time to time. Instead of applying the new configuration to the existing configmap, the workflow starts by deleting the
+old configmap and then applying the new settings from scratch. This appears to resolve the issue. Another solution could
+be to delete the configmap after the workflow has run, but this hampers inspection and transparency of faild workflow
+runs. Although the contents of the manifest are also logged in the Argo UI and logs. Maybe it's not necessary to keep
+the configmap around after the workflow has run.
+
+Best solution would be to create a per-run configmap and pass the name of the configmap to the workflow template call
+step, this would allow multiple MLOps workflows to run at the same time without incurring data races on a shared
+configmap.
 
 ## 2022-06-14
 Run 2022-06-13_09h01m09s used 512 embeddings of size 64 instead of the previous 256 embeddings of size 128. It had little
