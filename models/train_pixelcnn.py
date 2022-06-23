@@ -1,16 +1,12 @@
-import numpy as np
-import tensorflow as tf
-from numpy import ndarray
 from tensorflow import keras
 from tensorflow.keras import layers  # noqa
 from tensorflow.keras.callbacks import History  # noqa
 
 from models.loaders.callbacks import tensorboard_callback, CustomModelCheckpointSaver, PixelCNNReconstructionSaver
 from models.loaders.config import Config
-from models.loaders.data_generator import PaddingGenerator
+from models.loaders.pixelcnn_data_generator import CodebookGenerator
 from models.loaders.script_archive import archive_scripts
 from models.pixelcnn import get_pixelcnn
-from models.vq_vae import get_code_indices
 
 
 def train(config: Config) -> History:
@@ -20,11 +16,8 @@ def train(config: Config) -> History:
     encoder = vq_vae.get_layer('encoder')
     quantizer = vq_vae.get_layer("vector_quantizer")
 
-    # Generate the codebook indices
-    data_generator = PaddingGenerator(config, model_name='pixelcnn')
-    # TODO: extract out a decent data generator for this instead of dumping it into a giant numpy array
-    codebook_indices = np.concatenate([generate_codes(batch, encoder, quantizer) for batch in data_generator], axis=0)
-    print(f"Shape of the training data for PixelCNN: {codebook_indices.shape}")
+    # Codebook indices batch generator
+    data_generator = CodebookGenerator(config, encoder, quantizer)
 
     pixel_cnn = get_pixelcnn(config)
     pixel_cnn.compile(
@@ -44,8 +37,7 @@ def train(config: Config) -> History:
         callbacks.append(PixelCNNReconstructionSaver(config, decoder))
 
     history = pixel_cnn.fit(
-        x=codebook_indices,
-        y=codebook_indices,
+        data_generator,
         verbose=1,
         batch_size=pxl_conf['batch_size'],
         steps_per_epoch=pxl_conf['batches_per_epoch'],
@@ -58,22 +50,3 @@ def train(config: Config) -> History:
     archive_scripts(config)
 
     return history
-
-
-def generate_codes(batch: ndarray, encoder: keras.Model, quantizer: keras.Model) -> tf.Tensor:
-    """
-    Fetches codes as indices from the code book for a particular batch of input images.
-    These codebook codes act as both the input and reconstruction target for the pixelcnn.
-
-    :param batch:       A Tensor of size returned by the data generator
-    :param encoder:     The trained VQ-VAE encoder model
-    :param quantizer:   The trained VQ-VAE quantizer model
-
-    :return:            A tensor of size (batch, encoded_rows, encoded_cols)
-    """
-    encoded_outputs = encoder.predict(batch)
-    flattened = encoded_outputs.reshape(-1, encoded_outputs.shape[-1])
-    codebook_indices = get_code_indices(quantizer, flattened)
-    codebook_indices = codebook_indices.numpy().reshape(encoded_outputs.shape[:-1])
-
-    return codebook_indices
