@@ -1,5 +1,6 @@
 import numpy as np
 import tensorflow as tf
+from numpy import ndarray
 from tensorflow import keras
 from tensorflow.keras import layers  # noqa
 from tensorflow.keras.callbacks import History  # noqa
@@ -58,7 +59,7 @@ def train(config: Config) -> History:
     return history
 
 
-def generate_codes(batch: tf.Tensor, encoder: keras.Model, quantizer: keras.Model) -> tf.Tensor:
+def generate_codes(batch: ndarray, encoder: keras.Model, quantizer: keras.Model) -> tf.Tensor:
     """
     Fetches codes as indices from the code book for a particular batch of input images.
     These codebook codes act as both the input and reconstruction target for the pixelcnn.
@@ -67,11 +68,11 @@ def generate_codes(batch: tf.Tensor, encoder: keras.Model, quantizer: keras.Mode
     :param encoder:     The trained VQ-VAE encoder model
     :param quantizer:   The trained VQ-VAE quantizer model
 
-    :return:            A tensor of size (batch, codebook_rows, codebook_cols)
+    :return:            A tensor of size (batch, encoded_rows, encoded_cols)
     """
     encoded_outputs = encoder.predict(batch)
-    flat_enc_outputs = encoded_outputs.reshape(-1, encoded_outputs.shape[-1])
-    codebook_indices = get_code_indices(quantizer, flat_enc_outputs)
+    flattened = encoded_outputs.reshape(-1, encoded_outputs.shape[-1])
+    codebook_indices = get_code_indices(quantizer, flattened)
     codebook_indices = codebook_indices.numpy().reshape(encoded_outputs.shape[:-1])
 
     return codebook_indices
