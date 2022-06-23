@@ -57,6 +57,9 @@ spec:
         - filters: 32
           kernel_size: 5
           strides: 2
+        - filters: 48
+          kernel_size: 5
+          strides: 1
         - filters: 64
           kernel_size: 5
           strides: 2
