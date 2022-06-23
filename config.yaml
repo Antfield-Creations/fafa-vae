@@ -77,7 +77,9 @@ spec:
       image_test_folder:
         gs://antfield/FAFA/img/set-891
       input_vq_vae:
-        gs://antfield/FAFA/artifacts/2022-06-13_09h01m09s/checkpoints/epoch-128/vq_vae/
+        # Fix: use 128-size encoder output model
+        # compatible with codebook listed above
+        gs://antfield/FAFA/artifacts/2022-06-22_14h53m09s/checkpoints/epoch-48/vq_vae/
       num_residual_blocks: 4
       num_pixelcnn_layers: 4
 
