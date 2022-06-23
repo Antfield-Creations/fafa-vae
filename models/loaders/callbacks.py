@@ -10,7 +10,7 @@ from tensorflow import keras
 from tensorflow.keras.callbacks import TensorBoard  # noqa
 
 from models.loaders.config import Config
-from models.loaders.data_generator import PaddingGenerator
+from models.loaders.vae_data_generator import PaddingGenerator
 from models.loaders.image_saver import save_reconstructions
 from models.pixelcnn import get_pixelcnn_sampler
 

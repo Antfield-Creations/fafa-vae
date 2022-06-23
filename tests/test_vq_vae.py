@@ -1,15 +1,13 @@
 import unittest
-
 from tempfile import TemporaryDirectory
 
-import numpy as np
 import tensorflow as tf
 from tensorflow import keras
 
 from models.loaders.config import load_config
-from models.loaders.data_generator import PaddingGenerator
 from models.loaders.data_provision import provision
-from models.train_pixelcnn import generate_codes
+from models.loaders.pixelcnn_data_generator import CodebookGenerator
+from models.loaders.vae_data_generator import PaddingGenerator
 from models.vq_vae import get_vq_vae, get_code_indices
 
 

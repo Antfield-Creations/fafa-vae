@@ -7,7 +7,8 @@ import keras.backend
 import numpy as np
 
 from models.loaders.config import load_config
-from models.loaders.data_generator import PaddingGenerator, scale
+from models.loaders.pixelcnn_data_generator import CodebookGenerator
+from models.loaders.vae_data_generator import PaddingGenerator, scale
 from models.loaders.metadata import export_metadata
 
 
