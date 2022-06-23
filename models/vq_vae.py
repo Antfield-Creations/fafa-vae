@@ -93,9 +93,10 @@ def get_code_indices(vector_quantizer: VectorQuantizer, flattened_inputs: tf.Ten
     layers" issues that arise from this.
 
     :param vector_quantizer: A trained VectorQuantizer layer
-    :param flattened_inputs: A sample set of images, flattened into shape (batch, pixels, channels)
+    :param flattened_inputs: A sample set of encodings,
+                                flattened into shape (encodings rows * encoding cols, latent size)
 
-    :return: A vector of indices from the code book
+    :return: A rank-1 tensor (vector) of indices from the code book
     """
 
     # Calculate L2-normalized distance between the inputs and the codes.
