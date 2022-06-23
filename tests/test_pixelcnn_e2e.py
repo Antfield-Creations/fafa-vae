@@ -11,10 +11,9 @@ from models.loaders.data_provision import provision
 class PixelCNNTestCase(unittest.TestCase):
     def test_model(self) -> None:
         config = load_config()
-
-        pxl_conf = config['models']['pixelcnn']
         img_conf = config['data']['images']
 
+        pxl_conf = config['models']['pixelcnn']
         pxl_conf['batch_size'] = 1
         pxl_conf['batches_per_epoch'] = 1
         pxl_conf['epochs'] = 1
