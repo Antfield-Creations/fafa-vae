@@ -29,6 +29,18 @@ VQ-VAE
 - [ ] Use kernel size of 3 or 5 on conv layers (some promising preliminary results, needs better checking)
 - [ ] Linear activation on decoder output layer
 
+## 2022-06-23
+In an oversight I missed an important feature of the combined pipeline architecture. The encoder output channels size 
+must match the latent codebook size. This is because the pixelcnn does a linear-algebraic distance operation using the
+encoder outputs and the codebook, in order to 'fetch' the codebook sequences as a 'list' of pixels it autoregressively 
+iterates over. In my last attempts, I had codebook 'entries' of size 64, where my encoder output had 128 channels. How
+this trains at all, I'm not certain yet but at the very least it does not work on the second (pixelcnn) stage of the
+pipeline.
+
+So, I trained the same 128-channel encoder output on size-128 codebook entries, but it didn't fare so well. The images
+are blurry and the vq_vae loss fails to decrease over the last, bottoming out at about epoch 96 of 128. So, back to
+adding another stride-1 layer to the encoder and decoder to see if this improves matters.   
+
 ## 2022-06-22
 Yesterday's run ended prematurely because of the spot instance being pre-empted, this is the first time I've actually
 encountered this. The workflow process-argomlops-7xwdh was marked as failed "in response to imminent node shutdown",
