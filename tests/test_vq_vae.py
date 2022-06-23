@@ -55,7 +55,8 @@ class VQVAETestCase(unittest.TestCase):
                 codes = get_code_indices(vector_quantizer=quantizer, flattened_inputs=flattened)
                 self.assertEqual(len(codes), pxl_conf['batch_size'] * encoded.shape[1] * encoded.shape[2])
 
-            with self.subTest('Which is fully compatible with the pixelcnn `generate_codes` function'):
-                pixelcnn_codes = generate_codes(batch, encoder, quantizer)
+            with self.subTest('Which is fully shape-compatible with the codebook data generator'):
+                codebook_generator = CodebookGenerator(config, encoder, quantizer)
+                pixelcnn_codes = codebook_generator[0]
                 batch_shaped = codes.numpy().reshape(encoded.shape[:-1])
-                self.assertTrue(np.array_equal(batch_shaped, pixelcnn_codes))
+                self.assertEqual(batch_shaped.shape, pixelcnn_codes.shape)
