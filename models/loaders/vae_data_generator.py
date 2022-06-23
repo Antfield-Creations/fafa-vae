@@ -1,28 +1,18 @@
 import logging
 import os.path
 import random
-from math import floor, ceil
 from typing import Dict, List, Optional
 
 import numpy as np
 from PIL.Image import Image
 from keras.utils.data_utils import Sequence
-from keras_preprocessing.image import ImageDataGenerator, img_to_array, load_img
+from keras_preprocessing.image import img_to_array, load_img
+from math import floor, ceil
 from numpy import ndarray
 from tensorflow import keras
 
 from models.loaders.config import Config
 from models.loaders.metadata import load_metadata
-
-
-class FAFADataGenerator(ImageDataGenerator):
-    def __init__(self) -> None:
-        super(FAFADataGenerator, self).__init__(
-            samplewise_center=True,
-            samplewise_std_normalization=True,
-            rotation_range=0,
-            validation_split=0.2,
-        )
 
 
 class PaddingGenerator(Sequence):
