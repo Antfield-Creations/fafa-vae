@@ -22,7 +22,8 @@ def train(config: Config) -> History:
 
     # Generate the codebook indices
     data_generator = PaddingGenerator(config, model_name='pixelcnn')
-    codebook_indices = np.array([generate_codes(batch, encoder, quantizer) for batch in data_generator])
+    # TODO: extract out a decent data generator for this instead of dumping it into a giant numpy array
+    codebook_indices = np.concatenate([generate_codes(batch, encoder, quantizer) for batch in data_generator], axis=0)
     print(f"Shape of the training data for PixelCNN: {codebook_indices.shape}")
 
     pixel_cnn = get_pixelcnn(config)
