@@ -49,7 +49,9 @@ of stride 1 that has _fewer_ filters than the before-last, but a number of filte
 required by the VQ-VAE architecture. This appears to work very well: already the latest run 2022-06-24_07h22m36s that I
 started dips below my best run so far on the first quarter of the training session. Whether it manages to settle into a
 loss lower than my best run so far at the tail end of the run remains to be seen in a couple of hours, but so far the
-run looks promising.
+run looks promising. UPDATE: the run suffers from the same collapse as the previous one. I'm lowering the learning rate
+from 3e-4 to 1e-4 in the hopes that that resolves the situation, otherwise I'm going to try and increase the size of the
+codebook in the hope that matters will improve.
 
 Also, on the "good news" side is that the training time of my models _halved_ over night from the 14th to the 15th. I'm
 looking into what changed during that time: I changed on both the 14th and the 15th the encoder output "rows" and 
@@ -66,6 +68,9 @@ specific workflow run, but in re-applying the custom resource. Kubernetes does a
 resource, but fails to (re)set the `resume_model` key when it is empty (where it previously was not). I'm going to have
 to look this up in StackOverflow or the kubectl GitHub issues list or something to figure out what is going on. 
 Meanwhile, I have a practical workaround by removing the previous workflow before applying the new one.
+
+Even more good news: I have a fully working and passing integration/e2e test suite for the entire pipeline. I didn't run
+`coverage` but it should be at least 90% as both parts of the pipeline are subjected to a test run. 
 
 ## 2022-06-23
 In an oversight I missed an important feature of the combined pipeline architecture. The encoder output channels size 
