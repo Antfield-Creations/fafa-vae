@@ -71,6 +71,6 @@ class DataGeneratorTestCase(unittest.TestCase):
 
             with self.subTest('It generates input data of shape (batch, encoder_cols, encoder_rows)'):
                 data_generator = CodebookGenerator(config, encoder, quantizer)
-                batch = data_generator[0]
+                inputs, targets = data_generator[0]
                 expected_batch_shape = (pxl_conf['batch_size'], encoder.output.shape[1], encoder.output.shape[2])
-                self.assertEqual(batch.shape, expected_batch_shape)
+                self.assertEqual(inputs.shape, expected_batch_shape)

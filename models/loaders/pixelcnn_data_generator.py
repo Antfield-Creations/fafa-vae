@@ -30,4 +30,5 @@ class CodebookGenerator(PaddingGenerator):
         codebook_indices = get_code_indices(self.quantizer, flattened)
         codebook_indices = codebook_indices.numpy().reshape(encoded_outputs.shape[:-1])
 
-        return codebook_indices
+        # Return the same data for inputs and targets
+        return codebook_indices, codebook_indices
