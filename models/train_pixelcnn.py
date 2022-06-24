@@ -42,7 +42,6 @@ def train(config: Config) -> History:
         batch_size=pxl_conf['batch_size'],
         steps_per_epoch=pxl_conf['batches_per_epoch'],
         epochs=pxl_conf['epochs'],
-        validation_split=0.1,
         callbacks=callbacks
     )
 
