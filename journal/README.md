@@ -49,9 +49,16 @@ of stride 1 that has _fewer_ filters than the before-last, but a number of filte
 required by the VQ-VAE architecture. This appears to work very well: already the latest run 2022-06-24_07h22m36s that I
 started dips below my best run so far on the first quarter of the training session. Whether it manages to settle into a
 loss lower than my best run so far at the tail end of the run remains to be seen in a couple of hours, but so far the
-run looks promising. UPDATE: the run suffers from the same collapse as the previous one. I'm lowering the learning rate
+run looks promising. 
+
+UPDATE: run 2022-06-24_07h22m36s suffered from the same collapse as the previous one. I'm lowering the learning rate
 from 3e-4 to 1e-4 in the hopes that that resolves the situation, otherwise I'm going to try and increase the size of the
-codebook in the hope that matters will improve.
+codebook in the hope that matters will improve. I also scheduled a new run with the same configuration as 
+2022-06-24_07h22m36s but with a codebook of 1024 embeddings instead of 512, just to see what it does. The scheduling
+effect of Kubernetes and Argo are very, very nice. Argo keeps the workflow in a queue, as I only have one GPU machine in
+my ML pool to save costs. But still it will schedule the workflow as soon as the previous one has finished. I'm starting
+to benefit from my cloud setup. It cost me quite a few days of churn to get it up and running, but I really like my
+cloud-MLOps setup, it's awesome.
 
 Also, on the "good news" side is that the training time of my models _halved_ over night from the 14th to the 15th. I'm
 looking into what changed during that time: I changed on both the 14th and the 15th the encoder output "rows" and 
