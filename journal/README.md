@@ -33,10 +33,15 @@ Left the windows to my "lab" open in tilted position last night, when a spectacu
 storm dumped a few centimeters of rain in a couple of short bursts, and I expected to find a water ballet, but 
 fortunately there was little to no leakage.
 
-My attempts to "marry" the encoder, decoder and embedding sizes have not worked out particularly well unfortunately. I
+My attempts to "marry" the encoder, decoder and embedding sizes have not worked out particularly well, unfortunately. I
 have considerable trouble regaining the sweet spot I had found a couple of days ago, in run 2022-06-13_09h01m09s. The
 configuration I tried yesterday ended up collapsing spectacularly over the run a couple of times, in the dreaded "loss
-spikes".
+spikes". I included an image to document this:
+
+!["Loss spikes"](images/Screenshot%202022-06-24%20at%2009-16-24%20TensorBoard%20loss%20spikes.png)
+
+I'm not sure what backprop mechanism makes it so that the model loss collapses this spectacularly, the loss values are 
+suddenly so high that they drop off the "ignore outliers" scale. The spikes dwarf the rest of the curve.
 
 I also traced the origin of the 'KeyError': it occurs:
 - when **re-applying** the "MLOps" custom resource
