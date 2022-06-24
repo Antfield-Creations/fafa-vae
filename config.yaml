@@ -19,7 +19,7 @@ spec:
         # Set to empty if you need to train from scratch:
         # resume_model:
         resume_model:
-          gs://antfield/FAFA/artifacts/2022-06-23_09h58m36s/checkpoints/epoch-128/vq_vae/
+          # gs://antfield/FAFA/artifacts/2022-06-23_09h58m36s/checkpoints/epoch-128/vq_vae/
           # gs://antfield/FAFA/artifacts/2022-06-20_08h02m53s/checkpoints/epoch-128/vq_vae/
           # Best result so far, but pretty large network
           # gs://antfield/FAFA/artifacts/2022-06-13_09h01m09s/checkpoints/epoch-128/vq_vae/
@@ -46,7 +46,7 @@ spec:
       epochs: 128
 
       # code book settings
-      latent_size: &ref_latent_size 128
+      latent_size: &ref_latent_size 64
       num_embeddings: 512
 
       # encoder, mirrored decoder
@@ -57,21 +57,22 @@ spec:
         - filters: 32
           kernel_size: 5
           strides: 2
-        - filters: 48
-          kernel_size: 5
-          strides: 1
         - filters: 64
           kernel_size: 5
           strides: 2
         - filters: 96
           kernel_size: 5
           strides: 1
-        # The output size of the encoder must match the dimensionality of the
-        # latent size. This is important for when we get the L2 distances from
-        # the encoded outputs to the embeddings
-        - filters: *ref_latent_size
+        - filters: 128
           kernel_size: 5
           strides: 2
+        # The output size of the last encoder layer and first decoder layer must
+        # match the dimensionality of the latent size. This is important for
+        # when we calculate the L2 distances from the encoded outputs to the
+        # embeddings
+        - filters: *ref_latent_size
+          kernel_size: 5
+          strides: 1
 
     pixelcnn:
       image_test_folder:
