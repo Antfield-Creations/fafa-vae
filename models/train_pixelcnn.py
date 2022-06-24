@@ -37,7 +37,8 @@ def train(config: Config) -> History:
         callbacks.append(PixelCNNReconstructionSaver(config, decoder))
 
     history = pixel_cnn.fit(
-        data_generator,
+        x=data_generator,
+        y=data_generator,
         verbose=1,
         batch_size=pxl_conf['batch_size'],
         steps_per_epoch=pxl_conf['batches_per_epoch'],
