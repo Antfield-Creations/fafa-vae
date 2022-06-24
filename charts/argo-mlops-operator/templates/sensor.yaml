@@ -32,6 +32,10 @@ spec:
               metadata:
                 generateName: process-{{ $.Values.customResourceDefinition.kind | lower }}-
               spec:
+                # Clean up after the workflow completes
+                podGC:
+                  strategy: OnWorkflowCompletion
+
                 serviceAccountName: {{ $.Values.customResourceDefinition.serviceAccount.workflowServiceAccountName }}
                 entrypoint: deploy
                 arguments:
