@@ -43,6 +43,19 @@ spikes". I included an image to document this:
 I'm not sure what backprop mechanism makes it so that the model loss collapses this spectacularly, the loss values are 
 suddenly so high that they drop off the "ignore outliers" scale. The spikes dwarf the rest of the curve.
 
+Instead, I tried a new layer layout. I keep the somewhat larger (de)conv layers, but the last layer in the conv network
+is already part of the bottleneck. The before-last 128-filter (or more)  encoder layer is followed by a last conv layer
+of stride 1 that has _fewer_ filters than the before-last, but a number of filters that matches the embedding size as
+required by the VQ-VAE architecture. This appears to work very well: already the latest run 2022-06-24_07h22m36s that I
+started dips below my best run so far on the first quarter of the training session. Whether it manages to settle into a
+loss lower than my best run so far at the tail end of the run remains to be seen in a couple of hours, but so far the
+run looks promising.
+
+Also, on the "good news" side is that the training time of my models _halved_ over night from the 14th to the 15th. I'm
+looking into what changed during that time: I changed on both the 14th and the 15th the encoder output "rows" and 
+"columns" to both half those of previously. Maybe this caused better memory allocation on the GPU or something, but 
+since then, training has sped up by a factor of two, which is of course very nice.
+
 I also traced the origin of the 'KeyError': it occurs:
 - when **re-applying** the "MLOps" custom resource
 - after a re-training (training resume) on a previously trained model
