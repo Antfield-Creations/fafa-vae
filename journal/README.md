@@ -23,11 +23,31 @@ VQ-VAE
 - [X] Implement the pixelCNN
 - [X] Refactor reconstruction callback so that it can write directly to the data bucket
 - [X] Tweak the latent size, how does it affect the two loss components?
-- [ ] Move pixelcnn sampler into separate callback and class
+- [X] Move pixelcnn sampler into separate callback and class
 - [ ] Implement `get_config` method for custom vq_vae and pixelcnn models
-- [ ] Pixelcnn reconstruction callback writing directly to the data bucket
+- [X] Pixelcnn reconstruction callback writing directly to the data bucket
 - [ ] Use kernel size of 3 or 5 on conv layers (some promising preliminary results, needs better checking)
-- [ ] Linear activation on decoder output layer
+
+## 2022-06-24
+Left the windows to my "lab" open in tilted position last night, when a spectacularly loud rainstorm passed over. The 
+storm dumped a few centimeters of rain in a couple of short bursts, and I expected to find a water ballet, but 
+fortunately there was little to no leakage.
+
+My attempts to "marry" the encoder, decoder and embedding sizes have not worked out particularly well unfortunately. I
+have considerable trouble regaining the sweet spot I had found a couple of days ago, in run 2022-06-13_09h01m09s. The
+configuration I tried yesterday ended up collapsing spectacularly over the run a couple of times, in the dreaded "loss
+spikes".
+
+I also traced the origin of the 'KeyError': it occurs:
+- when **re-applying** the "MLOps" custom resource
+- after a re-training (training resume) on a previously trained model
+- followed by a training session for a fresh model, leaving the `resume_model` key blank
+
+The trouble originates not in the configuration of the configmap, which is now bound and released uniquely for a 
+specific workflow run, but in re-applying the custom resource. Kubernetes does a strategic merge on the spec of this 
+resource, but fails to (re)set the `resume_model` key when it is empty (where it previously was not). I'm going to have
+to look this up in StackOverflow or the kubectl GitHub issues list or something to figure out what is going on. 
+Meanwhile, I have a practical workaround by removing the previous workflow before applying the new one.
 
 ## 2022-06-23
 In an oversight I missed an important feature of the combined pipeline architecture. The encoder output channels size 

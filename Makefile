@@ -13,6 +13,7 @@ tests:
 	GOOGLE_APPLICATION_CREDENTIALS=${GOOGLE_APPLICATION_CREDENTIALS} pipenv run python -m unittest discover .
 
 workflow:
+	- ${MAKE} delete-workflow
 	kubectl -n ${NAMESPACE} apply -f config.yaml
 
 delete-workflow:
