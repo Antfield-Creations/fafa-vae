@@ -46,7 +46,7 @@ spec:
       epochs: 128
 
       # code book settings
-      latent_size: &ref_latent_size 64
+      latent_size: &ref_latent_size 96
       num_embeddings: 512
 
       # encoder, mirrored decoder
@@ -66,9 +66,6 @@ spec:
         - filters: 128
           kernel_size: 5
           strides: 2
-        - filters: 192
-          kernel_size: 5
-          strides: 1
         # The output size of the last encoder layer and first decoder layer must
         # match the dimensionality of the latent size. This is important for
         # when we calculate the L2 distances from the encoded outputs to the
