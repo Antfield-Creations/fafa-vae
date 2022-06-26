@@ -26,7 +26,21 @@ VQ-VAE
 - [X] Move pixelcnn sampler into separate callback and class
 - [ ] Implement `get_config` method for custom vq_vae and pixelcnn models
 - [X] Pixelcnn reconstruction callback writing directly to the data bucket
-- [ ] Use kernel size of 3 or 5 on conv layers (some promising preliminary results, needs better checking)
+
+## 2022-06-26
+It appears that the embedding size has a lot to do with the spikes in the learning curve. The latest run with id 
+2022-06-25_12h08m12s used 512 embeddings of size 92 instead of 64 and there still was a spike at epoch 121 but it
+was far less pronounced than in the previous runs. So, I'm reverting back to embeddings size 128 and see how it
+improves matters.
+
+## 2022-06-25
+The last few attempts proved to be quite resistant to my attempts at fixing the loss spikes in the training runs. I
+added an increased before-last encoder/second decoder layer of 192 filters but this only resulted in a giant loss
+spike, jumping from a reconstruction loss of 9.2e-3 to 15.7! These spikes are so large that the model can't recover
+before either the next loss spike or the session has run out of epochs.
+
+Next thing I'm going to try is increasing the "code size"/latent size or embedding size if you will to 96 and
+see if that fixes things.
 
 ## 2022-06-24
 Left the windows to my "lab" open in tilted position last night, when a spectacularly loud rainstorm passed over. The 
