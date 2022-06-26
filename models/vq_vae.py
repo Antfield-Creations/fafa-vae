@@ -1,6 +1,7 @@
 """
 Vector-quantized layer, adapted only for stricter typing from https://keras.io/examples/generative/vq_vae/
 """
+import logging
 from typing import Tuple
 
 import tensorflow as tf
@@ -14,8 +15,10 @@ from models.loaders.config import Config
 
 def get_vq_vae(config: Config) -> keras.Model:
     vq_vae_conf = config['models']['vq_vae']
-    if vq_vae_conf['artifacts']['resume_model'] is not None:
-        return keras.models.load_model(vq_vae_conf['artifacts']['resume_model'])
+    saved_model = vq_vae_conf['artifacts']['resume_model']
+    if saved_model is not None:
+        logging.info(f"Loading saved model {saved_model}")
+        return keras.models.load_model(saved_model)
 
     vq_layer = VectorQuantizer(
         num_embeddings=vq_vae_conf['num_embeddings'],
