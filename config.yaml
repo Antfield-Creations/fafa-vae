@@ -46,7 +46,7 @@ spec:
       epochs: 128
 
       # code book settings
-      latent_size: &ref_latent_size 96
+      latent_size: &ref_latent_size 128
       num_embeddings: 512
 
       # encoder, mirrored decoder
