@@ -24,8 +24,17 @@ VQ-VAE
 - [X] Refactor reconstruction callback so that it can write directly to the data bucket
 - [X] Tweak the latent size, how does it affect the two loss components?
 - [X] Move pixelcnn sampler into separate callback and class
-- [ ] Implement `get_config` method for custom vq_vae and pixelcnn models
 - [X] Pixelcnn reconstruction callback writing directly to the data bucket
+- [ ] Fix the model training loss spikes/collapses
+- [ ] Implement `get_config` method for custom vq_vae and pixelcnn models
+
+## 2022-06-27
+The embedding size definitely is not the culprit. I'm still none the wiser on why the training sessions fail to build a
+consistent learning curve, and it's testing my patience. I'm going to test a couple of things. First, I'm going to start
+using standard ReLU-activated (de)conv layers again, as per the VQ-VAE reference implementation. Secondly, I suspect
+there might be something with my training data. Perhaps the model stumbles over the last batch in the data generator or
+something, SO post https://stackoverflow.com/questions/47824598 hints to something in that direction. There _is_ a batch
+at the end of the data set, but the size of it might throw the model off or something like that.
 
 ## 2022-06-26
 It appears that the embedding size has a lot to do with the spikes in the learning curve. The latest run with id 
