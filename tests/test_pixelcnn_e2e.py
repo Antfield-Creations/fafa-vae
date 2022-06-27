@@ -19,7 +19,8 @@ class PixelCNNTestCase(unittest.TestCase):
         pxl_conf['epochs'] = 1
 
         with TemporaryDirectory() as tempdir:
-            config['models']['vq_vae']['artifacts']['folder'] = tempdir
+            pxl_conf['artifacts']['folder'] = tempdir
+            config['models']['vq_vae']['artifacts']['logs']['folder'] = tempdir
 
             # Load sample data
             img_conf['folder'] = tempdir
