@@ -25,7 +25,7 @@ VQ-VAE
 - [X] Tweak the latent size, how does it affect the two loss components?
 - [X] Move pixelcnn sampler into separate callback and class
 - [X] Pixelcnn reconstruction callback writing directly to the data bucket
-- [ ] Fix the model training loss spikes/collapses
+- [X] Fix the model training loss spikes/collapses
 - [ ] Implement `get_config` method for custom vq_vae and pixelcnn models
 
 ## 2022-06-27
@@ -35,6 +35,12 @@ using standard ReLU-activated (de)conv layers again, as per the VQ-VAE reference
 there might be something with my training data. Perhaps the model stumbles over the last batch in the data generator or
 something, SO post https://stackoverflow.com/questions/47824598 hints to something in that direction. There _is_ a batch
 at the end of the data set, but the size of it might throw the model off or something like that.
+
+Turns out it probably was the leaky ReLU that threw the model off. I ran 2022-06-27_07h31m58s with just the activation
+swapped out for ReLU instead of leaky ReLU and the loss spikes disappeared like magic. The training loss does look a
+little bit different from the ones using the leaky variant - the "leakies" had a much smoother start of the run but
+collapsed, while the standard ReLU one shows the opposite: a rather jagged looking start but a smooth downward curve
+from thereon.
 
 ## 2022-06-26
 It appears that the embedding size has a lot to do with the spikes in the learning curve. The latest run with id 
