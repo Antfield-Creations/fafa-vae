@@ -36,7 +36,7 @@ def get_encoder(config: Config) -> keras.Model:
             strides=conv['strides'],
             padding="same",
         )(encoder_layers)
-        encoder_layers = keras.layers.LeakyReLU()(encoder_layers)
+        encoder_layers = keras.layers.ReLU()(encoder_layers)
 
     encoder = tf.keras.Model(inputs, encoder_layers, name="encoder")
     return encoder

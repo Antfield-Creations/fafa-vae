@@ -34,7 +34,7 @@ def get_decoder(config: Config) -> keras.Model:
             strides=conv['strides'],
             padding="same",
         )(decoder_layers)
-        decoder_layers = keras.layers.LeakyReLU()(decoder_layers)
+        decoder_layers = keras.layers.ReLU()(decoder_layers)
 
     decoder_outputs = keras.layers.Conv2DTranspose(
         filters=img_channels,
