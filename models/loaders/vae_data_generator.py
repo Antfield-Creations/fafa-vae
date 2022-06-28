@@ -44,12 +44,12 @@ class PaddingGenerator(Sequence):
             exclude_tags=config['data']['images']['filter']['exclude'],
         )
 
-        if len(self.img_metadata) <= 1:
+        if len(self.img_metadata) == 0:
             raise ValueError('Combination of orientation, include and exclude filters resulted in empty list')
 
         logging.info(f'Set contains {len(self.img_metadata)} images to train on.')
         # Drop last batch to prune to full batch size batches
-        self.record_indices = list(range(len(self.img_metadata) - 1))
+        self.record_indices = list(range(len(self.img_metadata)))
         random.shuffle(self.record_indices)
 
     def __len__(self) -> int:
