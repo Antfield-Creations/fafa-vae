@@ -40,7 +40,7 @@ spec:
         fit_samples: 256
 
       batch_size: 16
-      learning_rate: 2e-04
+      learning_rate: 1e-04
       # Fewer batches per epoch allows for epochs of no more than a few minutes
       # on older GPU hardware. This can probably be cranked up on newer hardware
       batches_per_epoch: 256
@@ -52,9 +52,6 @@ spec:
 
       # encoder, mirrored decoder
       conv2d:
-        - filters: 16
-          kernel_size: 5
-          strides: 2
         - filters: 32
           kernel_size: 5
           strides: 2
