@@ -28,6 +28,20 @@ VQ-VAE
 - [X] Fix the model training loss spikes/collapses
 - [ ] Implement `get_config` method for custom vq_vae and pixelcnn models
 
+## 2022-07-01
+I'm beginning to doubt whether the 40x40 quantized output will work for this particular dataset. I can't reproduce the
+performance of the best 80x80 model by any 40x40 configuration and I tried quite a few duren the last few days. So, I'm
+going to try and see if I can reproduce the 80x80 model but this time using a version where the encoder output size
+actually matches the code book embedding size. Run 2022-07-01_16h17m19s is the first attempt at re-creating.
+
+## 2022-06-29
+I ran a couple too many runs yesterday so I'm starting to lose track, but the gist is that I haven't quite found the
+correct layering to produce reconstructions with enough detail. It's just a tad too vague. It's artistic, without doubt,
+but some reconstructions take a little bit too much imagination to make out human shapes.
+
+So, today I'm running 2022-06-29_08h51m43s with two extra stride-1 (de)conv layers to see if the model can make more of
+the codes it gets passed from the quantizer.
+
 ## 2022-06-27
 The embedding size definitely is not the culprit. I'm still none the wiser on why the training sessions fail to build a
 consistent learning curve, and it's testing my patience. I'm going to test a couple of things. First, I'm going to start
