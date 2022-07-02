@@ -26,7 +26,13 @@ VQ-VAE
 - [X] Move pixelcnn sampler into separate callback and class
 - [X] Pixelcnn reconstruction callback writing directly to the data bucket
 - [X] Fix the model training loss spikes/collapses
+- [ ] Tune the model to produce reasonable quality reconstructions to progress to PixelCNN stage
 - [ ] Implement `get_config` method for custom vq_vae and pixelcnn models
+
+## 2022-07-02
+The first attempt 2022-07-01_16h17m19s at building a model with sufficient quality using 80x80 outputs didn't fare very
+well. I left out some encoder/decoder layers and although it did still improve at the end of the run, the learning curve
+looks quite erratic. I'll see if expanding the network helps.
 
 ## 2022-07-01
 I'm beginning to doubt whether the 40x40 quantized output will work for this particular dataset. I can't reproduce the
