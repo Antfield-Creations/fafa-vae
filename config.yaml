@@ -40,14 +40,14 @@ spec:
         fit_samples: 256
 
       batch_size: 16
-      learning_rate: 1e-04
+      learning_rate: 3e-04
       # Fewer batches per epoch allows for epochs of no more than a few minutes
       # on older GPU hardware. This can probably be cranked up on newer hardware
       batches_per_epoch: 256
       epochs: 128
 
       # code book settings
-      latent_size: &ref_latent_size 96
+      latent_size: &ref_latent_size 128
       num_embeddings: 512
 
       # encoder, mirrored decoder
@@ -55,15 +55,12 @@ spec:
         - filters: 32
           kernel_size: 5
           strides: 2
-        - filters: 48
-          kernel_size: 5
-          strides: 1
         - filters: 64
           kernel_size: 5
           strides: 2
         - filters: 92
           kernel_size: 5
-          strides: 1
+          strides: 2
         - filters: 128
           kernel_size: 3
           strides: 2
