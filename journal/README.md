@@ -29,6 +29,45 @@ VQ-VAE
 - [ ] Tune the model to produce reasonable quality reconstructions to progress to PixelCNN stage
 - [ ] Implement `get_config` method for custom vq_vae and pixelcnn models
 
+## 2022-07-05
+The costs of this project are starting to scare me a little bit. Just using the bucket is costing me € 5,- _per day_ and
+that's without rent for the VMs. For a hobby art project, this is getting a bit out of hand. One thing I could do is
+swap the bucket for a simpler persistent volume for the metrics logs, I suspect this is the largest offender for the
+bucket usage. I think I'm just going to run with what I have now. It may not be perfect, but I have to look at finishing
+this project in a not-quite-perfect state I'm afraid. I can't seem to replicate the results for the "magical run"
+2022-06-13_09h01m09s, and I don't have the funds nor the resources to do a full hyperparameter search. So, I'll go with
+what's proven to be the next best, do some re-training and move to the PixelCNN stage to actually get some generated
+unseen reconstructions.
+
+One other thing I could do is try and see if I can somehow sample from the magical 2022-06-13_09h01m09s run. If I can
+make that work, then I could just do the second stage on a model that produces the quality I'd wish for.
+
+## 2022-07-04
+Maybe run 2022-06-13_09h01m09s was a lucky fluke or something. I can't seem to reproduce the results so far by any means
+neither on 40x40 nor on 80x80 quantized outputs. 2022-07-01_00h42m54s is the nicest-looking curve so far, but it ended
+prematurely, probably due to the node being pre-empted. Or the node just failed, for once, I don't know. However, I'm
+trying to reproduce at least that run and see if I can coax it to produce anything that remotely resembles "winning but
+unusable" run 2022-06-13_09h01m09s.
+
+I'm taking a closer look at what 2022-06-13_09h01m09s looked like. It was an 80x80 quantized model, with quite a few
+layers. First takeaway: adding more layers may help. The model was unusable because it hat 80x80x128 encoder outputs,
+while the embeddings were defined as sized-64. This is one reason why it's useless to try and run the exact same setup:
+the embedding sizes and encder outputs were mismatched. How this is still able to train? It's because during training of
+the vq-vae first stage, each encoder output is matched to the closest match in the embeddings, no matter what the size
+of the embeddings is. Only when going through the PixelCNN stage, a matmul operation is applied to match all sampled 
+encoder outputs to the embedding size, requiring the last rank encoder output size to match the size of the embeddings.
+
+So, maybe I just need to build larger encoder/decoder models. Also, there's the issue that the encoder and deconder on
+the [Keras example page](https://keras.io/examples/generative/vq_vae/#encoder-and-decoder) don't quite follow the 
+"canonical" [Sonnet implementation](https://github.com/deepmind/sonnet/blob/v1/sonnet/examples/vqvae_example.ipynb),
+which is much more involved, throwing in residual block layers and whatnot. So, this may mean that while the Keras
+example implementation encoder/decoder setup may work well on MNIST digits, it may not work on larger-scale images.
+After all, the encoder and decoder for the Keras example was borrowed from the "standard" VAE architecture, which does
+well on MNIST but fails to scale up to larger sized images!
+
+But, it will be quite a hassle I think to re-implement the encoder and decoder more like the Sonnet one, but it might
+very well be worthwhile.
+
 ## 2022-07-02
 The first attempt 2022-07-01_16h17m19s at building a model with sufficient quality using 80x80 outputs didn't fare very
 well. I left out some encoder/decoder layers and although it did still improve at the end of the run, the learning curve
