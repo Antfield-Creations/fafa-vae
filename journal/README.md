@@ -29,6 +29,109 @@ VQ-VAE
 - [ ] Tune the model to produce reasonable quality reconstructions to progress to PixelCNN stage
 - [ ] Implement `get_config` method for custom vq_vae and pixelcnn models
 
+## 2022-07-09
+I'm trying to see whether I can refactor the pixelcnn data generator for the PixelCNN to work with my misconfigured-yet-
+best-performing model 2022-06-13_09h01m09s. But it's a bunch of abstract reshape operations that is very hard to follow,
+especially once you mess up the dimension size of the encoder output and the embedding size. So, it's fair to say that I
+don't understand how the data generator implementation differs from the encoder-quantizer-decoder computation graph in
+such a way that the data generator cannot work on encoder outputs that differ in dimensionality (on the last axis) from
+the embedding size, while the encoder-quantizer-decoder can.
+
+So, a "healthy" network should work something like this.
+
+### Encoder
+- In: (batch, img_width, img_height, channels)
+- Out: (batch, reduction_width, reduction_height, embedding_size)
+
+### Quantizer
+- In: (batch, reduction_width, reduction_height, embedding_size)
+- Out: (batch, reduction_width, reduction_height, embedding_size)
+
+### Decoder
+- In: (batch, reduction_width, reduction_height, _deviating_size_)
+- Out: (batch, img_width, img_height, channels)
+
+A "size-mismatched" one looks like this: 
+
+### Encoder
+- In: (batch, img_width, img_height, channels)
+- Out: (batch, reduction_width, reduction_height, embedding_size)
+
+### Quantizer
+- In: (batch, reduction_width, reduction_height, _deviating_size_)
+- Out: (batch, reduction_width, reduction_height, embedding_size)
+
+### Decoder
+- In: (batch, reduction_width, reduction_height, embedding_size)
+- Out: (batch, img_width, img_height, channels)
+
+The sole difference being in the _deviating_size_ that does not match the embedding size. So how can this setup train
+successfully in the first place? The answer lies in the quantizer reshaping operations. The first thing the quantizer
+does, is flatten the input shape of the input to size (something, embedding_size). Let's say that it receives a batch of
+2, with 20x20 "reduced-size" width, height at size 64: (2, 20, 20, 64). It would be flattened to:
+
+```python
+import numpy as np
+
+input_shape = (2, 20, 20, 64)
+ones = np.ones(input_shape)
+flattened = np.reshape(ones, (-1, 64))
+flattened.shape
+# (800, 64)
+...
+```
+
+But suppose we flatten it to embedding size 32:
+
+```python
+import numpy as np
+
+input_shape = (2, 20, 20, 64)
+ones = np.ones((2, 20, 20, 64))
+flattened = np.reshape(ones, (-1, 32))
+flattened.shape
+# (1600, 32)
+# So: just double the size from 64 to 32 to fit all the values
+
+# Do quantizer-stuff...
+# get_code_indices(quantizer, flattened)
+...
+# Reshape back to output size
+outputs = np.reshape(flattened, input_shape)
+outputs.shape
+# (2, 20, 20, 64)
+```
+
+So, no problem. As long as the input shape last axis is a multiple of the embedding size, there is no technical
+requirement to have last axis matching encoder output size and embedding sizes. The reshape operation can be thought of
+resulting in doing _two_ lookups in the code book for every input "instance" in the example above.
+
+So how come this doesn't work anymore for the "code book data generator"? Well, first error was to differ in the
+implementation of the reshape operation. The Keras example reshapes to the last axis of the encoder output instead of
+the embedding size, as the quantizer does. This is easily fixed.
+
+```git
+# git diff models/loaders/pixelcnn_data_generator.py
+...
+         encoded_outputs = self.encoder.predict(batch)
+-        flattened = encoded_outputs.reshape(-1, encoded_outputs.shape[-1])
++        embedding_size = self.quantizer.embeddings.shape[0]
++        flattened = encoded_outputs.reshape(-1, embedding_size)
+         codebook_indices = get_code_indices(self.quantizer, flattened)
+...
+```
+
+However, this output shape can now no longer be reshaped into the rows and columns of the encoder output size: it has
+doubled. In order for the indices to be returned, we need to add a dimension to fit this doubling:
+```git
+-        codebook_indices = codebook_indices.numpy().reshape(encoded_outputs.shape[:-1])
++        last_dim = encoded_outputs.shape[-1] // embedding_size
++        codebook_indices = tf.reshape(codebook_indices, encoded_outputs.shape[:-1] + (last_dim,))
+```
+
+Now we have introduced an extra dimension in the training data, but if I'm not mistaken, the PixelCNN should be able to
+handle this. That's for part 2.
+
 ## 2022-07-05
 The costs of this project are starting to scare me a little bit. Just using the bucket is costing me € 5,- _per day_ and
 that's without rent for the VMs. For a hobby art project, this is getting a bit out of hand. One thing I could do is

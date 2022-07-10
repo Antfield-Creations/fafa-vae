@@ -14,7 +14,7 @@ from models.vq_vae import get_vq_vae
 
 
 class DataGeneratorTestCase(unittest.TestCase):
-    def test_output_size(self) -> None:
+    def test_padding_generator(self) -> None:
         config = load_config()
 
         with TemporaryDirectory() as tempdir:
@@ -34,7 +34,7 @@ class DataGeneratorTestCase(unittest.TestCase):
             img_cfg = config['data']['images']
             self.assertEqual(batch[0].shape, (img_cfg['height'], img_cfg['width'], img_cfg['channels']))
 
-    def test_scaling(self) -> None:
+    def test_padding_generator_scaling(self) -> None:
         test_data = np.zeros((1, 24, 24, 3))
 
         with self.subTest('It scales zeros to epsilons'):
@@ -72,5 +72,19 @@ class DataGeneratorTestCase(unittest.TestCase):
             with self.subTest('It generates input data of shape (batch, encoder_cols, encoder_rows)'):
                 data_generator = CodebookGenerator(config, encoder, quantizer)
                 inputs, targets = data_generator[0]
-                expected_batch_shape = (pxl_conf['batch_size'], encoder.output.shape[1], encoder.output.shape[2])
+                expected_batch_shape = (pxl_conf['batch_size'], encoder.output.shape[1], encoder.output.shape[2], 1)
+                self.assertEqual(inputs.shape, expected_batch_shape)
+
+            with self.subTest('It generates PixelCNN input data for differing encoder output and embedding shapes'):
+                vq_vae_conf = config['models']['vq_vae']
+                last_conv_layer = vq_vae_conf['conv2d'][-1]
+                last_conv_layer['filters'] = vq_vae_conf['latent_size'] * 2
+
+                vq_vae = get_vq_vae(config)
+                encoder = vq_vae.get_layer('encoder')
+                quantizer = vq_vae.get_layer('vector_quantizer')
+                data_generator = CodebookGenerator(config, encoder, quantizer)
+                inputs, targets = data_generator[0]
+
+                expected_batch_shape = (pxl_conf['batch_size'], encoder.output.shape[1], encoder.output.shape[2], 2)
                 self.assertEqual(inputs.shape, expected_batch_shape)
