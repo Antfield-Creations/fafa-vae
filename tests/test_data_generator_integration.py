@@ -140,3 +140,10 @@ class DataGeneratorTestCase(unittest.TestCase):
                 assert history is not None
                 last_epoch_loss = history.history.get('loss')[-1]
                 self.assertFalse(np.isnan(last_epoch_loss))
+
+            with self.subTest('It generates a categorical output shape from the input shape'):
+                pixel_cnn = get_pixelcnn(config)
+                num_embeddings = quantizer.embeddings.shape[1]
+                inputs, targets = data_generator[0]
+                outputs = pixel_cnn(inputs)
+                self.assertEqual(outputs.shape, inputs.shape + (num_embeddings,))
