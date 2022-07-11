@@ -93,7 +93,7 @@ spec:
       num_residual_blocks: 4
       num_pixelcnn_layers: 4
 
-      batch_size: 16
+      batch_size: 12
       learning_rate: 3e-04
       batches_per_epoch: 256
       epochs: 128
