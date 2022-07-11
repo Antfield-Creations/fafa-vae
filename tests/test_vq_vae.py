@@ -59,4 +59,4 @@ class VQVAETestCase(unittest.TestCase):
                 codebook_generator = CodebookGenerator(config, encoder, quantizer)
                 inputs, targets = codebook_generator[0]
                 batch_shaped = codes.numpy().reshape(encoded.shape[:-1])
-                self.assertEqual(batch_shaped.shape, inputs.shape)
+                self.assertEqual(batch_shaped.shape, inputs.shape + (1,))
