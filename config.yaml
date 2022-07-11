@@ -103,6 +103,7 @@ spec:
           save_every_epoch: 16
         reconstructions:
           enabled: true
+          save_every_epoch: 16
 
   data:
     images:
