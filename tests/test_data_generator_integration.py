@@ -64,9 +64,7 @@ class DataGeneratorTestCase(unittest.TestCase):
             config['data']['images']['filter']['exclude'] = []
 
             pxl_conf = config['models']['pixelcnn']
-            pxl_conf['batch_size'] = 1
-            pxl_conf['batches_per_epoch'] = 1
-            pxl_conf['epochs'] = 1
+            pxl_conf['batch_size'] = pxl_conf['batches_per_epoch'] = pxl_conf['epochs'] = 1
 
             vq_vae = get_vq_vae(config)
             encoder = vq_vae.get_layer('encoder')
