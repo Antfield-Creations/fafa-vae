@@ -81,6 +81,13 @@ class DataGeneratorTestCase(unittest.TestCase):
                 expected_batch_shape = (pxl_conf['batch_size'], encoder.output.shape[1], encoder.output.shape[2], 1)
                 self.assertEqual(inputs.shape, expected_batch_shape)
 
+            with self.subTest('It generates a categorical output shape from the input shape'):
+                pixel_cnn = get_pixelcnn(config)
+                num_embeddings = quantizer.embeddings.shape[1]
+                inputs, targets = data_generator[0]
+                outputs = pixel_cnn(inputs)
+                self.assertEqual(outputs.shape, inputs.shape + (num_embeddings,))
+
             with self.subTest('It can run the PixelCNN using the "standard" data generator'):
                 pixel_cnn = get_pixelcnn(config)
                 pixel_cnn.compile(
