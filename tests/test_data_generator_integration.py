@@ -115,3 +115,21 @@ class DataGeneratorTestCase(unittest.TestCase):
 
                 expected_batch_shape = (pxl_conf['batch_size'], encoder.output.shape[1], encoder.output.shape[2], 2)
                 self.assertEqual(inputs.shape, expected_batch_shape)
+
+            with self.subTest('It can run the PixelCNN using the resulting "embedding-stacked" data generator'):
+                pixel_cnn = get_pixelcnn(config)
+                pixel_cnn.compile(
+                    optimizer=keras.optimizers.Adam(learning_rate=pxl_conf['learning_rate']),
+                    loss=keras.losses.SparseCategoricalCrossentropy(from_logits=True),
+                    metrics=["accuracy"],
+                )
+                history = pixel_cnn.fit(
+                    x=data_generator,
+                    verbose=1,
+                    batch_size=4,
+                    steps_per_epoch=2,
+                    epochs=1,
+                )
+                assert history is not None
+                last_epoch_loss = history.history.get('loss')[-1]
+                self.assertFalse(np.isnan(last_epoch_loss))
