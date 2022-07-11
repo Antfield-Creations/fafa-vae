@@ -114,6 +114,7 @@ spec:
       channels: 3
       cloud_storage_folder: gs://antfield/FAFA/img
       folder: /mnt/mlops-data-volume/FAFA/img
+      # folder: ~/data/FAFA/img  # Local
       # Scraper resume settings
       scraper:
         first_set: 1
