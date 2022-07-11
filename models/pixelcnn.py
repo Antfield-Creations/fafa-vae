@@ -80,31 +80,27 @@ def get_pixelcnn(config: Config) -> keras.Model:
 
     pixelcnn_inputs = keras.Input(shape=pixelcnn_input_shape, dtype=tf.int32)
     ohe = tf.one_hot(pixelcnn_inputs, config['models']['vq_vae']['num_embeddings'])
-    x = PixelConvLayer(  # noqa
+
+    outputs = PixelConvLayer(  # noqa
         mask_type="A", filters=128, kernel_size=7, activation="relu", padding="same"  # type: ignore
     )(ohe)
 
     for _ in range(config['models']['pixelcnn']['num_residual_blocks']):
-        x = ResidualBlock(filters=128)(x)  # noqa
+        outputs = ResidualBlock(filters=128)(outputs)  # noqa
 
     for _ in range(config['models']['pixelcnn']['num_pixelcnn_layers']):
-        x = PixelConvLayer(     # noqa
-            mask_type="B",      # type: ignore
-            filters=128,        # type: ignore
-            kernel_size=1,      # type: ignore
-            strides=1,          # type: ignore
-            activation="relu",  # type: ignore
-            padding="valid",    # type: ignore
-        )(x)
+        outputs = PixelConvLayer(     # noqa
+            mask_type="B", filters=128, kernel_size=1, strides=1, activation="relu", padding="valid"  # type: ignore
+        )(outputs)
 
-    out = keras.layers.Conv2D(
+    outputs = keras.layers.Conv2D(
         filters=config['models']['vq_vae']['num_embeddings'],
         kernel_size=1,
         strides=1,
         padding="valid"
-    )(x)
+    )(outputs)
 
-    pixel_cnn = keras.Model(pixelcnn_inputs, out, name="pixel_cnn")
+    pixel_cnn = keras.Model(pixelcnn_inputs, outputs, name="pixel_cnn")
     return pixel_cnn
 
 
