@@ -15,14 +15,10 @@ class PixelCNNTestCase(unittest.TestCase):
             config['models']['vq_vae']['artifacts']['logs']['folder'] = tempdir
             img_conf = config['data']['images']
 
-        pxl_conf = config['models']['pixelcnn']
-        pxl_conf['batch_size'] = 1
-        pxl_conf['batches_per_epoch'] = 1
-        pxl_conf['epochs'] = 1
+            pxl_conf = config['models']['pixelcnn']
+            pxl_conf['batch_size'] = pxl_conf['batches_per_epoch'] = pxl_conf['epochs'] = 1
 
-        with TemporaryDirectory() as tempdir:
             pxl_conf['artifacts']['folder'] = tempdir
-            config['models']['vq_vae']['artifacts']['logs']['folder'] = tempdir
 
             # Load sample data
             img_conf['folder'] = tempdir
