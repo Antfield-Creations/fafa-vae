@@ -66,7 +66,12 @@ class DataGeneratorTestCase(unittest.TestCase):
             pxl_conf = config['models']['pixelcnn']
             pxl_conf['batch_size'] = pxl_conf['batches_per_epoch'] = pxl_conf['epochs'] = 1
 
+            # compose a fresh, untrained VQ-VAE model and save it
             vq_vae = get_vq_vae(config)
+            save_path = os.path.join(tempdir, 'vq_vae')
+            vq_vae.save(save_path)
+            pxl_conf['input_vq_vae'] = save_path
+
             encoder = vq_vae.get_layer('encoder')
             quantizer = vq_vae.get_layer('vector_quantizer')
 
@@ -81,7 +86,9 @@ class DataGeneratorTestCase(unittest.TestCase):
                 last_conv_layer = vq_vae_conf['conv2d'][-1]
                 last_conv_layer['filters'] = vq_vae_conf['latent_size'] * 2
 
+                # compose a fresh, untrained VQ-VAE model and save it
                 vq_vae = get_vq_vae(config)
+                vq_vae.save(save_path)
                 encoder = vq_vae.get_layer('encoder')
                 quantizer = vq_vae.get_layer('vector_quantizer')
                 data_generator = CodebookGenerator(config, encoder, quantizer)
