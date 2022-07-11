@@ -68,7 +68,15 @@ def get_pixelcnn(config: Config) -> keras.Model:
     pxl_conf = config['models']['pixelcnn']
     vq_vae = keras.models.load_model(pxl_conf['input_vq_vae'])
     encoder = vq_vae.get_layer('encoder')
-    pixelcnn_input_shape = encoder.output_shape[1:-1]
+    quantizer = vq_vae.get_layer('vector_quantizer')
+
+    embedding_size = quantizer.embeddings.shape[0]
+    assert encoder.output_shape[-1] % embedding_size == 0, \
+        f"Encoder output dimension must be a multiple of the embedding size, got {encoder.output_shape[-1]} " \
+        f"vs {embedding_size}"
+
+    embedding_stack = encoder.output_shape[-1] // embedding_size
+    pixelcnn_input_shape = encoder.output_shape[1:-1] + (embedding_stack,)
 
     pixelcnn_inputs = keras.Input(shape=pixelcnn_input_shape, dtype=tf.int32)
     ohe = tf.one_hot(pixelcnn_inputs, config['models']['vq_vae']['num_embeddings'])
