@@ -109,6 +109,7 @@ class DataGeneratorTestCase(unittest.TestCase):
                 vq_vae.save(save_path)
                 encoder = vq_vae.get_layer('encoder')
                 quantizer = vq_vae.get_layer('vector_quantizer')
+
                 data_generator = CodebookGenerator(config, encoder, quantizer)
                 inputs, targets = data_generator[0]
 
