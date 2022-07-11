@@ -10,8 +10,10 @@ from models.loaders.data_provision import provision
 
 class PixelCNNTestCase(unittest.TestCase):
     def test_model(self) -> None:
-        config = load_config()
-        img_conf = config['data']['images']
+        with TemporaryDirectory() as tempdir:
+            config = load_config(run_id='dummy', artifact_folder=tempdir)
+            config['models']['vq_vae']['artifacts']['logs']['folder'] = tempdir
+            img_conf = config['data']['images']
 
         pxl_conf = config['models']['pixelcnn']
         pxl_conf['batch_size'] = 1
