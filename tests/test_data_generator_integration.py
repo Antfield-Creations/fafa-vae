@@ -57,7 +57,7 @@ class DataGeneratorTestCase(unittest.TestCase):
             shutil.copytree('tests/data', img_dir)
             export_metadata(tempdir)
 
-            # Force-include everything
+            # Force-include all images
             config['data']['images']['folder'] = tempdir
             config['data']['images']['filter']['orientation'] = 'any'
             config['data']['images']['filter']['include'] = None
