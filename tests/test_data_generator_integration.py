@@ -10,6 +10,7 @@ from models.loaders.config import load_config
 from models.loaders.pixelcnn_data_generator import CodebookGenerator
 from models.loaders.vae_data_generator import PaddingGenerator, scale
 from models.loaders.metadata import export_metadata
+from models.pixelcnn import get_pixelcnn
 from models.vq_vae import get_vq_vae
 
 
@@ -49,7 +50,9 @@ class DataGeneratorTestCase(unittest.TestCase):
 
     def test_pixelcnn_data_generator(self) -> None:
         with TemporaryDirectory() as tempdir:
-            config = load_config()
+            # Use temporary directory to prevent polluting the bucket with test run data
+            config = load_config(artifact_folder=tempdir)
+            config['models']['vq_vae']['artifacts']['logs']['folder'] = tempdir
             img_dir = os.path.join(tempdir, 'set-1')
             shutil.copytree('tests/data', img_dir)
             export_metadata(tempdir)
