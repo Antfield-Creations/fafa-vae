@@ -100,6 +100,9 @@ spec:
 
       artifacts:
         folder: gs://antfield/FAFA/artifacts/{run_id}
+        # Set to empty when training from scratch, otherwise specify a model
+        # checkpoint location to retrain
+        resume_model:
         checkpoints:
           save_every_epoch: 16
         reconstructions:
