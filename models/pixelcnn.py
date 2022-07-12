@@ -96,6 +96,11 @@ class ResidualBlock(keras.layers.Layer):
 
 def get_pixelcnn(config: Config) -> keras.Model:
     pxl_conf = config['models']['pixelcnn']
+    saved_model = pxl_conf['artifacts']['resume_model']
+    if saved_model is not None:
+        logging.info(f"Loading saved model {saved_model}")
+        return keras.models.load_model(saved_model)
+
     vq_vae = keras.models.load_model(pxl_conf['input_vq_vae'])
     encoder = vq_vae.get_layer('encoder')
     quantizer = vq_vae.get_layer('vector_quantizer')
