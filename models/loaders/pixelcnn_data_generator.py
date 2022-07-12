@@ -1,6 +1,6 @@
 from typing import Optional, Tuple
 
-import tensorflow as tf
+from numpy import ndarray
 from tensorflow import keras
 
 from models.loaders.config import Config
@@ -19,9 +19,9 @@ class CodebookGenerator(PaddingGenerator):
             f"Encoder output dimension must be a multiple of the embedding size, got {encoder.output_shape[-1]} " \
             f"vs {self.embedding_size}"
 
-        self.last_dim = encoder.output_shape[-1] // self.embedding_size
+        self.embedding_stack_size = encoder.output_shape[-1] // self.embedding_size
 
-    def __getitem__(self, index: Optional[int] = None) -> Tuple[tf.Tensor, tf.Tensor]:
+    def __getitem__(self, index: Optional[int] = None) -> Tuple[ndarray, ndarray]:
         """
         Fetches codes as indices from the code book for a particular batch of input images.
         These codebook codes act as both the input and reconstruction target for the pixelcnn.
@@ -34,8 +34,11 @@ class CodebookGenerator(PaddingGenerator):
         batch = super(CodebookGenerator, self).__getitem__(index)
         encoded_outputs = self.encoder.predict(batch)
         flattened = encoded_outputs.reshape(-1, self.embedding_size)
-        codebook_indices = get_code_indices(self.quantizer, flattened)
-        codebook_indices = tf.reshape(codebook_indices, encoded_outputs.shape[:-1] + (self.last_dim,))
+        codebook_indices_tensor = get_code_indices(self.quantizer, flattened)
+        codebook_indices: ndarray = codebook_indices_tensor.numpy()
+        codebook_indices = codebook_indices.reshape(
+            encoded_outputs.shape[:-1] + (self.embedding_stack_size,)
+        )
 
         # Return the same data for inputs and targets
         return codebook_indices, codebook_indices
