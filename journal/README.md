@@ -29,6 +29,22 @@ VQ-VAE
 - [ ] Tune the model to produce reasonable quality reconstructions to progress to PixelCNN stage
 - [ ] Implement `get_config` method for custom vq_vae and pixelcnn models
 
+## 2022-07-12
+Writing out the problem in the previous journal entry allowed me to tackle the problem. The PixelCNN is perfectly able
+to train on encodings that have one rank in the tensor extra. It's just that the model must be made aware of it to 
+squelch warnings, but otherwise it appears to train fine. Except for the part where the model runs out of memory. There
+appears to be some kind of GPU memory spike but I can't see where. It looks like a memory leak, but when I inspect the 
+GPU memory usage, it doesn't climb. Just suddenly, when training on batch size 12, it drops an OOM and crashes somewhere
+at the end of epoch 8. Nothing special happens at epoch 8, but when run at a batch size of 16, it crashes with an OOM at
+around epoch 6, I don't quite remember. 
+
+At first I thought it had something to do with the data loader returning TensorFlow tensors instead of Numpy 
+n-dimensional arrays, but this is not the case. It crashes regardless. I'll try running on smaller batches first and see
+how far I can push it.
+
+At a batch size of size 8, the run at least reaches the first checkpointing operation, but I haven't implemented this
+properly yet. Still WIP.
+
 ## 2022-07-09
 I'm trying to see whether I can refactor the pixelcnn data generator for the PixelCNN to work with my misconfigured-yet-
 best-performing model 2022-06-13_09h01m09s. But it's a bunch of abstract reshape operations that is very hard to follow,
