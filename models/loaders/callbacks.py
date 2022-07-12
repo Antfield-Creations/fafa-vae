@@ -78,7 +78,7 @@ class CustomModelCheckpointSaver(keras.callbacks.Callback):
 
     def on_epoch_end(self, epoch: int, logs: dict = None) -> None:
         """
-        Saves encoder and decoder sub-models on a given epoch interval
+        Saves (sub)-models on a given epoch interval.
 
         :param epoch: the current finished epoch number
         :param logs: dictionary of epoch logging
