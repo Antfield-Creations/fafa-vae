@@ -78,6 +78,15 @@ class ResidualBlock(keras.layers.Layer):
             filters=filters, kernel_size=1, activation="relu"
         )
 
+    def get_config(self) -> dict:
+        config: dict = super().get_config()
+        config.update({
+            'conv1': self.conv1,
+            'pixel_conv': self.pixel_conv,
+            'conv2': self.conv2,
+        })
+        return config
+
     def call(self, inputs: tf.Tensor) -> tf.Tensor:
         x = self.conv1(inputs)
         x = self.pixel_conv(x)  # noqa
