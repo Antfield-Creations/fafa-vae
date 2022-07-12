@@ -89,7 +89,11 @@ class CustomModelCheckpointSaver(keras.callbacks.Callback):
             return
 
         epoch_folder = os.path.join(self.checkpoint_folder, f'epoch-{epoch + 1}')
-        self.model.get_layer(self.model_name).save(filepath=os.path.join(epoch_folder, self.model_name))
+
+        if self.model_name == 'vq_vae':
+            self.model.get_layer('vq_vae').save(filepath=os.path.join(epoch_folder, self.model_name))
+        else:
+            self.model.save(filepath=os.path.join(epoch_folder, self.model_name))
 
 
 class PixelCNNReconstructionSaver(keras.callbacks.Callback):
