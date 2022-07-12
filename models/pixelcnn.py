@@ -1,4 +1,5 @@
-from typing import Optional
+import logging
+from typing import Optional, Tuple
 
 import numpy as np
 import tensorflow as tf
@@ -18,20 +19,40 @@ class PixelConvLayer(layers.Layer):
         self.conv = layers.Conv2D(**kwargs)
         self.mask: Optional[Tensor] = None
 
-    def build(self, input_shape: tuple) -> None:
-        # Build the conv2d layer to initialize kernel variables
-        self.conv.build(input_shape)
-        kernel_shape = self.conv.kernel.shape
+    @classmethod
+    def generate_mask(cls, kernel_shape: Tuple[int, int, int], mask_type: str) -> tf.Tensor:
         mask = np.zeros(shape=kernel_shape)
 
         # Use the initialized kernel to create the mask
         mask[: kernel_shape[0] // 2, ...] = 1.0
         mask[kernel_shape[0] // 2, : kernel_shape[1] // 2, ...] = 1.0
 
-        if self.mask_type == "B":
+        if mask_type == "B":
             mask[kernel_shape[0] // 2, kernel_shape[1] // 2, ...] = 1.0
 
-        self.mask = tf.convert_to_tensor(mask, dtype=float32)
+        mask_tensor = tf.convert_to_tensor(mask, dtype=float32)
+        return mask_tensor
+
+    @classmethod
+    def from_config(cls, config: dict) -> 'PixelConvLayer':
+        instance = cls(**config)
+        setattr(instance, 'mask', cls.generate_mask(instance.kernel_shape, instance.mask_type))
+        return instance
+
+    def get_config(self) -> dict:
+        config: dict = super().get_config()
+        config.update({
+            'mask_type': self.mask_type,
+            'conv': self.conv,
+        })
+
+        return config
+
+    def build(self, input_shape: tuple) -> None:
+        # Build the conv2d layer to initialize kernel variables
+        self.conv.build(input_shape)
+        kernel_shape = self.conv.kernel.shape
+        self.mask = PixelConvLayer.generate_mask(kernel_shape, self.mask_type)
 
     def call(self, inputs: tf.Tensor) -> tf.Tensor:
         self.conv.kernel.assign(self.conv.kernel * self.mask)
