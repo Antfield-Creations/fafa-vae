@@ -28,6 +28,8 @@ class PixelCNNTestCase(unittest.TestCase):
             # use the model for training session
             img_conf['filter']['exclude'] = []
             pxl_conf['artifacts']['reconstructions']['enabled'] = False
+            pxl_conf['artifacts']['folder'] = tempdir
+            pxl_conf['artifacts']['checkpoints']['save_every_epoch'] = 1
             history = train_pixelcnn.train(config)
 
             with self.subTest('The loss is a valid float'):
