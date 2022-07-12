@@ -1,3 +1,4 @@
+import os.path
 import unittest
 
 import numpy as np
@@ -36,3 +37,13 @@ class PixelCNNTestCase(unittest.TestCase):
                 assert history is not None
                 last_epoch_loss = history.history.get('loss')[-1]
                 self.assertFalse(np.isnan(last_epoch_loss))
+
+            with self.subTest('It stores a saved model'):
+                checkpoint_location = os.path.join(tempdir, 'checkpoints', 'epoch-1', 'pixelcnn')
+                self.assertTrue(
+                    os.path.isdir(checkpoint_location)
+                )
+
+            with self.subTest('It is able to resume training using a saved model'):
+                pxl_conf['artifacts']['resume_model'] = checkpoint_location
+                train_pixelcnn.train(config)
