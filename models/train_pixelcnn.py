@@ -1,3 +1,5 @@
+import logging
+
 from tensorflow import keras
 from tensorflow.keras import layers  # noqa
 from tensorflow.keras.callbacks import History  # noqa
@@ -25,6 +27,7 @@ def train(config: Config) -> History:
         loss=keras.losses.SparseCategoricalCrossentropy(from_logits=True),
         metrics=["accuracy"],
     )
+    logging.info('Compiled pixelcnn model')
 
     logs_folder = config['models']['vq_vae']['artifacts']['logs']['folder']
     tensorboard_cb = tensorboard_callback(artifacts_folder=logs_folder)
