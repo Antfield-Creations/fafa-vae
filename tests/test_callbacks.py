@@ -96,7 +96,7 @@ class CallbacksTestCase(unittest.TestCase):
 
             pixelcnn = get_pixelcnn(config)
 
-            reconstructor = PixelCNNReconstructionSaver(config, vq_vae.get_layer('decoder'))
+            reconstructor = PixelCNNReconstructionSaver(config, vq_vae)
             # Normally, the model is passed to the callback object using history.fit()
             # but we'll inject it here directly to skip having to train
             setattr(reconstructor, 'model', pixelcnn)
