@@ -72,6 +72,7 @@ class CallbacksTestCase(unittest.TestCase):
 
             vq_vae_conf = config['models']['vq_vae']
             vq_vae_conf['latent_size'] = 8
+
             # reduce from 640x640 to 5x5
             vq_vae_conf['conv2d'] = [
                 {'filters': 16, 'kernel_size': 3, 'strides': 2},
