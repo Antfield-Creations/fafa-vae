@@ -6,6 +6,7 @@ from typing import Union
 import numpy as np
 from google.cloud.storage.blob import Blob  # noqa
 from google.cloud.storage.bucket import Bucket  # noqa
+import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras.callbacks import TensorBoard  # noqa
 
@@ -97,14 +98,15 @@ class CustomModelCheckpointSaver(keras.callbacks.Callback):
 
 
 class PixelCNNReconstructionSaver(keras.callbacks.Callback):
-    def __init__(self, config: Config, decoder: keras.Model):
+    def __init__(self, config: Config, vq_vae: keras.Model):
         self.pxl_conf = config['models']['pixelcnn']
         self.epoch_interval = self.pxl_conf['artifacts']['reconstructions']['save_every_epoch']
 
         artifact_folder = self.pxl_conf['artifacts']['folder']
         self.reconstructions_folder = os.path.join(artifact_folder, 'reconstructions')
 
-        self.decoder = decoder
+        self.quantizer = vq_vae.get_layer('vector_quantizer')
+        self.decoder = vq_vae.get_layer('decoder')
 
     def on_epoch_end(self, epoch: int, logs: dict = None) -> None:
         """
@@ -134,5 +136,17 @@ class PixelCNNReconstructionSaver(keras.callbacks.Callback):
 
             logging.info(f'Generated row {row + 1} of {rows}')
 
-        images = self.decoder(priors)
+        # Map the embedding indices back to their values
+        num_embeddings = self.quantizer.embeddings.shape[1]
+        priors_ohe = tf.one_hot(priors.astype("int32"), num_embeddings).numpy()
+        quantized = tf.matmul(
+            priors_ohe.astype("float32"), self.quantizer.embeddings, transpose_b=True
+        )
+
+        # Because we reshape the quantized output, the embedding stack indices are
+        # automatically concatenated back into the correct decoder input shape
+        decoder_input_shape = (-1, *(self.decoder.input_shape[1:]))
+        quantized = tf.reshape(quantized, decoder_input_shape)
+
+        images = self.decoder.predict(quantized)
         save_reconstructions(self.reconstructions_folder, images, epoch)
