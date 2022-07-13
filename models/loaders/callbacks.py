@@ -120,16 +120,17 @@ class PixelCNNReconstructionSaver(keras.callbacks.Callback):
 
         mini_sampler = get_pixelcnn_sampler(self.model)
         priors = np.zeros(shape=(self.pxl_conf['batch_size'],) + self.model.input_shape[1:])
-        batch, rows, cols = priors.shape
+        batch, rows, cols, embedding_stack_size = priors.shape
 
         # Iterate over the priors because generation has to be done sequentially pixel by pixel.
         for row in range(rows):
             for col in range(cols):
-                # Feed the whole array and retrieving the pixel value probabilities for the next
-                # pixel.
-                probs = mini_sampler.predict(priors, verbose=0)
-                # Use the probabilities to pick pixel values and append the values to the priors.
-                priors[:, row, col] = probs[:, row, col]
+                for embedding in range(embedding_stack_size):
+                    # Feed the whole array and retrieving the pixel value probabilities for the next
+                    # pixel.
+                    probs = mini_sampler.predict(priors, verbose=0)
+                    # Use the probabilities to pick pixel values and append the values to the priors.
+                    priors[:, row, col, embedding] = probs[:, row, col, embedding]
 
             logging.info(f'Generated row {row + 1} of {rows}')
 
