@@ -25,15 +25,20 @@ def get_bucket(blob_url: str) -> Bucket:
     return bucket
 
 
-def archive_scripts(config: Config) -> None:
+def archive_scripts(config: Config, model_name: str) -> None:
     """
     # Archive all config and modules to artifacts folder
 
-    :param config: models.loaders.load_config returned instance
+    :param config:      models.loaders.load_config returned instance
+    :param model_name:  name of the model to save scripts for, necessary to look up the target artifact folder
 
     :return: None
     """
-    artifact_folder = os.path.join(str(config['models']['vq_vae']['artifacts']['folder']), 'scripts')
+    if model_name not in config['models']:
+        raise KeyError(f'No known target artifact folder for model {model_name}. Add configuration for your model to'
+                       'a config.yaml')
+
+    artifact_folder = os.path.join(str(config['models'][model_name]['artifacts']['folder']), 'scripts')
     models_src = os.path.dirname(os.path.realpath(__file__))
     root_dir = os.path.join(models_src, '..', '..')
 
