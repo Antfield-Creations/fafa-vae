@@ -3,7 +3,6 @@ import shutil
 import unittest
 from tempfile import TemporaryDirectory
 
-import tensorflow as tf
 from PIL import Image
 from google.cloud.storage.blob import Blob  # noqa
 
@@ -70,17 +69,33 @@ class CallbacksTestCase(unittest.TestCase):
     def test_pixelcnn_local_reconstruction_sampler(self) -> None:
         with TemporaryDirectory() as tempdir:
             config = load_config(run_id='dummy', artifact_folder=tempdir)
+
+            vq_vae_conf = config['models']['vq_vae']
+            vq_vae_conf['latent_size'] = 8
+            # reduce from 640x640 to 5x5
+            vq_vae_conf['conv2d'] = [
+                {'filters': 16, 'kernel_size': 3, 'strides': 2},
+                {'filters': 16, 'kernel_size': 3, 'strides': 2},
+                {'filters': 16, 'kernel_size': 3, 'strides': 2},
+                {'filters': 16, 'kernel_size': 3, 'strides': 2},
+                {'filters': 16, 'kernel_size': 3, 'strides': 2},
+                {'filters': 16, 'kernel_size': 3, 'strides': 2},
+                {'filters': 16, 'kernel_size': 3, 'strides': 2},
+            ]
+
+            # Save an untrained model
+            vq_vae = get_vq_vae(config)
+            save_path = os.path.join(tempdir, 'vq_vae')
+            vq_vae.save(save_path)
+
             pxl_conf = config['models']['pixelcnn']
-            pxl_conf['input_vq_vae'] = 'gs://antfield/test/small_output_vqvae/vq_vae'
+            pxl_conf['input_vq_vae'] = save_path
             pxl_conf['artifacts']['reconstructions']['save_every_epoch'] = 1
             pxl_conf['artifacts']['folder'] = tempdir
 
             pixelcnn = get_pixelcnn(config)
 
-            def dummy_decoder(code: tf.Tensor) -> tf.Tensor:
-                return tf.expand_dims(code, -1)
-
-            reconstructor = PixelCNNReconstructionSaver(config, dummy_decoder)
+            reconstructor = PixelCNNReconstructionSaver(config, vq_vae.get_layer('decoder'))
             # Normally, the model is passed to the callback object using history.fit()
             # but we'll inject it here directly to skip having to train
             setattr(reconstructor, 'model', pixelcnn)
