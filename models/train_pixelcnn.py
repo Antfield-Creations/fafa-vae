@@ -49,6 +49,6 @@ def train(config: Config) -> History:
     )
 
     # Archive current scripts and config used for the session
-    archive_scripts(config)
+    archive_scripts(config, 'pixelcnn')
 
     return history

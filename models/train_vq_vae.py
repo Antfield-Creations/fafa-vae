@@ -64,5 +64,5 @@ def train(config: Config) -> Optional[History]:
         callbacks=[tensorboard_cb, image_sampler, checkpoint_saver],
     )
 
-    archive_scripts(config)
+    archive_scripts(config, 'vq_vae')
     return history
