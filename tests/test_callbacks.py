@@ -103,4 +103,11 @@ class CallbacksTestCase(unittest.TestCase):
             reconstructor.on_epoch_end(epoch=0, logs={})
 
             with self.subTest(f'It generates all images of the batch size {pxl_conf["batch_size"]}'):
-                self.assertTrue(os.path.isfile(os.path.join(tempdir, 'reconstructions', 'epoch-1-1.png')))
+                expected_output_path = os.path.join(tempdir, 'reconstructions', 'epoch-1-1.png')
+                self.assertTrue(os.path.isfile(expected_output_path))
+
+            with self.subTest('It creates a three-channel image of the same width and height as the input images'):
+                saved_img = Image.open(expected_output_path)
+                self.assertEqual(saved_img.getbands(), ('R', 'G', 'B'))
+                img_cfg = config['data']['images']
+                self.assertTupleEqual(saved_img.size, (img_cfg['width'], img_cfg['height']))
