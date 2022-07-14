@@ -122,7 +122,6 @@ class VQVAETrainer(keras.models.Model):
             raise ValueError('Vector-quantized variational auto-encoders require a variance setting.\n'
                              'Please pass a config dict having `models.vq_vae.train_variance.')
         self.train_variance = config['models']['vq_vae']['train_variance']
-        self.latent_dim = config['models']['vq_vae']['latent_size']
         self.num_embeddings = config['models']['vq_vae']['num_embeddings']
 
         self.vq_vae = get_vq_vae(config)

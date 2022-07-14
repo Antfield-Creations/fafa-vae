@@ -57,6 +57,6 @@ class VQVAETestCase(unittest.TestCase):
 
             with self.subTest('Which is fully shape-compatible with the codebook data generator'):
                 codebook_generator = CodebookGenerator(config, encoder, quantizer)
-                inputs, targets = codebook_generator[0]
+                inputs, _ = codebook_generator[0]
                 batch_shaped = codes.numpy().reshape(encoded.shape[:-1])
                 self.assertEqual(batch_shaped.shape + (1,), inputs.shape)

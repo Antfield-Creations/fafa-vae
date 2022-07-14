@@ -77,14 +77,14 @@ class DataGeneratorTestCase(unittest.TestCase):
 
             with self.subTest('It generates input data of shape (batch, encoder_cols, encoder_rows)'):
                 data_generator = CodebookGenerator(config, encoder, quantizer)
-                inputs, targets = data_generator[0]
+                inputs, _ = data_generator[0]
                 expected_batch_shape = (pxl_conf['batch_size'], encoder.output.shape[1], encoder.output.shape[2], 1)
                 self.assertEqual(inputs.shape, expected_batch_shape)
 
             with self.subTest('It generates a categorical output shape from the input shape'):
                 pixel_cnn = get_pixelcnn(config)
                 num_embeddings = quantizer.embeddings.shape[1]
-                inputs, targets = data_generator[0]
+                inputs, _ = data_generator[0]
                 outputs = pixel_cnn(inputs)
                 self.assertEqual(outputs.shape, inputs.shape + (num_embeddings,))
 
@@ -118,7 +118,7 @@ class DataGeneratorTestCase(unittest.TestCase):
                 quantizer = vq_vae.get_layer('vector_quantizer')
 
                 data_generator = CodebookGenerator(config, encoder, quantizer)
-                inputs, targets = data_generator[0]
+                inputs, _ = data_generator[0]
 
                 expected_batch_shape = (pxl_conf['batch_size'], encoder.output.shape[1], encoder.output.shape[2], 2)
                 self.assertEqual(inputs.shape, expected_batch_shape)
@@ -144,6 +144,6 @@ class DataGeneratorTestCase(unittest.TestCase):
             with self.subTest('It generates a categorical output shape from the input shape'):
                 pixel_cnn = get_pixelcnn(config)
                 num_embeddings = quantizer.embeddings.shape[1]
-                inputs, targets = data_generator[0]
+                inputs, _ = data_generator[0]
                 outputs = pixel_cnn(inputs)
                 self.assertEqual(outputs.shape, inputs.shape + (num_embeddings,))
