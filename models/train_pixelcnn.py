@@ -24,12 +24,11 @@ def train(config: Config) -> History:
     pixel_cnn = get_pixelcnn(config)
     pixel_cnn.compile(
         optimizer=keras.optimizers.Adam(learning_rate=pxl_conf['learning_rate']),
-        loss=keras.losses.SparseCategoricalCrossentropy(from_logits=True),
         metrics=["accuracy"],
     )
     logging.info('Compiled pixelcnn model')
 
-    logs_folder = config['models']['vq_vae']['artifacts']['logs']['folder']
+    logs_folder = pxl_conf['artifacts']['logs']['folder']
     tensorboard_cb = tensorboard_callback(artifacts_folder=logs_folder)
     checkpoint_saver = CustomModelCheckpointSaver(config, 'pixelcnn')
 
