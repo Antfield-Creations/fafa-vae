@@ -35,7 +35,8 @@ A large hurdle is out of the way - I refactored the PixelCNN implementation for 
 enthousiastic about it. The first non-OOM training session I'm running takes forever, because I'm generating sampled 
 reconstruction images every 16th epoch. Since the model uses 80x80x2 PixelCNN inputs/outputs, the process of generating
 a handful of sample reconstructions takes a whopping 2 hours. This, over the course of 128 epochs takes more time than
-the training itself.
+the training itself. After 21 hours of training, it reached 80 epochs * 256 batches/epoch of batch size 8, so 20580
+steps.
 
 Secondly, the model accuracy bottoms out at about 77%. This means it gets - on average - every fourth embedding index
 wrong, resulting in, for a change, indecipherable blobs of mangled human. I've used 6 conv blocks and 6 res blocks, so
@@ -43,7 +44,11 @@ I feel that it should get _somewhere_, but that somewhere should be better than 
 
 First thing I'm going to do is link the reconstruction sampler to the number of epochs, so that the sampling happens 
 only at the end of the run. Next, I'm going to look at some other PixelCNN implementations that operate on realistic
-images (so no MNIST for crying out loud) to see what a decent PixelCNN model layout looks like. 
+images (so no MNIST for crying out loud) to see what a decent PixelCNN model layout looks like.
+
+I just learned about https://www.tensorflow.org/probability/api_docs/python/tfp/distributions/PixelCNN. It turns out I
+don't have to implement my own PixelCNN, I can just use the tensorflow-probability provided one. Since that is already
+in my libs, I'll give it a go.
 
 ## 2022-07-12
 Writing out the problem in the previous journal entry allowed me to tackle the problem. The PixelCNN is perfectly able
