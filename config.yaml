@@ -90,13 +90,13 @@ spec:
         gs://antfield/FAFA/artifacts/2022-06-13_09h01m09s/checkpoints/epoch-128/vq_vae/
         # Fix: use 128-size model compatible with codebook listed above
         # gs://antfield/FAFA/artifacts/2022-06-22_14h53m09s/checkpoints/epoch-48/vq_vae/
-      num_residual_blocks: 4
-      num_pixelcnn_layers: 4
+      num_residual_blocks: 6
+      num_pixelcnn_layers: 6
 
       batch_size: 8
       learning_rate: 3e-04
       batches_per_epoch: 256
-      epochs: 128
+      epochs: &ref_epochs 128
 
       artifacts:
         folder: gs://antfield/FAFA/artifacts/{run_id}
@@ -107,7 +107,7 @@ spec:
           save_every_epoch: 16
         reconstructions:
           enabled: true
-          save_every_epoch: 16
+          save_every_epoch: *ref_epochs
 
   data:
     images:
