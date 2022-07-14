@@ -31,12 +31,13 @@ def get_pixelcnn(config: Config) -> keras.Model:
     embedding_stack_size = encoder.output_shape[-1] // embedding_size
     pixelcnn_input_shape = encoder.output_shape[1:-1] + (embedding_stack_size,)
 
-    pixelcnn_inputs = keras.Input(shape=pixelcnn_input_shape, dtype=tf.int32)
+    pixelcnn_inputs = keras.Input(shape=pixelcnn_input_shape, dtype=tf.float32)
     dist = tfd.PixelCNN(
         image_shape=pixelcnn_input_shape,
         num_resnet=pxl_conf['num_residual_blocks'],
         low=0,
         high=num_embeddings,
+        dtype=tf.float32,
         name='pixelcnn'
     )
     log_prob = dist.log_prob(pixelcnn_inputs)
