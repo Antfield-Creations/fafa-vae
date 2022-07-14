@@ -117,15 +117,24 @@ def get_pixelcnn(config: Config) -> keras.Model:
     ohe = tf.one_hot(pixelcnn_inputs, config['models']['vq_vae']['num_embeddings'])
 
     outputs = PixelConvLayer(  # noqa
-        mask_type="A", filters=128, kernel_size=7, activation="relu", padding="same"  # type: ignore
+        mask_type="A",
+        filters=pxl_conf['num_filters'],
+        kernel_size=7,      # type: ignore
+        activation="relu",  # type: ignore
+        padding="same"      # type: ignore
     )(ohe)
 
     for _ in range(config['models']['pixelcnn']['num_residual_blocks']):
-        outputs = ResidualBlock(filters=128)(outputs)  # noqa
+        outputs = ResidualBlock(filters=pxl_conf['num_filters'])(outputs)  # noqa
 
     for _ in range(config['models']['pixelcnn']['num_pixelcnn_layers']):
         outputs = PixelConvLayer(     # noqa
-            mask_type="B", filters=128, kernel_size=1, strides=1, activation="relu", padding="valid"  # type: ignore
+            mask_type="B",
+            filters=pxl_conf['num_filters'],
+            kernel_size=1,      # type: ignore
+            strides=1,          # type: ignore
+            activation="relu",  # type: ignore
+            padding="valid"     # type: ignore
         )(outputs)
 
     outputs = keras.layers.Conv2D(

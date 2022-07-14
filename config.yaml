@@ -90,11 +90,12 @@ spec:
         gs://antfield/FAFA/artifacts/2022-06-13_09h01m09s/checkpoints/epoch-128/vq_vae/
         # Fix: use 128-size model compatible with codebook listed above
         # gs://antfield/FAFA/artifacts/2022-06-22_14h53m09s/checkpoints/epoch-48/vq_vae/
-      num_residual_blocks: 6
-      num_pixelcnn_layers: 6
+      num_filters: 256
+      num_residual_blocks: 16
+      num_pixelcnn_layers: 16
 
       batch_size: 8
-      learning_rate: 3e-04
+      learning_rate: 1e-03
       batches_per_epoch: 256
       epochs: &ref_epochs 128
 
