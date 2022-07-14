@@ -28,6 +28,7 @@ class PixelCNNTestCase(unittest.TestCase):
             # use the model for training session
             img_conf['filter']['exclude'] = []
             pxl_conf['batch_size'] = pxl_conf['batches_per_epoch'] = pxl_conf['epochs'] = 1
+            pxl_conf['num_residual_blocks'] = 1
             pxl_conf['artifacts']['reconstructions']['enabled'] = False
             pxl_conf['artifacts']['checkpoints']['save_every_epoch'] = 1
             history = train_pixelcnn.train(config)
