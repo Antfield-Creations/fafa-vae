@@ -107,6 +107,8 @@ spec:
         reconstructions:
           enabled: true
           save_every_epoch: *ref_epochs
+        logs:
+          folder: gs://antfield/FAFA/artifacts/{run_id}
 
   data:
     images:
