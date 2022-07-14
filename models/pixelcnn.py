@@ -4,7 +4,7 @@ from typing import Optional, Tuple
 import numpy as np
 import tensorflow as tf
 import tensorflow_probability as tfp
-from tensorflow import keras, float32, Tensor
+from tensorflow import keras, Tensor
 from tensorflow.keras import layers  # type: ignore
 
 # The first layer is the PixelCNN layer. This layer simply
@@ -30,7 +30,7 @@ class PixelConvLayer(layers.Layer):
         if mask_type == "B":
             mask[kernel_shape[0] // 2, kernel_shape[1] // 2, ...] = 1.0
 
-        mask_tensor = tf.convert_to_tensor(mask, dtype=float32)
+        mask_tensor = tf.convert_to_tensor(mask, dtype=tf.float32)
         return mask_tensor
 
     @classmethod
