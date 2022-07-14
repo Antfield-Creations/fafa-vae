@@ -49,6 +49,8 @@ types-beautifulsoup4 = "*"
 yamllint = "*"
 # Test coverage lib
 coverage = "*"
+# Unused code detector
+vulture = "*"
 
 [requires]
 python_version = "3.9"
