@@ -99,7 +99,7 @@ def export_metadata(img_folder: str) -> None:
     dirlist = list(os.walk(img_folder))
 
     metadata = []
-    for root, dirs, files in tqdm(dirlist):
+    for root, _, files in tqdm(dirlist):
         relative_path = os.path.relpath(root, img_folder)
 
         for file in files:
