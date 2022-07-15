@@ -8,8 +8,8 @@ spec:
   repository: https://github.com/Antfield-Creations/fafa-vae
   command: |
     pipenv install --deploy --python 3.9 --site-packages;
-    pipenv run python main.py --mode=train-pixelcnn --config=config.json
-    # pipenv run python main.py --mode=train-vq-vae --config=config.json
+    pipenv run python main.py --mode=train-vq-vae --config=config.json
+    # pipenv run python main.py --mode=train-pixelcnn --config=config.json
   run_id:  # Keep empty to let the config function create one by itself
 
   models:
@@ -48,7 +48,7 @@ spec:
       epochs: 256
 
       # code book settings
-      latent_size: &ref_latent_size 128
+      latent_size: 64
       num_embeddings: 1024
 
       # encoder, mirrored decoder
@@ -56,31 +56,22 @@ spec:
         - filters: 32
           kernel_size: 5
           strides: 2
-        - filters: 32
-          kernel_size: 5
-          strides: 1
         - filters: 64
           kernel_size: 4
           strides: 2
-        - filters: 64
-          kernel_size: 4
-          strides: 1
         - filters: 92
           kernel_size: 3
           strides: 2
-        - filters: 92
-          kernel_size: 3
-          strides: 1
         - filters: 128
           kernel_size: 3
           strides: 2
         # The output size of the last encoder layer and first decoder layer must
-        # match the dimensionality of the latent size. This is important for
+        # be a multiple of the latent size. This is important for
         # when we calculate the L2 distances from the encoded outputs to the
-        # embeddings
-        - filters: *ref_latent_size
+        # embeddings and generate the indices
+        - filters: 256
           kernel_size: 3
-          strides: 1
+          strides: 2
 
     pixelcnn:
       image_test_folder:
@@ -94,7 +85,7 @@ spec:
       num_residual_blocks: 16
       num_pixelcnn_layers: 16
 
-      batch_size: 8
+      batch_size: 4
       learning_rate: 1e-03
       batches_per_epoch: 256
       epochs: &ref_epochs 128
