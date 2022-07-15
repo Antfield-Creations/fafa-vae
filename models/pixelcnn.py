@@ -14,6 +14,15 @@ from models.loaders.config import Config
 
 class PixelConvLayer(layers.Layer):
     def __init__(self, mask_type: str, **kwargs: dict) -> None:
+        """
+        Initializes a masked Conv2 layer
+
+        :param mask_type:   The masking type:
+                            -   The "A" mask type, for only the initial convolution layer in a PixelCNN,
+                                zeroing the central pixel in the mask;
+                            -   "B" for subsequent convolution layers
+        :param kwargs:
+        """
         super(PixelConvLayer, self).__init__()
         self.mask_type = mask_type
         self.conv = layers.Conv2D(**kwargs)
@@ -21,14 +30,28 @@ class PixelConvLayer(layers.Layer):
 
     @classmethod
     def generate_mask(cls, kernel_shape: Tuple[int, int, int], mask_type: str) -> tf.Tensor:
-        mask = np.zeros(shape=kernel_shape)
+        """
+        Uses an initialized kernel to create the mask
 
-        # Use the initialized kernel to create the mask
-        mask[: kernel_shape[0] // 2, ...] = 1.0
-        mask[kernel_shape[0] // 2, : kernel_shape[1] // 2, ...] = 1.0
+        :param kernel_shape:    Shape of the Conv2D kernel
+        :param mask_type:       "A" or "B", see class initializer function
+
+        :return:                The mask as a tensor
+        """
+
+        row_center = kernel_shape[0] // 2
+        col_center = kernel_shape[1] // 2
+
+        mask = np.ones(shape=kernel_shape, dtype=np.float32)
+
+        # Set the center "pixel" and every pixel to the right in the receptive field to "disabled"
+        mask[row_center, col_center:, ...] = 0.
+
+        # Set the rows below to "disabled"
+        mask[row_center + 1:, ...] = 0.
 
         if mask_type == "B":
-            mask[kernel_shape[0] // 2, kernel_shape[1] // 2, ...] = 1.0
+            mask[row_center, col_center + 1, ...] = 0.
 
         mask_tensor = tf.convert_to_tensor(mask, dtype=tf.float32)
         return mask_tensor
@@ -36,7 +59,7 @@ class PixelConvLayer(layers.Layer):
     @classmethod
     def from_config(cls, config: dict) -> 'PixelConvLayer':
         instance = cls(**config)
-        setattr(instance, 'mask', cls.generate_mask(instance.kernel_shape, instance.mask_type))
+        instance.mask = cls.generate_mask(instance.kernel_shape, instance.mask_type)
         return instance
 
     def get_config(self) -> dict:
