@@ -26,8 +26,16 @@ VQ-VAE
 - [X] Move pixelcnn sampler into separate callback and class
 - [X] Pixelcnn reconstruction callback writing directly to the data bucket
 - [X] Fix the model training loss spikes/collapses
+- [X] Implement `get_config` method for custom pixelcnn layers
 - [ ] Tune the model to produce reasonable quality reconstructions to progress to PixelCNN stage
-- [ ] Implement `get_config` method for custom vq_vae and pixelcnn models
+
+## 2022-07-15
+Implemented the methods that allow me to save and load the PixelCNN implementation, but I'm still struggling with the
+implementation itself. It doesn't matter whether the net is large or small, it just doesn't progress beyond an accuracy
+of about 77%. There's definitely fishy about the implementation.
+
+I tried using the PixelCNN implementation from tensorflow-probability, but it doesn't implement the necessary methods to
+allow saving and loading the model. So the implementation, could be said, is purely academic unfortunately.
 
 ## 2022-07-14
 A large hurdle is out of the way - I refactored the PixelCNN implementation for this pipeline to work with "stacks" (or 
