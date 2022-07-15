@@ -24,6 +24,8 @@ class PixelConvLayer(layers.Layer):
         :param kwargs:
         """
         super(PixelConvLayer, self).__init__()
+        if mask_type not in {"A", "B"}:
+            raise ValueError(f'Unknown mask type {mask_type}, choose either "A" or "B"')
         self.mask_type = mask_type
         self.conv = layers.Conv2D(**kwargs)
         self.mask: Optional[Tensor] = None
@@ -51,7 +53,7 @@ class PixelConvLayer(layers.Layer):
         mask[row_center + 1:, ...] = 0.
 
         if mask_type == "B":
-            mask[row_center, col_center + 1, ...] = 0.
+            mask[row_center, col_center, ...] = 1.
 
         mask_tensor = tf.convert_to_tensor(mask, dtype=tf.float32)
         return mask_tensor

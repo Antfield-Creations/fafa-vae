@@ -20,3 +20,10 @@ class PixelCNNTestCase(unittest.TestCase):
             self.assertListEqual(mask.numpy()[2, :2, ...].tolist(), np.ones(shape=[2, 3]).tolist())  # type: ignore
         with self.subTest(f'From a {kernel_shape=}, all the middle row values up from the center onwards are zeros'):
             self.assertListEqual(mask.numpy()[2, 2:, ...].tolist(), np.zeros(shape=[3, 3]).tolist())  # type: ignore
+
+    def test_mask_type_B(self) -> None:
+        kernel_shape = (5, 5, 3)
+        mask = PixelConvLayer.generate_mask(kernel_shape, "B")
+
+        with self.subTest('The center pixel is a one'):
+            self.assertListEqual(mask.numpy()[2, 2, :].tolist(), np.ones(shape=(3,)).tolist())  # type: ignore
