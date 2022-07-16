@@ -29,6 +29,35 @@ VQ-VAE
 - [X] Implement `get_config` method for custom pixelcnn layers
 - [ ] Tune the model to produce reasonable quality reconstructions to progress to PixelCNN stage
 
+## 2022-07-16
+I went over several papers to learn more about the PixelCNN implementation. I have a firm grasp now of the "A" and "B"
+type masked convolutions - "A" blocks information flow from every row below the center pixel in the receptive field, 
+plus the pixels in the center row from the center pixel and onwards. The "B" mask differs from the "A" mask in only the
+center pixel: it's enabled in mask "B".
+
+Looking further into this, I noticed something odd. The Keras PixelCNN implementation in both the 
+[VQ-VAE example](https://keras.io/examples/generative/vq_vae/#pixelcnn-model) and the
+[PixelCNN example](https://keras.io/examples/generative/pixelcnn/#build-the-model-based-on-the-original-paper) 
+use a kernel size of 1 (!) to be used in the PixelConvLayer. The 
+[PixelCNN paper](https://arxiv.org/pdf/1601.06759.pdf) specifies on page 5 in section 4 that a 3x3 
+convolution layer is to be used in the residual block, which is reflected in Table 1. This makes a lot more sense than a
+1x1 conv, in which case a "B" mask does nothing. It's just a regular convolution of 1x1. However, in the two B-masked
+convolution layers following the "multiple residual blocks", a 1x1 receptive field is used, _after_ ReLU activation! The
+paper makes no specific remarks on why this would work better instead of 3x3 convolutions, and why ReLU activation is
+done _before_ the 1x1 convolution, which appears to be just linearly activated by itself. Since the residual blocks are
+ReLU-activated, the first ReLU following the last residual block supposedly does nothing, whilst the last 1x1 
+convolution layer outputs linearly. This all makes very little sense to me. Why not let the convolution layers profit
+from the spatial context?
+
+The "help" that the network gets from a 3x3 B-masked convolution is a lot more than from a 1x1, which has no receptive
+field whatsoever. My suspicion is that this still works for VQ-VAE MNIST, because the information entropy is so low that
+it can be captured in the single output resulting from the convolution.
+
+So, instead of debugging this, I can just as wel use a PixelCNN++ or PixelSNAIL implementation, that probably performs
+better. I'm looking at https://github.com/rosinality/vq-vae-2-pytorch which appears to be the most mature VQ-VAE-2
+implementation, but it's written in Pytorch instead of Keras. I'm facing the option of either implementing it in Keras/
+Tensorflow, or swapping my Keras implementation for Pytorch. Either one is probably going to be a couple of days' work.
+
 ## 2022-07-15
 Implemented the methods that allow me to save and load the PixelCNN implementation, but I'm still struggling with the
 implementation itself. It doesn't matter whether the net is large or small, it just doesn't progress beyond an accuracy
@@ -36,6 +65,8 @@ of about 77%. There's definitely fishy about the implementation.
 
 I tried using the PixelCNN implementation from tensorflow-probability, but it doesn't implement the necessary methods to
 allow saving and loading the model. So the implementation, could be said, is purely academic unfortunately.
+
+Maybe I've been on a wild goose chase with the PixelCNN, perhaps as I was with the "standard" VAE. 
 
 ## 2022-07-14
 A large hurdle is out of the way - I refactored the PixelCNN implementation for this pipeline to work with "stacks" (or 
