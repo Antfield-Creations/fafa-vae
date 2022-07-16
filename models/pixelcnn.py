@@ -33,7 +33,8 @@ class PixelConvLayer(layers.Layer):
     @classmethod
     def generate_mask(cls, kernel_shape: Tuple[int, int, int], mask_type: str) -> tf.Tensor:
         """
-        Uses an initialized kernel to create the mask
+        Uses an initialized kernel to create the mask. This class method is useful for re-creating the mask on a saved
+        model as the mask tensor itself cannot be saved.
 
         :param kernel_shape:    Shape of the Conv2D kernel
         :param mask_type:       "A" or "B", see class initializer function
@@ -143,19 +144,19 @@ def get_pixelcnn(config: Config) -> keras.Model:
 
     outputs = PixelConvLayer(  # noqa
         mask_type="A",
-        filters=pxl_conf['num_filters'],
+        filters=pxl_conf['pixel_conv_residual_filters'],
         kernel_size=7,      # type: ignore
         activation="relu",  # type: ignore
         padding="same"      # type: ignore
     )(ohe)
 
     for _ in range(config['models']['pixelcnn']['num_residual_blocks']):
-        outputs = ResidualBlock(filters=pxl_conf['num_filters'])(outputs)  # noqa
+        outputs = ResidualBlock(filters=pxl_conf['pixel_conv_residual_filters'])(outputs)  # noqa
 
     for _ in range(config['models']['pixelcnn']['num_pixelcnn_layers']):
         outputs = PixelConvLayer(     # noqa
             mask_type="B",
-            filters=pxl_conf['num_filters'],
+            filters=pxl_conf['pixel_conv_1x1_filters'],
             kernel_size=1,      # type: ignore
             strides=1,          # type: ignore
             activation="relu",  # type: ignore
