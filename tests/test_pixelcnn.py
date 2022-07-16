@@ -25,5 +25,11 @@ class PixelCNNTestCase(unittest.TestCase):
         kernel_shape = (5, 5, 3)
         mask = PixelConvLayer.generate_mask(kernel_shape, "B")
 
-        with self.subTest('The center pixel is a one'):
+        with self.subTest(f'From a {kernel_shape=}, the center pixel is a one'):
             self.assertListEqual(mask.numpy()[2, 2, :].tolist(), np.ones(shape=(3,)).tolist())  # type: ignore
+
+        kernel_shape = (1, 1, 3)
+        mask = PixelConvLayer.generate_mask(kernel_shape, "B")
+
+        with self.subTest(f'From a {kernel_shape=}, the center pixel is a one'):
+            self.assertListEqual(mask.numpy()[0, 0, :].tolist(), np.ones(shape=(3,)).tolist())  # type: ignore
