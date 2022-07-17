@@ -29,7 +29,7 @@ def train(config: Config) -> History:
     )
     logging.info('Compiled pixelcnn model')
 
-    logs_folder = config['models']['vq_vae']['artifacts']['logs']['folder']
+    logs_folder = pxl_conf['artifacts']['logs']['folder']
     tensorboard_cb = tensorboard_callback(artifacts_folder=logs_folder)
     checkpoint_saver = CustomModelCheckpointSaver(config, 'pixelcnn')
 
