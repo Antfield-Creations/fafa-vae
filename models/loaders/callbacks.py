@@ -4,16 +4,17 @@ import os.path
 from typing import Union
 
 import numpy as np
+import tensorflow as tf
 from google.cloud.storage.blob import Blob  # noqa
 from google.cloud.storage.bucket import Bucket  # noqa
-import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras.callbacks import TensorBoard  # noqa
 
 from models.loaders.config import Config
-from models.loaders.vae_data_generator import PaddingGenerator
 from models.loaders.image_saver import save_reconstructions
+from models.loaders.vae_data_generator import PaddingGenerator
 from models.pixelcnn import get_pixelcnn_sampler
+from models.pixelsnail.sampling import sample_from_model
 
 
 def tensorboard_callback(artifacts_folder: str, update_freq: Union[int, str] = 'epoch') -> TensorBoard:
