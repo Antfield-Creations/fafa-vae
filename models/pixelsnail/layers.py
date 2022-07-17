@@ -4,8 +4,23 @@ import numpy as np
 import tensorflow as tf
 from tensorflow import keras
 
+from models.loaders.config import Config
 from models.pixelsnail.utils import get_causal_mask
 from models.pixelsnail.wn import WeightNormalization
+
+
+def get_pixelsnail(config: Config, quantizer: keras.Model) -> keras.Model:
+    pixelsnail_config = config['models']['pixelsnail']
+    pixelsnail = pixelSNAIL(
+        attention=pixelsnail_config['use_attention'],
+        out_channels=quantizer.output_shape[-1],
+        num_pixel_blocks=pixelsnail_config['pixel_blocks'],
+        num_grb_per_pixel_block=pixelsnail_config['gated_residual_blocks_per_pixel_block'],
+        dropout=pixelsnail_config['dropout'],
+        nr_filters=pixelsnail_config['filters']
+    )
+
+    return pixelsnail
 
 
 # ----------------------------------------------------------------------------------------------------------------------
