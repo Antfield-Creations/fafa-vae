@@ -151,3 +151,41 @@ class PixelCNNReconstructionSaver(keras.callbacks.Callback):
 
         images = self.decoder.predict(quantized)
         save_reconstructions(self.reconstructions_folder, images, epoch)
+
+
+class PixelSNAILReconstructionSaver(tf.keras.callbacks.Callback):
+    def __init__(self, config: Config, vq_vae: keras.Model):
+        self.pixelsnail_cfg = config['models']['pixelsnail']
+
+        self.epoch_interval = self.pxl_conf['artifacts']['reconstructions']['save_every_epoch']
+
+        artifact_folder = self.pxl_conf['artifacts']['folder']
+        self.reconstructions_folder = os.path.join(artifact_folder, 'reconstructions')
+
+        self.quantizer = vq_vae.get_layer('vector_quantizer')
+        self.decoder = vq_vae.get_layer('decoder')
+
+    def on_epoch_end(self, epoch: int, logs: dict = None) -> None:
+        if (epoch + 1) % self.epoch_interval != 0:
+            return
+
+        samples = sample_from_model(
+            model=self.model,
+            shape=self.quantizer.output_shape,
+            batch_size=self.pixelsnail_cfg['batch_size']
+        )
+
+        # Map the embedding indices back to their values
+        num_embeddings = self.quantizer.embeddings.shape[1]
+        priors_ohe = tf.one_hot(samples.astype("int32"), num_embeddings).numpy()
+        quantized = tf.matmul(
+            priors_ohe.astype("float32"), self.quantizer.embeddings, transpose_b=True
+        )
+
+        # Because we reshape the quantized output, the embedding stack indices are
+        # automatically concatenated back into the correct decoder input shape
+        decoder_input_shape = (-1, *(self.decoder.input_shape[1:]))
+        quantized = tf.reshape(quantized, decoder_input_shape)
+
+        images = self.decoder.predict(quantized)
+        save_reconstructions(self.reconstructions_folder, images, epoch)
