@@ -74,6 +74,35 @@ spec:
           kernel_size: 3
           strides: 2
 
+    pixelsnail:
+      input_vq_vae:
+        # Use best model, even though it's a "stacked-embedding" model
+        gs://antfield/FAFA/artifacts/2022-06-13_09h01m09s/checkpoints/epoch-128/vq_vae/
+
+      use_attention: true
+      pixel_blocks: 8
+      gated_residual_blocks_per_pixel_block: 4
+      dropout: 0.0
+      filters: 128
+
+      batch_size: 4
+      learning_rate: 1e-03
+      batches_per_epoch: 256
+      epochs: &ref_epochs 128
+
+      artifacts:
+        folder: gs://antfield/FAFA/artifacts/{run_id}
+        # Set to empty when training from scratch, otherwise specify a model
+        # checkpoint location to retrain
+        resume_model:
+        checkpoints:
+          save_every_epoch: 16
+        reconstructions:
+          enabled: true
+          save_every_epoch: *ref_epochs
+        logs:
+          folder: gs://antfield/FAFA/artifacts/{run_id}
+
     pixelcnn:
       image_test_folder:
         gs://antfield/FAFA/img/set-891
