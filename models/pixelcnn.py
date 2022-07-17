@@ -165,7 +165,7 @@ def get_pixelcnn(config: Config) -> keras.Model:
 
     outputs = keras.layers.Conv2D(
         filters=config['models']['vq_vae']['num_embeddings'],
-        kernel_size=3,
+        kernel_size=1,
         strides=1,
         padding="same"
     )(outputs)
