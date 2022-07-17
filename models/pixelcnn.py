@@ -157,17 +157,17 @@ def get_pixelcnn(config: Config) -> keras.Model:
         outputs = PixelConvLayer(     # noqa
             mask_type="B",
             filters=pxl_conf['pixel_conv_1x1_filters'],
-            kernel_size=1,      # type: ignore
+            kernel_size=3,      # type: ignore
             strides=1,          # type: ignore
             activation="relu",  # type: ignore
-            padding="valid"     # type: ignore
+            padding="same"     # type: ignore
         )(outputs)
 
     outputs = keras.layers.Conv2D(
         filters=config['models']['vq_vae']['num_embeddings'],
-        kernel_size=1,
+        kernel_size=3,
         strides=1,
-        padding="valid"
+        padding="same"
     )(outputs)
 
     pixel_cnn = keras.Model(pixelcnn_inputs, outputs, name="pixel_cnn")
